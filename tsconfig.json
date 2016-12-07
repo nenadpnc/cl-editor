@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2015",
+        "declaration": true,
+        "noImplicitAny": false,
+        "sourceMap": false,
+        "noImplicitReturns": true
+    },
+    "exclude": [
+    	"node_modules",
+    	"dist",
+    	"src/pages",
+    	"src/components"
+    ],
+    "include": [
+        "src/**/*.ts"
+    ],
+}
