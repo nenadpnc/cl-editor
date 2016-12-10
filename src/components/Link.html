@@ -1,0 +1,25 @@
+<a href='{{adjustedTo}}' on:click='navigate(event, to)'>{{yield}}</a>
+
+<script>
+import history from '../services/history';
+
+export default {
+  data() {
+    return {
+      to: '/',
+    };
+  },
+
+  computed: {
+    adjustedTo: to => process.env.APP_BASE_PATH + to,
+  },
+
+  methods: {
+    navigate(evt, path) {
+      if (evt && evt.preventDefault) evt.preventDefault();
+
+      if (path) history.push(path);
+    }
+  }
+}
+</script>

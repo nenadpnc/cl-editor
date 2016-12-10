@@ -1,0 +1,43 @@
+{
+  "name": "svelte-ts-example",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "rollup -c",
+    "build:min": "production=true rollup -c",
+    "watch": "rollup -c -w",
+    "serve": "live-server --spa",
+    "start": "npm run watch & npm run serve"
+  },
+  "files": [
+    "index.html"
+  ],
+  "keywords": [
+    "svelte",
+    "typescript"
+  ],
+  "author": "Yugo",
+  "license": "MIT",
+  "dependencies": {
+    "history": "^4.4.1",
+    "leancloud-storage": "^1.5.3",
+    "lodash": "^4.17.2",
+    "route-parser": "0.0.5"
+  },
+  "devDependencies": {
+    "@types/history": "^2.0.41",
+    "@types/lodash": "^4.14.42",
+    "babel-runtime": "^6.20.0",
+    "live-server": "^1.1.0",
+    "rollup": "^0.36.3",
+    "rollup-plugin-commonjs": "^5.0.5",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-stylus-css-modules": "^1.2.2",
+    "rollup-plugin-svelte": "^1.2.0",
+    "rollup-plugin-typescript": "^0.8.1",
+    "rollup-plugin-uglify": "^1.0.1",
+    "rollup-watch": "^2.5.0",
+    "typescript": "^2.0.10"
+  }
+}

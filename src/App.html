@@ -1,0 +1,47 @@
+<div>
+  <h1>My First Svelte Application</h1>
+  <h2>Hello {{ name }}</h2>
+
+  <Link to="/">home</Link>
+  <Link to="/todo/yogo">yogo todos</Link>
+  <Link to="/test">test</Link>
+  <Link to="/todo">test</Link>
+ 
+  <section id="content"></section>
+</div>
+
+<style type="text/css">
+	#content {
+		border: 1px solid red;
+	}
+</style>
+
+<script>
+import createRouter from './services/createRouter';
+import Tip from './pages/Tip.html';
+import Todo from './pages/Todo.html';
+import Link from './components/Link.html';
+import history from './services/history';
+
+const router = createRouter({
+  '/': '/tip',
+  '/tip': Tip,
+  '/todo/:name': Todo,
+  '/todo': Todo,
+  '/test': { redirect: '/todo/yugo' }
+});
+
+export default {
+	components: {
+		Link,
+		Tip,
+		Todo
+	},
+	onrender(){
+		router.start(window.location, window.document.querySelector('#content'));
+	},
+	onteardown(){
+		router.teardown();
+	}
+}
+</script>
