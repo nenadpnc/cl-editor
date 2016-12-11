@@ -1,11 +1,15 @@
-import * as AV from 'leancloud-storage';
+import AV from 'leancloud-storage';
 
 class Todo extends AV.Object{
 	text: string;
 
-	constructor(text: string) {
+	constructor(id?: string, text?: string) {
 		super();
-		this.attributes('text': text);
+		id && (this.id = id);
+		text && (this.set('text', text));
+
+		this.set('status', 'default');
+		
 	}
 	
 }

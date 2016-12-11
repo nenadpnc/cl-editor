@@ -5,14 +5,10 @@
         "declaration": true,
         "noImplicitAny": false,
         "sourceMap": false,
-<<<<<<< HEAD
         "noImplicitReturns": true,
         "typeRoots": [
             "types"
         ]
-=======
-        "noImplicitReturns": true
->>>>>>> 7062cd50c07c45cd42dada633bce3e96722d025e
     },
     "exclude": [
     	"node_modules",

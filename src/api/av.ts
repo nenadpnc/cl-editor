@@ -1,47 +1,40 @@
 import config  from './config';
-import * as AV from 'leancloud-storage';
+import AV from 'leancloud-storage';
 import IApi from './interface/IApi';
 import Todo from './class/Todo';
 
 class API implements IApi{
-	static instance: any;
-	static getInstace() {
-		if(this.instance) {
-			return this.instance;
-		}
-		this.instance = new API();
-		return this.instance;
-	}
-
-	private constructor() {
+	constructor(){
 		AV.init({
 			appId: config.AV.appId,
 			appKey: config.AV.appKey
 		});
 	}
-
-	createTodo(text: string) : Todo {
-		const todo = new Todo();
-		todo.save();
-		return todo;
+	createTodo(text: string) : AV.Promise<Todo> {
+		const todo = new Todo(null, text);
+		return todo.save();
 	}
 
-	getTodo(id: string) : Todo{
-
+	getTodo(id: string) : AV.Promise<Todo>{
+		let todo = new Todo(id);
+		return todo.fetch();
 	}
 
-	delteTodo(id: string): number{
-
+	delteTodo(id: string): AV.Promise<Todo>{
+		let todo = new Todo(id);
+		return todo.destroy()
 	}
 
-	editTodo(id: string, text: string): Todo{
-
+	editTodo(id: string, text: string): AV.Promise<Todo>{
+		let todo = new Todo(id, text);
+		return todo.save()
 	}
 
-	getAllTodo(): Todo[] {
-
+	getAllTodo(): AV.Promise<Todo[]> {
+		var q = new AV.Query(Todo);
+		q.descending('createdAt');
+		return  q.find();
 	}
-
 
 }
 

@@ -1,4 +1,19 @@
+
+{{#if block}}
+
+<a href='{{adjustedTo}}' on:click='navigate(event, to)' style="display: block">{{yield}}</a>
+
+{{elseif blockCenter}}
+
+<a href='{{adjustedTo}}' on:click='navigate(event, to)' style="display: block;text-align: center">
+  {{yield}}
+</a>
+
+{{else}}
+
 <a href='{{adjustedTo}}' on:click='navigate(event, to)'>{{yield}}</a>
+
+{{/if}}
 
 <script>
 import history from '../services/history';
@@ -6,7 +21,7 @@ import history from '../services/history';
 export default {
   data() {
     return {
-      to: '/',
+      to: '/'
     };
   },
 
@@ -23,3 +38,10 @@ export default {
   }
 }
 </script>
+
+<style type="text/css">
+  a{
+    color: #414042; 
+    text-decoration: none;
+  }
+</style>

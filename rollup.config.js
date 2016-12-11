@@ -4,10 +4,9 @@ import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import tscompile from 'typescript';
-
 import replace from 'rollup-plugin-replace';
-import stylusCssModules from 'rollup-plugin-stylus-css-modules';
-
+import async from 'rollup-plugin-async';
+import scss from 'rollup-plugin-scss';
 
 const plugins = [ 
     typescript({typescript: tscompile}),
@@ -22,9 +21,9 @@ const plugins = [
 		include: ['src/pages/**.html', 'src/components/**.html', 'src/App.html'],
 		exclude: 'src/**/*.ts'
 	}),
-	stylusCssModules({
-	    output: 'dist/bundle.css'
-    }),
+	scss(),
+	async(),
+	
 	replace({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
       'process.env.APP_BASE_PATH': JSON.stringify(process.env.APP_BASE_PATH || ''),

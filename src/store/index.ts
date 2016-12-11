@@ -1,3 +1,4 @@
 export default {
-	name: 'Yogurt'
+	todos: [],
+	loading: true
 }
