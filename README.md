@@ -1,4 +1,4 @@
-# Lightweoght text editor
+# Lightweight text editor
 
 typescript + svelte (no external dependencies) 
 
