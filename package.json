@@ -1,54 +1,46 @@
 {
-  "name": "svelte-ts-example",
+  "name": "cl-editor",
   "version": "1.0.0",
   "description": "",
   "scripts": {
     "mkdir": "mkdirp ./dist",
     "build": "npm run mkdir && rollup -c && npm run copy-file",
     "build:min": "production=true npm run mkdir && rollup -c && npm run copy-file",
-    "copy-file": "copyfiles ./index.html ./dist && copyfiles -f ./src/assets/fonts/* ./dist/fonts && copyfiles -f ./src/assets/images/* ./dist/images",
+    "copy-file": "copyfiles ./index.html ./dist",
     "clearn": "rimraf ./dist",
     "watch": "rollup -c -w",
-    "serve": "live-server dist",
+    "serve": "live-server dist --port=3000",
     "start": "npm-run-all --parallel watch serve"
   },
   "files": [
     "index.html"
   ],
   "keywords": [
+    "html editor",
     "svelte",
     "typescript"
   ],
-  "author": "Yugo",
+  "author": "nenadpnc",
   "license": "MIT",
-  "dependencies": {
-    "history": "^4.4.1",
-    "leancloud-storage": "^1.5.3",
-    "lodash": "^4.17.2",
-    "route-parser": "0.0.5"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/history": "^2.0.41",
-    "@types/lodash": "^4.14.42",
-    "async-to-gen": "^1.3.0",
-    "babel-runtime": "^6.20.0",
+    "babel-runtime": "^6.26.0",
     "copyfiles": "^1.0.0",
     "install": "^0.8.2",
     "live-server": "^1.1.0",
     "mkdirp": "^0.5.1",
-    "npm": "^4.0.3",
-    "npm-run-all": "^3.1.2",
+    "npm": "^5.5.1",
+    "npm-run-all": "^4.1.1",
     "rimraf": "^2.5.4",
-    "rollup": "^0.36.3",
-    "rollup-plugin-async": "^1.2.0",
-    "rollup-plugin-commonjs": "^5.0.5",
-    "rollup-plugin-node-resolve": "^2.0.0",
-    "rollup-plugin-replace": "^1.1.1",
-    "rollup-plugin-scss": "^0.1.0",
-    "rollup-plugin-svelte": "^1.2.0",
+    "rollup": "^0.50.0",
+    "rollup-plugin-commonjs": "^8.2.4",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-scss": "^0.3.0",
+    "rollup-plugin-svelte": "^3.1.0",
     "rollup-plugin-typescript": "^0.8.1",
-    "rollup-plugin-uglify": "^1.0.1",
-    "rollup-watch": "^2.5.0",
-    "typescript": "^2.0.10"
+    "rollup-plugin-uglify": "^2.0.1",
+    "rollup-watch": "^4.3.1",
+    "typescript": "^2.3.4"
   }
 }

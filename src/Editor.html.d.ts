@@ -1,4 +1,4 @@
-declare class App{
+declare class Editor{
 	constructor(options: { target: Element, data?: any });
 
     get(name: string);
@@ -22,7 +22,7 @@ declare class App{
 }
 
 
-export default App;
+export default Editor;
 
 
 

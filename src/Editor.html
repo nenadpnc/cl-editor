@@ -1,0 +1,91 @@
+<div class="cl">
+    <div class="cl-actionbar">
+      {{#each actionBtns as action}}
+        <button class="cl-button {{action.active ? 'active' : ''}}" title="{{action.title}}" on:click="btnClicked(action)">{{{action.icon}}}</button>
+      {{/each}}
+    </div>
+    <div ref:editor 
+      class="cl-content" 
+      contenteditable="true" 
+      on:input="onChange(event.target.innerHTML)" 
+      on:mouseup="handleButtonStatus()" 
+      on:keyup="handleButtonStatus()"
+      on:paste="onPaste(event)"></div>
+</div>
+
+<script>
+import {getTagsRecursive, saveRange, restoreRange, exec, cleanHtml} from './helpers/util';
+import actions from './helpers/actions';
+
+const getActionBtns = () => {
+  return Object.keys(actions).map((action) => actions[action]);
+}
+
+export default {
+  data() {
+    return {
+      actionBtns: getActionBtns()
+    }
+  },
+	methods: {
+    btnClicked: function(action) {
+      saveRange(this.refs.editor);
+      restoreRange(this.refs.editor);
+      
+      action.result(this.refs.editor);
+      this.handleButtonStatus();
+    },
+    handleButtonStatus: function() {
+      const tags = getTagsRecursive(document.getSelection().focusNode);
+      Object.keys(actions).forEach((action) => actions[action].active = false);
+      tags.forEach((tag) => (actions[tag.toLowerCase()] || {}).active = true);
+      this.set({ actionBtns: getActionBtns() });
+    },
+    onPaste: function(event) {
+      event.preventDefault();
+      exec('insertHTML', cleanHtml(event.clipboardData.getData('text/html')));
+    },
+    onChange: (change) => {
+      
+    }
+	}
+}
+</script>
+
+<style type="text/css">
+.cl {
+  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.cl-content {
+  box-sizing: border-box;
+  height: 300px;
+  outline: 0;
+  overflow-y: auto;
+  padding: 10px;
+  width: 100%;
+}
+
+.cl-actionbar {
+  background-color: #ecf0f1;
+  border-bottom: 1px solid rgba(10, 10, 10, 0.1);
+  width: 100%;
+}
+
+.cl-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  height: 35px;
+  outline: 0;
+  width: 35px;
+  vertical-align: top;
+}
+
+.cl-button:hover, .cl-button.active {
+  background-color: #fff;
+}
+
+</style>
