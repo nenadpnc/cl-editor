@@ -1,45 +1,45 @@
 <div class="cl">
     <div class="cl-actionbar">
       {{#each actionBtns as action}}
-        <button class="cl-button {{action.active ? 'active' : ''}}" title="{{action.title}}" on:click="btnClicked(action)">{{{action.icon}}}</button>
+        <button class="cl-button {{action.active ? 'active' : ''}}" title="{{action.title}}" on:click="btnClicked(action)" disabled="{{action.disabled}}">{{{action.icon}}}</button>
       {{/each}}
     </div>
     <div ref:editor 
-      class="cl-content" 
+      class="cl-content"
+      style="height: {{height}}"
       contenteditable="true" 
       on:input="onChange(event.target.innerHTML)" 
       on:mouseup="handleButtonStatus()" 
       on:keyup="handleButtonStatus()"
-      on:paste="onPaste(event)"></div>
+      on:paste="onPaste(event)">
+    </div>
+    
+    <textarea ref:raw class="cl-textarea" style="height: {{height}};"></textarea>
 </div>
 
 <script>
-import {getTagsRecursive, saveRange, restoreRange, exec, cleanHtml} from './helpers/util';
+import {getTagsRecursive, saveRange, restoreRange, exec, cleanHtml, getActionBtns} from './helpers/util';
 import actions from './helpers/actions';
-
-const getActionBtns = () => {
-  return Object.keys(actions).map((action) => actions[action]);
-}
 
 export default {
   data() {
     return {
-      actionBtns: getActionBtns()
+      actionBtns: getActionBtns(actions),
+      height: '300px'
     }
   },
 	methods: {
     btnClicked: function(action) {
       saveRange(this.refs.editor);
       restoreRange(this.refs.editor);
-      
-      action.result(this.refs.editor);
+      action.result.call(this);
       this.handleButtonStatus();
     },
     handleButtonStatus: function() {
       const tags = getTagsRecursive(document.getSelection().focusNode);
       Object.keys(actions).forEach((action) => actions[action].active = false);
       tags.forEach((tag) => (actions[tag.toLowerCase()] || {}).active = true);
-      this.set({ actionBtns: getActionBtns() });
+      this.set({ actionBtns: getActionBtns(actions) });
     },
     onPaste: function(event) {
       event.preventDefault();
@@ -86,6 +86,24 @@ export default {
 
 .cl-button:hover, .cl-button.active {
   background-color: #fff;
+}
+
+.cl-button:disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+
+.cl-textarea {
+  display: none;
+  width: 100%;
+  max-width: 100%;
+  border: none;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.cl-textarea:focus {
+  outline: none;
 }
 
 </style>

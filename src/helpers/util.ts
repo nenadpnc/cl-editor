@@ -137,3 +137,7 @@ export const removeBlockTagsRecursive = (elements) => {
     }
   });
 }
+
+export const getActionBtns = (actions) => {
+  return Object.keys(actions).map((action) => actions[action]);
+}
