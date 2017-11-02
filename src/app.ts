@@ -1,6 +1,8 @@
 import Editor from './Editor.html';
 
-const app = new Editor({
+const editor = new Editor({
 	target: document.querySelector('#clEditor'),
-	data: {}
-})
+	data: {
+		actions: []
+	}
+});

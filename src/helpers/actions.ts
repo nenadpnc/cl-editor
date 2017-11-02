@@ -7,6 +7,7 @@ let actions = {
     icon: '<svg id="trumbowyg-view-html" viewBox="0 0 72 72" width="17px" height="100%"><path fill="none" stroke="currentColor" stroke-width="8" stroke-miterlimit="10" d="M26.9 17.9L9 36.2 26.9 54M45 54l17.9-18.3L45 17.9"></path></svg>',
     title: 'View HTML',
     result: function() {
+      const actionObj = this.get('actionObj');
       showEditor = !showEditor;
       this.refs.editor.style.display = showEditor ? 'block' : 'none';
       this.refs.raw.style.display = showEditor ? 'none' : 'block';
@@ -15,11 +16,11 @@ let actions = {
       } else {
         this.refs.raw.value = this.refs.editor.innerHTML;
       }
-      Object.keys(actions).forEach((action: string) => actions[action].disabled = !showEditor);
       setTimeout(() =>{
-        actions.viewHtml['disabled'] = false;
-        actions.viewHtml['active'] = !showEditor;
-        this.set({actionBtns: getActionBtns(actions)});
+        Object.keys(actionObj).forEach((action: string) => actionObj[action].disabled = !showEditor);
+        actionObj.viewHtml.disabled = false;
+        actionObj.viewHtml.active = !showEditor;
+        this.set({ actionBtns: getActionBtns(actionObj),  actionObj });
       })
     }
   },

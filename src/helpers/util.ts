@@ -1,10 +1,10 @@
 let t: any = {};
 
-export const exec = (command, value = null) => {
+export const exec = (command: string, value = null) => {
   document.execCommand(command, false, value)
 }
 
-export const getTagsRecursive = (element: any, tags: string[]) => {
+export const getTagsRecursive = (element: HTMLElement | any, tags: string[]) => {
   tags = tags || (element && element.tagName ? [element.tagName] : []);
 
   if (element && element.parentNode) {
@@ -14,8 +14,8 @@ export const getTagsRecursive = (element: any, tags: string[]) => {
   }
 
   const tag = element.tagName;
-  if (element.style.textAlign !== '') {
-    tags.push(element.style.textAlign);
+  if (element.style.textAlign !== '' || element.getAttribute('align')) {
+    tags.push(element.style.textAlign || element.getAttribute('align'));
   }
   if (tag === 'DIV') {
     return tags;
@@ -127,7 +127,7 @@ export const unwrap = (wrapper: HTMLElement) => {
 	wrapper.parentNode.replaceChild(docFrag, wrapper);
 }
 
-export const removeBlockTagsRecursive = (elements) => {
+export const removeBlockTagsRecursive = (elements: HTMLCollection) => {
   Array.from(elements).forEach((item: HTMLElement) => {
     if (['h1', 'h2', 'p', 'div', 'blockquote'].some((tag) => tag === item.tagName.toLowerCase())) {
       if (item.children.length) {
@@ -140,4 +140,19 @@ export const removeBlockTagsRecursive = (elements) => {
 
 export const getActionBtns = (actions) => {
   return Object.keys(actions).map((action) => actions[action]);
+}
+
+export const getNewActionObj = (actions: any, userActions: any[]) => {
+    const newActions = {};
+    userActions.forEach((action) => {
+        if (typeof action === 'string') {
+            newActions[action] = actions[action];
+        } else if (actions[action.name]) {
+            newActions[action.name] = Object.assign(actions[action.name], action);
+        } else {
+            newActions[action.name] = action;
+        }
+    });
+
+    return newActions;
 }

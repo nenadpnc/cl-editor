@@ -1,5 +1,11 @@
 declare class Editor{
-	constructor(options: { target: Element, data?: any });
+	constructor(options: { 
+        target: Element, 
+        data?: {
+            actions: ({name: string, title?: string, icon?: string, result?: Function} | string)[],
+            height?: string
+        } 
+    });
 
     get(name: string);
     set(data: any);

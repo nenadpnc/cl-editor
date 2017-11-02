@@ -18,15 +18,29 @@
 </div>
 
 <script>
-import {getTagsRecursive, saveRange, restoreRange, exec, cleanHtml, getActionBtns} from './helpers/util';
+import {
+  getTagsRecursive, 
+  saveRange, 
+  restoreRange, 
+  exec, 
+  cleanHtml, 
+  getActionBtns,
+  getNewActionObj
+} from './helpers/util';
 import actions from './helpers/actions';
 
 export default {
   data() {
     return {
-      actionBtns: getActionBtns(actions),
+      actionBtns: [],
       height: '300px'
     }
+  },
+  oncreate() {
+    const actionObj = this.options.data.actions && this.options.data.actions.length ? 
+      getNewActionObj(this.options.data.actions) : actions;
+    
+    this.set({ actionBtns: getActionBtns(actionObj), actionObj });
   },
 	methods: {
     btnClicked: function(action) {
@@ -39,14 +53,14 @@ export default {
       const tags = getTagsRecursive(document.getSelection().focusNode);
       Object.keys(actions).forEach((action) => actions[action].active = false);
       tags.forEach((tag) => (actions[tag.toLowerCase()] || {}).active = true);
-      this.set({ actionBtns: getActionBtns(actions) });
+      this.set({ actionBtns: getActionBtns(this.get('actionObj')) });
     },
     onPaste: function(event) {
       event.preventDefault();
       exec('insertHTML', cleanHtml(event.clipboardData.getData('text/html')));
     },
-    onChange: (change) => {
-      
+    onChange: function(html) {
+      this.fire('onChange', html);
     }
 	}
 }
