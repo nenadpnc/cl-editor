@@ -38,7 +38,7 @@ export default {
   },
   oncreate() {
     const actionObj = this.options.data.actions && this.options.data.actions.length ? 
-      getNewActionObj(this.options.data.actions) : actions;
+      getNewActionObj(actions, this.options.data.actions) : actions;
     
     this.set({ actionBtns: getActionBtns(actionObj), actionObj });
   },
