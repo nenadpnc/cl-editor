@@ -4,7 +4,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import tscompile from 'typescript';
-import replace from 'rollup-plugin-replace';
+import babel from 'rollup-plugin-babel';
 
 const plugins = [ 
     typescript({typescript: tscompile}),
@@ -18,13 +18,12 @@ const plugins = [
 		include: ['src/Editor.html'],
 		exclude: 'src/**/*.ts'
 	}),
-	replace({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-      'process.env.APP_BASE_PATH': JSON.stringify(process.env.APP_BASE_PATH || ''),
-    })
+	babel({ exclude: 'node_modules/**'})
 ];
-
-if ( process.env.production ) plugins.push( uglify() );
+if ( process.env.NODE_ENV === 'production' ) {
+	console.log('production...');
+	plugins.push(uglify());
+}
 
 export default {
 	input: 'src/app.ts',

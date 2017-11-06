@@ -143,18 +143,20 @@ let actions = {
       if (url) exec('insertImage', url)
     }
   },
-  foreColor: {
+  forecolor: {
     icon: '<svg id="trumbowyg-fore-color" viewBox="0 0 72 72" width="17px" height="100%"><path d="M32 15h7.8L56 57.1h-7.9l-4-11.1H27.4l-4 11.1h-7.6L32 15zm-2.5 25.4h12.9L36 22.3h-.2l-6.3 18.1z"></path></svg>',
     title: 'Text color',
     result: function() {
-
+      const color = window.prompt('enter color');
+      exec('foreColor', color);
     }
   },
-  backColor: {
+  backcolor: {
     icon: '<svg id="trumbowyg-back-color" viewBox="0 0 72 72" width="17px" height="100%"><path d="M36.5 22.3l-6.3 18.1H43l-6.3-18.1z"></path><path d="M9 8.9v54.2h54.1V8.9H9zm39.9 48.2L45 46H28.2l-3.9 11.1h-7.6L32.8 15h7.8l16.2 42.1h-7.9z"></path></svg>',
     title: 'Background color',
     result: function() {
-      
+      const color = window.prompt('enter background color');
+      exec('backColor', color);
     }
   },
   removeFromat: {

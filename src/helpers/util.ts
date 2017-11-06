@@ -14,9 +14,10 @@ export const getTagsRecursive = (element: HTMLElement | any, tags: string[]) => 
   }
 
   const tag = element.tagName;
-  if (element.style.textAlign !== '' || element.getAttribute('align')) {
-    tags.push(element.style.textAlign || element.getAttribute('align'));
-  }
+  [element.style.textAlign || element.getAttribute('align'), element.style.color || tag === 'FONT' && 'forecolor', element.style.backgroundColor && 'backcolor']
+    .filter((item: string) => item)
+    .forEach((item: string) => tags.push(item));
+
   if (tag === 'DIV') {
     return tags;
   }
