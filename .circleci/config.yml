@@ -36,7 +36,12 @@ jobs:
       # run build!
       - run: npm run prod
 
+      - run:
+          command: |
+            mkdir -p /tmp/dist
+            cp /dist/index.js /tmp/dist
+
       - store_artifacts:
-          path: /dist
+          path: /tmp/dist
 
 
