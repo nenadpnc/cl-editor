@@ -5,7 +5,7 @@
   "scripts": {
     "mkdir": "mkdirp ./dist",
     "build": "npm run mkdir && rollup -c && npm run copy-file",
-    "build:min": "set NODE_ENV=production&& npm run mkdir && rollup -c && npm run copy-file",
+    "build:min": "cross-env NODE_ENV=production npm run mkdir && rollup -c && npm run copy-file",
     "copy-file": "copyfiles ./index.html ./dist",
     "clearn": "rimraf ./dist",
     "watch": "rollup -c -w",
