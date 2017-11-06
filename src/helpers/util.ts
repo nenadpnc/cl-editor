@@ -47,7 +47,7 @@ export const saveRange = (editor: HTMLElement) => {
 export const restoreRange = (editor: HTMLElement) => {
   let metaRange = t.metaRange;
   let savedRange = t.range;
-  let documentSelection =document.getSelection();
+  let documentSelection = document.getSelection();
   let range;
 
   if (!savedRange) {
@@ -142,17 +142,21 @@ export const getActionBtns = (actions) => {
   return Object.keys(actions).map((action) => actions[action]);
 }
 
-export const getNewActionObj = (actions: any, userActions: any[]) => {
-    const newActions = {};
-    userActions.forEach((action) => {
-        if (typeof action === 'string') {
-            newActions[action] = actions[action];
-        } else if (actions[action.name]) {
-            newActions[action.name] = Object.assign(actions[action.name], action);
-        } else {
-            newActions[action.name] = action;
-        }
-    });
-
-    return newActions;
+export const getNewActionObj = (actions: any, userActions = []) => {
+    if (userActions && userActions.length) {
+        const newActions = {};
+        userActions.forEach((action) => {
+            if (typeof action === 'string') {
+                newActions[action] = actions[action];
+            } else if (actions[action.name]) {
+                newActions[action.name] = Object.assign(actions[action.name], action);
+            } else {
+                newActions[action.name] = action;
+            }
+        });
+    
+        return newActions;
+    } else {
+        return actions;
+    }
 }

@@ -37,9 +37,7 @@ export default {
     }
   },
   oncreate() {
-    const actionObj = this.options.data.actions && this.options.data.actions.length ? 
-      getNewActionObj(actions, this.options.data.actions) : actions;
-    
+    const actionObj = getNewActionObj(actions, this.options.data.actions);
     this.set({ actionBtns: getActionBtns(actionObj), actionObj });
   },
 	methods: {
@@ -51,9 +49,10 @@ export default {
     },
     handleButtonStatus: function() {
       const tags = getTagsRecursive(document.getSelection().focusNode);
-      Object.keys(actions).forEach((action) => actions[action].active = false);
-      tags.forEach((tag) => (actions[tag.toLowerCase()] || {}).active = true);
-      this.set({ actionBtns: getActionBtns(this.get('actionObj')) });
+      const actionObj = this.get('actionObj');
+      Object.keys(actionObj).forEach((action) => actionObj[action].active = false);
+      tags.forEach((tag) => (actionObj[tag.toLowerCase()] || {}).active = true);
+      this.set({ actionBtns: getActionBtns(actionObj), actionObj });
     },
     onPaste: function(event) {
       event.preventDefault();
