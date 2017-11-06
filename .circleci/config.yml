@@ -39,7 +39,7 @@ jobs:
       - run:
           command: |
             mkdir -p /tmp/dist
-            cp /dist/index.js /tmp/dist
+            cp /dist /tmp/dist
 
       - store_artifacts:
           path: /tmp/dist
