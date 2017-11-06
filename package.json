@@ -4,13 +4,12 @@
   "description": "",
   "scripts": {
     "mkdir": "mkdirp ./dist",
-    "build": "npm run mkdir && rollup -c && npm run copy-file",
-    "build:min": "cross-env NODE_ENV=production npm run mkdir && rollup -c && npm run copy-file",
+    "build": "cross-env NODE_ENV=production npm run mkdir && rollup -c",
     "copy-file": "copyfiles ./index.html ./dist",
     "clearn": "rimraf ./dist",
     "watch": "rollup -c -w",
     "serve": "live-server dist --port=3000",
-    "start": "npm-run-all --parallel watch serve"
+    "start": "npm run copy-file && npm-run-all --parallel watch serve"
   },
   "files": [
     "index.html"
