@@ -34,7 +34,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
         
       # run build!
-      - run: npm run build
+      - run: npm run prod
 
       - store_artifacts:
           path: /dist

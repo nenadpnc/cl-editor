@@ -18,19 +18,17 @@ const plugins = [
 		include: ['src/Editor.html'],
 		exclude: 'src/**/*.ts'
 	}),
-	babel({ exclude: 'node_modules/**'})
+	babel({ exclude: 'node_modules/**'}),
+	uglify()
 ];
-if ( process.env.NODE_ENV === 'production' ) {
-	console.log('production...');
-	plugins.push(uglify());
-}
 
 export default {
-	input: 'src/app.ts',
+	input: 'src/Editor.html',
 	output:  {
-		file: 'dist/bundle.js',
-		format: 'iife'
+		file: 'dist/index.js',
+		format: 'umd',
 	},
+	name: 'clEditor',
 	plugins,
 	sourcemap: true
 };
