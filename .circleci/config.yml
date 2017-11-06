@@ -36,12 +36,6 @@ jobs:
       # run build!
       - run: npm run prod
 
-      - run:
-          name: Store bundle into temp folder
-          command: |
-            mkdir -p /tmp/dist
-            cp ../dist /tmp/dist
-
       - store_artifacts:
           path: /tmp/dist
 
