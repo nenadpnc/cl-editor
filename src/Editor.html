@@ -14,109 +14,122 @@
       on:paste="onPaste(event)">
     </div>
     
-    <textarea ref:raw class="cl-textarea" style="height: {{height}};"></textarea>
+    <textarea ref:raw class="cl-textarea" style="height: {{height}}"></textarea>
+    <div ref:modal></div>
 </div>
 
 <script>
-import {
-  getTagsRecursive, 
-  saveRange, 
-  restoreRange, 
-  exec, 
-  cleanHtml, 
-  getActionBtns,
-  getNewActionObj
-} from './helpers/util';
-import actions from './helpers/actions';
+  import {
+    getTagsRecursive,
+    saveRange,
+    restoreRange,
+    exec,
+    cleanHtml,
+    getActionBtns,
+    getNewActionObj
+  } from './helpers/util';
+  import actions from './helpers/actions';
+  import EditorModal from './helpers/EditorModal.html';
+  let modal;
 
-export default {
-  data() {
-    return {
-      actionBtns: [],
-      height: '300px'
-    }
-  },
-  oncreate() {
-    const actionObj = getNewActionObj(actions, this.options.data && this.options.data.actions);
-    this.set({ actionBtns: getActionBtns(actionObj), actionObj });
-  },
-	methods: {
-    btnClicked: function(action) {
-      saveRange(this.refs.editor);
-      restoreRange(this.refs.editor);
-      action.result.call(this);
-      this.handleButtonStatus();
+  export default {
+    data() {
+      return {
+        actionBtns: [],
+        height: '300px',
+        showModal: false,
+        modal: {}
+      }
     },
-    handleButtonStatus: function() {
-      const tags = getTagsRecursive(document.getSelection().focusNode);
-      const actionObj = this.get('actionObj');
-      Object.keys(actionObj).forEach((action) => actionObj[action].active = false);
-      tags.forEach((tag) => (actionObj[tag.toLowerCase()] || {}).active = true);
+    oncreate() {
+      const actionObj = getNewActionObj(actions, this.options.data && this.options.data.actions);
       this.set({ actionBtns: getActionBtns(actionObj), actionObj });
+      modal = new EditorModal({ target: this.refs.modal });
     },
-    onPaste: function(event) {
-      event.preventDefault();
-      exec('insertHTML', cleanHtml(event.clipboardData.getData('text/html')));
+    methods: {
+      btnClicked: function(action) {
+        saveRange(this.refs.editor);
+        restoreRange(this.refs.editor);
+        if (action.modal) {
+          action.result.call(this, modal);
+        } else {
+          action.result.call(this);
+        }
+
+        this.handleButtonStatus();
+      },
+      handleButtonStatus: function() {
+        const tags = getTagsRecursive(document.getSelection().focusNode);
+        const actionObj = this.get('actionObj');
+        Object.keys(actionObj).forEach((action) => actionObj[action].active = false);
+        tags.forEach((tag) => (actionObj[tag.toLowerCase()] || {}).active = true);
+        this.set({ actionBtns: getActionBtns(actionObj), actionObj });
+      },
+      onPaste: function(event) {
+        event.preventDefault();
+        exec('insertHTML', cleanHtml(event.clipboardData.getData('text/html')));
+      },
+      onChange: function(html) {
+        this.fire('onChange', html);
+      }
     },
-    onChange: function(html) {
-      this.fire('onChange', html);
-    }
-	}
-}
+    components: {EditorModal}
+  }
 </script>
 
 <style type="text/css">
-.cl {
-  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
-  box-sizing: border-box;
-  width: 100%;
-}
+  .cl {
+    box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+    box-sizing: border-box;
+    width: 100%;
+    position: relative;
+  }
 
-.cl-content {
-  box-sizing: border-box;
-  height: 300px;
-  outline: 0;
-  overflow-y: auto;
-  padding: 10px;
-  width: 100%;
-}
+  .cl-content {
+    box-sizing: border-box;
+    height: 300px;
+    outline: 0;
+    overflow-y: auto;
+    padding: 10px;
+    width: 100%;
+  }
 
-.cl-actionbar {
-  background-color: #ecf0f1;
-  border-bottom: 1px solid rgba(10, 10, 10, 0.1);
-  width: 100%;
-}
+  .cl-actionbar {
+    background-color: #ecf0f1;
+    border-bottom: 1px solid rgba(10, 10, 10, 0.1);
+    width: 100%;
+  }
 
-.cl-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  height: 35px;
-  outline: 0;
-  width: 35px;
-  vertical-align: top;
-}
+  .cl-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    height: 35px;
+    outline: 0;
+    width: 35px;
+    vertical-align: top;
+  }
 
-.cl-button:hover, .cl-button.active {
-  background-color: #fff;
-}
+  .cl-button:hover, .cl-button.active {
+    background-color: #fff;
+  }
 
-.cl-button:disabled {
-  opacity: .5;
-  pointer-events: none;
-}
+  .cl-button:disabled {
+    opacity: .5;
+    pointer-events: none;
+  }
 
-.cl-textarea {
-  display: none;
-  width: 100%;
-  max-width: 100%;
-  border: none;
-  padding: 10px;
-  box-sizing: border-box;
-}
+  .cl-textarea {
+    display: none;
+    width: 100%;
+    max-width: 100%;
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+  }
 
-.cl-textarea:focus {
-  outline: none;
-}
+  .cl-textarea:focus {
+    outline: none;
+  }
 
 </style>
