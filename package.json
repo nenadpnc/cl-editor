@@ -9,11 +9,8 @@
     "dev:w": "npm run copy && concurrently \"npm run dev -- -w\" \"npm run serve\"",
     "prod": "rollup -c rollup.config.prod.js"
   },
-  "files": [
-    "index.html"
-  ],
   "keywords": [
-    "html editor",
+    "html text editor",
     "svelte",
     "typescript"
   ],

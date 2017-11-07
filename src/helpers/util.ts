@@ -117,10 +117,9 @@ export const cleanHtml = (input: string) => {
 }
 
 export const unwrap = (wrapper: HTMLElement) => {
-    // place childNodes in document fragment
-	var docFrag = document.createDocumentFragment();
+	const docFrag = document.createDocumentFragment();
 	while (wrapper.firstChild) {
-		var child = wrapper.removeChild(wrapper.firstChild);
+		const child = wrapper.removeChild(wrapper.firstChild);
 		docFrag.appendChild(child);
 	}
 
