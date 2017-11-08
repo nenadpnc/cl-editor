@@ -1,7 +1,7 @@
 {
   "name": "cl-editor",
   "version": "1.0.0",
-  "description": "",
+  "description": "Lightweight text editor built with svelte + typescript",
   "scripts": {
     "copy": "copyfiles ./index.html ./dist",
     "serve": "live-server dist --port=3000",
@@ -34,5 +34,7 @@
     "rollup-plugin-uglify": "^2.0.1",
     "rollup-watch": "^4.3.1",
     "typescript": "^2.3.4"
-  }
+  },
+  "main": "./dist/index.js",
+  "types": "./src/Editor.html.d.ts"
 }

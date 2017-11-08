@@ -11,6 +11,8 @@ npm i
 npm run dev:w
 ```
 
+#### This library is inspired by https://github.com/Alex-D/Trumbowyg and https://github.com/jaredreich/pell
+
 # Licence
 
  MIT License
