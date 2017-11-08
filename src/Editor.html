@@ -1,7 +1,13 @@
 <div class="cl">
     <div class="cl-actionbar">
       {{#each actionBtns as action}}
-        <button class="cl-button {{action.active ? 'active' : ''}}" title="{{action.title}}" on:click="btnClicked(action)" disabled="{{action.disabled}}">{{{action.icon}}}</button>
+        <button 
+          class="cl-button {{action.active ? 'active' : ''}} {{action.dropdown ? 'dropdown' : ''}}" 
+          title="{{action.title}}" 
+          on:click="btnClicked(action)" 
+          disabled="{{action.disabled}}">
+          {{{action.icon}}}
+        </button>
       {{/each}}
     </div>
     <div ref:editor 
@@ -16,6 +22,7 @@
     
     <textarea ref:raw class="cl-textarea" style="height: {{height}}"></textarea>
     <div ref:modal></div>
+    <div ref:dropdown></div>
 </div>
 
 <script>
@@ -30,32 +37,28 @@
   } from './helpers/util';
   import actions from './helpers/actions';
   import EditorModal from './helpers/EditorModal.html';
+  import EditorDropdown from './helpers/EditorDropdown.html';
   let modal;
+  let dropdown;
 
   export default {
     data() {
       return {
         actionBtns: [],
-        height: '300px',
-        showModal: false,
-        modal: {}
+        height: '300px'
       }
     },
     oncreate() {
       const actionObj = getNewActionObj(actions, this.options.data && this.options.data.actions);
       this.set({ actionBtns: getActionBtns(actionObj), actionObj });
       modal = new EditorModal({ target: this.refs.modal });
+      dropdown = new EditorDropdown({ target: this.refs.dropdown });
     },
     methods: {
       btnClicked: function(action) {
         saveRange(this.refs.editor);
         restoreRange(this.refs.editor);
-        if (action.modal) {
-          action.result.call(this, modal);
-        } else {
-          action.result.call(this);
-        }
-
+        action.result.apply(this, [modal, dropdown]);
         this.handleButtonStatus();
       },
       handleButtonStatus: function() {
@@ -108,6 +111,7 @@
     outline: 0;
     width: 35px;
     vertical-align: top;
+    position: relative;
   }
 
   .cl-button:hover, .cl-button.active {
@@ -117,6 +121,18 @@
   .cl-button:disabled {
     opacity: .5;
     pointer-events: none;
+  }
+
+  .cl-button.dropdown::after {
+    display: block;
+    content: " ";
+    position: absolute;
+    top: 25px;
+    right: 3px;
+    height: 0;
+    width: 0;
+    border: 3px solid rgba(0, 0, 0, 0);
+    border-top-color: #555;
   }
 
   .cl-textarea {

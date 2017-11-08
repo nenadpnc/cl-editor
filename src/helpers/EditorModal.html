@@ -1,22 +1,21 @@
-<div>
+<div ref:modalWrapper>
     {{#if show}}
     <div class="cl-editor-overlay" on:click="cancel()"></div>
     <div class="cl-editor-modal">
         <div class="modal-box">
-            <span class="modal-title">
-                <slot name="title">Insert image</slot>
-            </span>
+            <span class="modal-title">{{title}}</span>
             <form on:submit="confirm(event)">
-                <slot name="form">
-                    <label class="modal-label">
-                        <input type="text" name="url" bind:value="url" placeholder="ex. https://www.google.com">
-                        <span class="input-info">
-                            <span>URL</span>
-                        </span>
-                    </label>
-                    <button class="modal-button modal-submit" type="submit">Confirm</button>
-                    <button class="modal-button modal-reset" type="reset" on:click="cancel()">Cancel</button>
-                </slot>
+                <label class="modal-label {{error ? 'input-error' : ''}}">
+                    <input ref:url on:keyup="hideError()" type="text" name="url" bind:value="url">
+                    <span class="input-info">
+                        <span>{{label}}</span>
+                        {{#if error}}
+                        <span class="msg-error">Required</span>
+                        {{/if}}
+                    </span>
+                </label>
+                <button class="modal-button modal-submit" type="submit">Confirm</button>
+                <button class="modal-button modal-reset" type="reset" on:click="cancel()">Cancel</button>
             </form>
         </div>
     </div>
@@ -28,20 +27,41 @@
         data() {
             return {
                 show: false,
-                url: ''
+                url: '',
+                event: '',
+                title: '',
+                label: '',
+                error: false
             }
+        },
+        oncreate() {
+            this.observe('show', show => {
+                if (show) {
+                    ((modalWrapper) => {
+                        setTimeout(() => {
+                            modalWrapper.querySelector('input').focus();
+                        });
+                    })(this.refs.modalWrapper);
+                }
+            }, {init: false});
         },
         methods: {
             confirm: function(event) {
                 event.preventDefault();
                 const url = this.get('url');
                 if (url) {
-                    this.fire('linkUrl', url);
-                    this.set({show: false});
+                    this.fire(this.get('event'), url);
+                    this.cancel();
+                } else {
+                    this.set({error: true});
+                    this.refs.modalWrapper.querySelector('input').focus();
                 }
             },
             cancel: function() {
-                this.set({show: false});
+                this.set({show: false, url: '', error: false});
+            },
+            hideError: function() {
+                this.set({error: false});
             }
         }
     }
@@ -56,7 +76,7 @@
         transform: translateX(-50%);
         max-width: 520px;
         width: 100%;
-        height: 350px;
+        height: 170px;
         overflow: hidden;
         backface-visibility: hidden;
     }

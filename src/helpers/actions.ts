@@ -1,6 +1,13 @@
 import {exec, removeBlockTagsRecursive, getActionBtns, saveRange, restoreRange} from './util';
 
 let showEditor = true;
+let subscribeLink = false;
+let subscribeImage = false;
+const subscribeColor = {
+  foreColor: false,
+  backColor: false,
+  textColor: false
+};
 
 let actions = {
   viewHtml: {
@@ -112,7 +119,6 @@ let actions = {
   a: {
     icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M31.1 48.9l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9L15 50.4c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L11 41.8c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7c2.5-2.6 3.1-6.7 1.5-10l-5.9 5.9zM38.7 22.5l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2L42 38c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1c0 .1 0 .1 0 0z"></path><path d="M44.2 30.5c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.3-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.9 40.6c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM49.9 55.4h-8.5v-5h8.5v-8.9h5.2v8.9h8.5v5h-8.5v8.9h-5.2v-8.9z"></path></svg>',
     title: 'Insert link',
-    modal: true,
     result: function(modal) {
       const actionObj = this.get('actionObj');
       if (actionObj.a.active) {
@@ -127,15 +133,18 @@ let actions = {
         this.set({actionBtns: getActionBtns(actionObj), actionObj});
       } else {
         saveRange(this.refs.editor);
-        modal.set({show: true});
-        modal.on('linkUrl', (url) => {
-          restoreRange(this.refs.editor);
-          exec('createLink', url);
-          actionObj.a.title = 'Unlink';
-          actionObj.a.icon = '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M30.9 49.1l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9l-5.2-5.2c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L10.8 42c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7C38 50.5 38.6 46.3 37 43l-6.1 6.1zM38.5 22.7l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2-6.5 6.5c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1z"></path><path d="M44.1 30.7c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.2-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.8 40.8c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM41.3 55.8v-5h22.2v5H41.3z"></path></svg>'
-          
-          this.set({actionBtns: getActionBtns(actionObj), actionObj});
-        });
+        modal.set({show: true, event: 'linkUrl', title: 'Insert link', label: 'Url'});
+        if (!subscribeLink) {
+          subscribeLink = true;
+          modal.on('linkUrl', (url) => {
+            restoreRange(this.refs.editor);
+            exec('createLink', url);
+            actionObj.a.title = 'Unlink';
+            actionObj.a.icon = '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M30.9 49.1l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9l-5.2-5.2c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L10.8 42c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7C38 50.5 38.6 46.3 37 43l-6.1 6.1zM38.5 22.7l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2-6.5 6.5c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1z"></path><path d="M44.1 30.7c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.2-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.8 40.8c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM41.3 55.8v-5h22.2v5H41.3z"></path></svg>'
+            
+            this.set({actionBtns: getActionBtns(actionObj), actionObj});
+          });
+        }
       }
 
     }
@@ -143,26 +152,32 @@ let actions = {
   image: {
     icon: '<svg id="trumbowyg-insert-image" viewBox="0 0 72 72" width="17px" height="100%"><path d="M64 17v38H8V17h56m8-8H0v54h72V9z"></path><path d="M17.5 22C15 22 13 24 13 26.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5zM16 50h27L29.5 32zM36 36.2l8.9-8.5L60.2 50H45.9S35.6 35.9 36 36.2z"></path></svg>',
     title: 'Image',
-    modal: true,
-    result: () => {
-      const url = window.prompt('Enter the image URL')
-      if (url) exec('insertImage', url)
+    result: function(modal) {
+      saveRange(this.refs.editor);
+      modal.set({show: true, event: 'imageUrl', title: 'Insert image', label: 'Url'});
+      if (!subscribeImage) {
+        subscribeImage = true;
+        modal.on('imageUrl', (url: string) => {
+          restoreRange(this.refs.editor);
+          exec('insertImage', url);
+        });
+      }
     }
   },
   forecolor: {
     icon: '<svg id="trumbowyg-fore-color" viewBox="0 0 72 72" width="17px" height="100%"><path d="M32 15h7.8L56 57.1h-7.9l-4-11.1H27.4l-4 11.1h-7.6L32 15zm-2.5 25.4h12.9L36 22.3h-.2l-6.3 18.1z"></path></svg>',
     title: 'Text color',
-    result: function() {
-      const color = window.prompt('enter color');
-      exec('foreColor', color);
+    dropdown: true,
+    result: function(modal, dropdown) {
+      colorPicker(modal, dropdown, 'foreColor', this);
     }
   },
   backcolor: {
     icon: '<svg id="trumbowyg-back-color" viewBox="0 0 72 72" width="17px" height="100%"><path d="M36.5 22.3l-6.3 18.1H43l-6.3-18.1z"></path><path d="M9 8.9v54.2h54.1V8.9H9zm39.9 48.2L45 46H28.2l-3.9 11.1h-7.6L32.8 15h7.8l16.2 42.1h-7.9z"></path></svg>',
     title: 'Background color',
-    result: function() {
-      const color = window.prompt('enter background color');
-      exec('backColor', color);
+    dropdown: true,
+    result: function(modal, dropdown) {
+      colorPicker(modal, dropdown, 'backColor', this);
     }
   },
   removeFromat: {
@@ -176,13 +191,35 @@ let actions = {
         range.selectNodeContents(this.refs.editor);
         selection.removeAllRanges();
         selection.addRange(range);
-
       }
       exec('removeFormat');
-
       selection.removeAllRanges();
     }
   }
 }
 
 export default actions;
+
+const colorPicker = (modal, dropdown, cmd, editorRef) => {
+  saveRange(editorRef.refs.editor);
+  dropdown.set({show: true, event: cmd});
+  if (!subscribeColor[cmd]) {
+    subscribeColor[cmd] = true;
+    dropdown.on(cmd, (item) => {
+      if (item.modal) {
+        modal.set({show: true, event: 'colorHref', title: 'Text color', label: cmd === 'foreColor' ? 'Text color' : 'Background color'});
+        const command = cmd;
+        if (!subscribeColor.textColor) {
+          subscribeColor.textColor = true;
+          modal.on('colorHref', (color) => {
+            restoreRange(editorRef.refs.editor);
+            exec(command, color);
+          });
+        }
+      } else {
+        restoreRange(editorRef.refs.editor);
+        exec(cmd, item.color);
+      }
+    });
+  }
+}

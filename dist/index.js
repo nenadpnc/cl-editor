@@ -28,10 +28,6 @@ function detachNode(node) {
 	node.parentNode.removeChild(node);
 }
 
-function reinsertChildren(parent, target) {
-	while (parent.firstChild) target.appendChild(parent.firstChild);
-}
-
 function destroyEach(iterations) {
 	for (var i = 0; i < iterations.length; i += 1) {
 		if (iterations[i]) iterations[i].d();
@@ -352,8 +348,16 @@ var getNewActionObj = function getNewActionObj(actions) {
         return actions;
     }
 };
+//# sourceMappingURL=util.js.map
 
 var showEditor = true;
+var subscribeLink = false;
+var subscribeImage = false;
+var subscribeColor = {
+    foreColor: false,
+    backColor: false,
+    textColor: false
+};
 var actions = {
     viewHtml: {
         icon: '<svg id="trumbowyg-view-html" viewBox="0 0 72 72" width="17px" height="100%"><path fill="none" stroke="currentColor" stroke-width="8" stroke-miterlimit="10" d="M26.9 17.9L9 36.2 26.9 54M45 54l17.9-18.3L45 17.9"></path></svg>',
@@ -502,7 +506,6 @@ var actions = {
     a: {
         icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M31.1 48.9l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9L15 50.4c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L11 41.8c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7c2.5-2.6 3.1-6.7 1.5-10l-5.9 5.9zM38.7 22.5l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2L42 38c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1c0 .1 0 .1 0 0z"></path><path d="M44.2 30.5c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.3-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.9 40.6c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM49.9 55.4h-8.5v-5h8.5v-8.9h5.2v8.9h8.5v5h-8.5v8.9h-5.2v-8.9z"></path></svg>',
         title: 'Insert link',
-        modal: true,
         result: function result(modal) {
             var _this2 = this;
 
@@ -519,40 +522,51 @@ var actions = {
                 this.set({ actionBtns: getActionBtns(actionObj), actionObj: actionObj });
             } else {
                 saveRange(this.refs.editor);
-                modal.set({ show: true });
-                modal.on('linkUrl', function (url) {
-                    restoreRange(_this2.refs.editor);
-                    exec('createLink', url);
-                    actionObj.a.title = 'Unlink';
-                    actionObj.a.icon = '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M30.9 49.1l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9l-5.2-5.2c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L10.8 42c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7C38 50.5 38.6 46.3 37 43l-6.1 6.1zM38.5 22.7l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2-6.5 6.5c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1z"></path><path d="M44.1 30.7c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.2-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.8 40.8c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM41.3 55.8v-5h22.2v5H41.3z"></path></svg>';
-                    _this2.set({ actionBtns: getActionBtns(actionObj), actionObj: actionObj });
-                });
+                modal.set({ show: true, event: 'linkUrl', title: 'Insert link', label: 'Url' });
+                if (!subscribeLink) {
+                    subscribeLink = true;
+                    modal.on('linkUrl', function (url) {
+                        restoreRange(_this2.refs.editor);
+                        exec('createLink', url);
+                        actionObj.a.title = 'Unlink';
+                        actionObj.a.icon = '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M30.9 49.1l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9l-5.2-5.2c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L10.8 42c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7C38 50.5 38.6 46.3 37 43l-6.1 6.1zM38.5 22.7l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2-6.5 6.5c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1z"></path><path d="M44.1 30.7c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.2-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.8 40.8c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM41.3 55.8v-5h22.2v5H41.3z"></path></svg>';
+                        _this2.set({ actionBtns: getActionBtns(actionObj), actionObj: actionObj });
+                    });
+                }
             }
         }
     },
     image: {
         icon: '<svg id="trumbowyg-insert-image" viewBox="0 0 72 72" width="17px" height="100%"><path d="M64 17v38H8V17h56m8-8H0v54h72V9z"></path><path d="M17.5 22C15 22 13 24 13 26.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5zM16 50h27L29.5 32zM36 36.2l8.9-8.5L60.2 50H45.9S35.6 35.9 36 36.2z"></path></svg>',
         title: 'Image',
-        modal: true,
-        result: function result() {
-            var url = window.prompt('Enter the image URL');
-            if (url) exec('insertImage', url);
+        result: function result(modal) {
+            var _this3 = this;
+
+            saveRange(this.refs.editor);
+            modal.set({ show: true, event: 'imageUrl', title: 'Insert image', label: 'Url' });
+            if (!subscribeImage) {
+                subscribeImage = true;
+                modal.on('imageUrl', function (url) {
+                    restoreRange(_this3.refs.editor);
+                    exec('insertImage', url);
+                });
+            }
         }
     },
     forecolor: {
         icon: '<svg id="trumbowyg-fore-color" viewBox="0 0 72 72" width="17px" height="100%"><path d="M32 15h7.8L56 57.1h-7.9l-4-11.1H27.4l-4 11.1h-7.6L32 15zm-2.5 25.4h12.9L36 22.3h-.2l-6.3 18.1z"></path></svg>',
         title: 'Text color',
-        result: function result() {
-            var color = window.prompt('enter color');
-            exec('foreColor', color);
+        dropdown: true,
+        result: function result(modal, dropdown) {
+            colorPicker(modal, dropdown, 'foreColor', this);
         }
     },
     backcolor: {
         icon: '<svg id="trumbowyg-back-color" viewBox="0 0 72 72" width="17px" height="100%"><path d="M36.5 22.3l-6.3 18.1H43l-6.3-18.1z"></path><path d="M9 8.9v54.2h54.1V8.9H9zm39.9 48.2L45 46H28.2l-3.9 11.1h-7.6L32.8 15h7.8l16.2 42.1h-7.9z"></path></svg>',
         title: 'Background color',
-        result: function result() {
-            var color = window.prompt('enter background color');
-            exec('backColor', color);
+        dropdown: true,
+        result: function result(modal, dropdown) {
+            colorPicker(modal, dropdown, 'backColor', this);
         }
     },
     removeFromat: {
@@ -572,12 +586,40 @@ var actions = {
         }
     }
 };
+var colorPicker = function colorPicker(modal, dropdown, cmd, editorRef) {
+    saveRange(editorRef.refs.editor);
+    dropdown.set({ show: true, event: cmd });
+    if (!subscribeColor[cmd]) {
+        subscribeColor[cmd] = true;
+        dropdown.on(cmd, function (item) {
+            if (item.modal) {
+                modal.set({ show: true, event: 'colorHref', title: 'Text color', label: cmd === 'foreColor' ? 'Text color' : 'Background color' });
+                var command = cmd;
+                if (!subscribeColor.textColor) {
+                    subscribeColor.textColor = true;
+                    modal.on('colorHref', function (color) {
+                        restoreRange(editorRef.refs.editor);
+                        exec(command, color);
+                    });
+                }
+            } else {
+                restoreRange(editorRef.refs.editor);
+                exec(cmd, item.color);
+            }
+        });
+    }
+};
+//# sourceMappingURL=actions.js.map
 
 /* src\helpers\EditorModal.html generated by Svelte v1.41.2 */
 function data$1() {
 	return {
 		show: false,
-		url: ''
+		url: '',
+		event: '',
+		title: '',
+		label: '',
+		error: false
 	};
 }
 
@@ -586,23 +628,43 @@ var methods$1 = {
 		event.preventDefault();
 		var url = this.get('url');
 		if (url) {
-			this.fire('linkUrl', url);
-			this.set({ show: false });
+			this.fire(this.get('event'), url);
+			this.cancel();
+		} else {
+			this.set({ error: true });
+			this.refs.modalWrapper.querySelector('input').focus();
 		}
 	},
 	cancel: function cancel() {
-		this.set({ show: false });
+		this.set({ show: false, url: '', error: false });
+	},
+	hideError: function hideError() {
+		this.set({ error: false });
 	}
 };
 
+function oncreate$1() {
+	var _this = this;
+
+	this.observe('show', function (show) {
+		if (show) {
+			(function (modalWrapper) {
+				setTimeout(function () {
+					modalWrapper.querySelector('input').focus();
+				});
+			})(_this.refs.modalWrapper);
+		}
+	}, { init: false });
+}
+
 function encapsulateStyles$1(node) {
-	setAttribute(node, "svelte-1117382482", "");
+	setAttribute(node, "svelte-3478364856", "");
 }
 
 function add_css$1() {
 	var style = createElement("style");
-	style.id = 'svelte-1117382482-style';
-	style.textContent = "[svelte-1117382482].cl-editor-modal,[svelte-1117382482] .cl-editor-modal{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:350px;overflow:hidden;backface-visibility:hidden}[svelte-1117382482].cl-editor-overlay,[svelte-1117382482] .cl-editor-overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0}[svelte-1117382482].modal-box,[svelte-1117382482] .modal-box{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:45px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}[svelte-1117382482].modal-title,[svelte-1117382482] .modal-title{font-size:24px;font-weight:700;margin:0 0 20px;padding:15px 0 13px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}[svelte-1117382482].modal-label,[svelte-1117382482] .modal-label{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}[svelte-1117382482].modal-label input,[svelte-1117382482] .modal-label input{position:absolute;top:0;right:0;height:25px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}[svelte-1117382482].modal-label input:focus,[svelte-1117382482] .modal-label input:focus{outline:none}[svelte-1117382482].input-error input,[svelte-1117382482] .input-error input{border:1px solid #e74c3c}[svelte-1117382482].input-info,[svelte-1117382482] .input-info{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}[svelte-1117382482].input-info span,[svelte-1117382482] .input-info span{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:0 7px;width:150px}[svelte-1117382482].input-error .input-info,[svelte-1117382482] .input-error .input-info{margin-top:-27px}[svelte-1117382482].input-error .msg-error,[svelte-1117382482] .input-error .msg-error{color:#e74c3c}[svelte-1117382482].modal-button,[svelte-1117382482] .modal-button{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}[svelte-1117382482].modal-submit,[svelte-1117382482] .modal-submit{right:110px;background:#2bc06a}[svelte-1117382482].modal-reset,[svelte-1117382482] .modal-reset{color:#555;background:#e6e6e6}";
+	style.id = 'svelte-3478364856-style';
+	style.textContent = "[svelte-3478364856].cl-editor-modal,[svelte-3478364856] .cl-editor-modal{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:170px;overflow:hidden;backface-visibility:hidden}[svelte-3478364856].cl-editor-overlay,[svelte-3478364856] .cl-editor-overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0}[svelte-3478364856].modal-box,[svelte-3478364856] .modal-box{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:45px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}[svelte-3478364856].modal-title,[svelte-3478364856] .modal-title{font-size:24px;font-weight:700;margin:0 0 20px;padding:15px 0 13px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}[svelte-3478364856].modal-label,[svelte-3478364856] .modal-label{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}[svelte-3478364856].modal-label input,[svelte-3478364856] .modal-label input{position:absolute;top:0;right:0;height:25px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}[svelte-3478364856].modal-label input:focus,[svelte-3478364856] .modal-label input:focus{outline:none}[svelte-3478364856].input-error input,[svelte-3478364856] .input-error input{border:1px solid #e74c3c}[svelte-3478364856].input-info,[svelte-3478364856] .input-info{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}[svelte-3478364856].input-info span,[svelte-3478364856] .input-info span{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:0 7px;width:150px}[svelte-3478364856].input-error .input-info,[svelte-3478364856] .input-error .input-info{margin-top:-27px}[svelte-3478364856].input-error .msg-error,[svelte-3478364856] .input-error .msg-error{color:#e74c3c}[svelte-3478364856].modal-button,[svelte-3478364856] .modal-button{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}[svelte-3478364856].modal-submit,[svelte-3478364856] .modal-submit{right:110px;background:#2bc06a}[svelte-3478364856].modal-reset,[svelte-3478364856] .modal-reset{color:#555;background:#e6e6e6}";
 	appendNode(style, document.head);
 }
 
@@ -624,6 +686,7 @@ function create_main_fragment$1(state, component) {
 
 		m: function mount(target, anchor) {
 			insertNode(div, target, anchor);
+			component.refs.modalWrapper = div;
 			if (if_block) if_block.m(div, null);
 		},
 
@@ -649,8 +712,36 @@ function create_main_fragment$1(state, component) {
 		},
 
 		d: function destroy$$1() {
+			if (component.refs.modalWrapper === div) component.refs.modalWrapper = null;
 			if (if_block) if_block.d();
 		}
+	};
+}
+
+// (12:24) {{#if error}}
+function create_if_block_1(state, component) {
+	var span;
+
+	return {
+		c: function create() {
+			span = createElement("span");
+			span.textContent = "Required";
+			this.h();
+		},
+
+		h: function hydrate() {
+			span.className = "msg-error";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(span, target, anchor);
+		},
+
+		u: function unmount() {
+			detachNode(span);
+		},
+
+		d: noop
 	};
 }
 
@@ -661,16 +752,18 @@ function create_if_block(state, component) {
 	    div_1,
 	    div_2,
 	    span,
-	    slot_content_title = component._slotted.title,
 	    text_1,
-	    text_3,
+	    text_2,
 	    form,
-	    slot_content_form = component._slotted.form,
 	    label,
+	    label_class_value,
 	    input,
 	    input_updating = false,
-	    text_4,
+	    text_3,
 	    span_1,
+	    span_2,
+	    text_4,
+	    text_5,
 	    text_8,
 	    button,
 	    text_10,
@@ -690,6 +783,12 @@ function create_if_block(state, component) {
 		input_updating = false;
 	}
 
+	function keyup_handler(event) {
+		component.hideError();
+	}
+
+	var if_block = state.error && create_if_block_1(state, component);
+
 	function click_handler_1(event) {
 		component.cancel();
 	}
@@ -701,24 +800,23 @@ function create_if_block(state, component) {
 			div_1 = createElement("div");
 			div_2 = createElement("div");
 			span = createElement("span");
-			if (!slot_content_title) {
-				text_1 = createText("Insert image");
-			}
-			text_3 = createText("\r\n            ");
+			text_1 = createText(state.title);
+			text_2 = createText("\r\n            ");
 			form = createElement("form");
-			if (!slot_content_form) {
-				label = createElement("label");
-				input = createElement("input");
-				text_4 = createText("\r\n                        ");
-				span_1 = createElement("span");
-				span_1.innerHTML = "<span>URL</span>";
-				text_8 = createText("\r\n                    ");
-				button = createElement("button");
-				button.textContent = "Confirm";
-				text_10 = createText("\r\n                    ");
-				button_1 = createElement("button");
-				button_1.textContent = "Cancel";
-			}
+			label = createElement("label");
+			input = createElement("input");
+			text_3 = createText("\r\n                    ");
+			span_1 = createElement("span");
+			span_2 = createElement("span");
+			text_4 = createText(state.label);
+			text_5 = createText("\r\n                        ");
+			if (if_block) if_block.c();
+			text_8 = createText("\r\n                ");
+			button = createElement("button");
+			button.textContent = "Confirm";
+			text_10 = createText("\r\n                ");
+			button_1 = createElement("button");
+			button_1.textContent = "Cancel";
 			this.h();
 		},
 
@@ -729,19 +827,17 @@ function create_if_block(state, component) {
 			div_2.className = "modal-box";
 			span.className = "modal-title";
 			addListener(form, "submit", submit_handler);
-			if (!slot_content_form) {
-				label.className = "modal-label";
-				input.type = "text";
-				input.name = "url";
-				input.placeholder = "ex. https://www.google.com";
-				addListener(input, "input", input_input_handler);
-				span_1.className = "input-info";
-				button.className = "modal-button modal-submit";
-				button.type = "submit";
-				button_1.className = "modal-button modal-reset";
-				button_1.type = "reset";
-				addListener(button_1, "click", click_handler_1);
-			}
+			label.className = label_class_value = "modal-label " + (state.error ? 'input-error' : '');
+			input.type = "text";
+			input.name = "url";
+			addListener(input, "input", input_input_handler);
+			addListener(input, "keyup", keyup_handler);
+			span_1.className = "input-info";
+			button.className = "modal-button modal-submit";
+			button.type = "submit";
+			button_1.className = "modal-button modal-reset";
+			button_1.type = "reset";
+			addListener(button_1, "click", click_handler_1);
 		},
 
 		m: function mount(target, anchor) {
@@ -750,38 +846,321 @@ function create_if_block(state, component) {
 			insertNode(div_1, target, anchor);
 			appendNode(div_2, div_1);
 			appendNode(span, div_2);
-			if (!slot_content_title) {
-				appendNode(text_1, span);
-			}
-
-			if (slot_content_title) {
-				appendNode(slot_content_title, span);
-			}
-
-			appendNode(text_3, div_2);
+			appendNode(text_1, span);
+			appendNode(text_2, div_2);
 			appendNode(form, div_2);
-			if (!slot_content_form) {
-				appendNode(label, form);
-				appendNode(input, label);
+			appendNode(label, form);
+			appendNode(input, label);
+			component.refs.url = input;
 
-				input.value = state.url;
+			input.value = state.url;
 
-				appendNode(text_4, label);
-				appendNode(span_1, label);
-				appendNode(text_8, form);
-				appendNode(button, form);
-				appendNode(text_10, form);
-				appendNode(button_1, form);
+			appendNode(text_3, label);
+			appendNode(span_1, label);
+			appendNode(span_2, span_1);
+			appendNode(text_4, span_2);
+			appendNode(text_5, span_1);
+			if (if_block) if_block.m(span_1, null);
+			appendNode(text_8, form);
+			appendNode(button, form);
+			appendNode(text_10, form);
+			appendNode(button_1, form);
+		},
+
+		p: function update(changed, state) {
+			if (changed.title) {
+				text_1.data = state.title;
 			}
 
-			if (slot_content_form) {
-				appendNode(slot_content_form, form);
+			if (changed.error && label_class_value !== (label_class_value = "modal-label " + (state.error ? 'input-error' : ''))) {
+				label.className = label_class_value;
+			}
+
+			if (!input_updating) {
+				input.value = state.url;
+			}
+
+			if (changed.label) {
+				text_4.data = state.label;
+			}
+
+			if (state.error) {
+				if (!if_block) {
+					if_block = create_if_block_1(state, component);
+					if_block.c();
+					if_block.m(span_1, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			detachNode(text);
+			detachNode(div_1);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			removeListener(div, "click", click_handler);
+			removeListener(form, "submit", submit_handler);
+			removeListener(input, "input", input_input_handler);
+			removeListener(input, "keyup", keyup_handler);
+			if (component.refs.url === input) component.refs.url = null;
+			if (if_block) if_block.d();
+			removeListener(button_1, "click", click_handler_1);
+		}
+	};
+}
+
+function EditorModal(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign(data$1(), options.data);
+
+	if (!document.getElementById("svelte-3478364856-style")) add_css$1();
+
+	var _oncreate = oncreate$1.bind(this);
+
+	if (!options._root) {
+		this._oncreate = [_oncreate];
+	} else {
+		this._root._oncreate.push(_oncreate);
+	}
+
+	this._fragment = create_main_fragment$1(this._state, this);
+
+	if (options.target) {
+		this._fragment.c();
+		this._fragment.m(options.target, options.anchor || null);
+
+		callAll(this._oncreate);
+	}
+}
+
+assign(EditorModal.prototype, methods$1, proto);
+
+/* src\helpers\EditorDropdown.html generated by Svelte v1.41.2 */
+var colors = ['ffffff', '000000', 'eeece1', '1f497d', '4f81bd', 'c0504d', '9bbb59', '8064a2', '4bacc6', 'f79646', 'ffff00', 'f2f2f2', '7f7f7f', 'ddd9c3', 'c6d9f0', 'dbe5f1', 'f2dcdb', 'ebf1dd', 'e5e0ec', 'dbeef3', 'fdeada', 'fff2ca', 'd8d8d8', '595959', 'c4bd97', '8db3e2', 'b8cce4', 'e5b9b7', 'd7e3bc', 'ccc1d9', 'b7dde8', 'fbd5b5', 'ffe694', 'bfbfbf', '3f3f3f', '938953', '548dd4', '95b3d7', 'd99694', 'c3d69b', 'b2a2c7', 'b7dde8', 'fac08f', 'f2c314', 'a5a5a5', '262626', '494429', '17365d', '366092', '953734', '76923c', '5f497a', '92cddc', 'e36c09', 'c09100', '7f7f7f', '0c0c0c', '1d1b10', '0f243e', '244061', '632423', '4f6128', '3f3151', '31859b', '974806', '7f6000'];
+
+var getBtns = function getBtns() {
+	var btns = colors.map(function (color) {
+		return {
+			color: '#' + color,
+			style: 'background-color: #' + color + ';'
+		};
+	});
+	btns.push({
+		text: '#',
+		style: 'text-indent: 0;line-height: 20px;padding: 0 5px;',
+		modal: true
+	});
+	return btns;
+};
+function data$2() {
+	return {
+		show: false,
+		btns: [],
+		event: ''
+	};
+}
+
+var methods$2 = {
+	close: function close() {
+		this.set({ show: false });
+	},
+	selectColor: function selectColor(btn) {
+		this.fire(this.get('event'), btn);
+		this.close();
+	}
+};
+
+function oncreate$2() {
+	this.set({ btns: getBtns() });
+}
+
+function encapsulateStyles$2(node) {
+	setAttribute(node, "svelte-2142953576", "");
+}
+
+function add_css$2() {
+	var style = createElement("style");
+	style.id = 'svelte-2142953576-style';
+	style.textContent = "[svelte-2142953576].dropdown-wrapper,[svelte-2142953576] .dropdown-wrapper{border:1px solid #ecf0f1;border-top:none;background:#FFF;margin-left:-1px;box-shadow:rgba(0,0,0,.1) 0 2px 3px;width:267px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);padding:7px 5px;position:absolute;top:37px}[svelte-2142953576].overlay,[svelte-2142953576] .overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0}[svelte-2142953576].dropdown-btn,[svelte-2142953576] .dropdown-btn{display:block;position:relative;float:left;height:20px;width:20px;border:1px solid #333;padding:0;margin:2px;line-height:35px;text-decoration:none;background:#FFF;color:#333!important;cursor:pointer;text-align:left;font-size:15px;transition:all 150ms}[svelte-2142953576].dropdown-btn:hover::after,[svelte-2142953576] .dropdown-btn:hover::after{content:\" \";display:block;position:absolute;top:-5px;left:-5px;height:27px;width:27px;background:inherit;border:1px solid #FFF;box-shadow:#000 0 0 2px;z-index:10}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$2(state, component) {
+	var div;
+
+	var if_block = state.show && create_if_block$1(state, component);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			if (if_block) if_block.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			encapsulateStyles$2(div);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			component.refs.dropdownWrapper = div;
+			if (if_block) if_block.m(div, null);
+		},
+
+		p: function update(changed, state) {
+			if (state.show) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$1(state, component);
+					if_block.c();
+					if_block.m(div, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if (component.refs.dropdownWrapper === div) component.refs.dropdownWrapper = null;
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (5:8) {{#each btns as btn}}
+function create_each_block$1(state, btns, btn, btn_index, component) {
+	var button,
+	    button_style_value,
+	    text_value = btn.text || '',
+	    text;
+
+	return {
+		c: function create() {
+			button = createElement("button");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			button.type = "button";
+			button.className = "dropdown-btn";
+			button.style.cssText = button_style_value = btn.style;
+			addListener(button, "click", click_handler$1);
+
+			button._svelte = {
+				component: component,
+				btns: btns,
+				btn_index: btn_index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(button, target, anchor);
+			appendNode(text, button);
+		},
+
+		p: function update(changed, state, btns, btn, btn_index) {
+			if (changed.btns && button_style_value !== (button_style_value = btn.style)) {
+				button.style.cssText = button_style_value;
+			}
+
+			button._svelte.btns = btns;
+			button._svelte.btn_index = btn_index;
+
+			if (changed.btns && text_value !== (text_value = btn.text || '')) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(button);
+		},
+
+		d: function destroy$$1() {
+			removeListener(button, "click", click_handler$1);
+		}
+	};
+}
+
+// (2:4) {{#if show}}
+function create_if_block$1(state, component) {
+	var div, text, div_1;
+
+	function click_handler(event) {
+		component.close();
+	}
+
+	var btns = state.btns;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < btns.length; i += 1) {
+		each_blocks[i] = create_each_block$1(state, btns, btns[i], i, component);
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			text = createText("\r\n    ");
+			div_1 = createElement("div");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "overlay";
+			addListener(div, "click", click_handler);
+			div_1.className = "dropdown-wrapper";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			insertNode(text, target, anchor);
+			insertNode(div_1, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(div_1, null);
 			}
 		},
 
 		p: function update(changed, state) {
-			if (!input_updating) {
-				input.value = state.url;
+			var btns = state.btns;
+
+			if (changed.btns) {
+				for (var i = 0; i < btns.length; i += 1) {
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, state, btns, btns[i], i);
+					} else {
+						each_blocks[i] = create_each_block$1(state, btns, btns[i], i, component);
+						each_blocks[i].c();
+						each_blocks[i].m(div_1, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = btns.length;
 			}
 		},
 
@@ -790,55 +1169,62 @@ function create_if_block(state, component) {
 			detachNode(text);
 			detachNode(div_1);
 
-			if (slot_content_title) {
-				reinsertChildren(span, slot_content_title);
-			}
-
-			if (slot_content_form) {
-				reinsertChildren(form, slot_content_form);
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
 			}
 		},
 
 		d: function destroy$$1() {
 			removeListener(div, "click", click_handler);
-			removeListener(form, "submit", submit_handler);
-			if (!slot_content_form) {
-				removeListener(input, "input", input_input_handler);
-				removeListener(button_1, "click", click_handler_1);
-			}
+
+			destroyEach(each_blocks);
 		}
 	};
 }
 
-function EditorModal(options) {
+function click_handler$1(event) {
+	var component = this._svelte.component;
+	var btns = this._svelte.btns,
+	    btn_index = this._svelte.btn_index,
+	    btn = btns[btn_index];
+	component.selectColor(btn);
+}
+
+function EditorDropdown(options) {
 	init(this, options);
-	this._state = assign(data$1(), options.data);
+	this.refs = {};
+	this._state = assign(data$2(), options.data);
 
-	this._slotted = options.slots || {};
+	if (!document.getElementById("svelte-2142953576-style")) add_css$2();
 
-	if (!document.getElementById("svelte-1117382482-style")) add_css$1();
+	var _oncreate = oncreate$2.bind(this);
 
-	this.slots = {};
+	if (!options._root) {
+		this._oncreate = [_oncreate];
+	} else {
+		this._root._oncreate.push(_oncreate);
+	}
 
-	this._fragment = create_main_fragment$1(this._state, this);
+	this._fragment = create_main_fragment$2(this._state, this);
 
 	if (options.target) {
 		this._fragment.c();
 		this._fragment.m(options.target, options.anchor || null);
+
+		callAll(this._oncreate);
 	}
 }
 
-assign(EditorModal.prototype, methods$1, proto);
+assign(EditorDropdown.prototype, methods$2, proto);
 
 /* src\Editor.html generated by Svelte v1.41.2 */
 var modal = void 0;
+var dropdown = void 0;
 
 function data() {
 	return {
 		actionBtns: [],
-		height: '300px',
-		showModal: false,
-		modal: {}
+		height: '300px'
 	};
 }
 
@@ -846,12 +1232,7 @@ var methods = {
 	btnClicked: function btnClicked(action) {
 		saveRange(this.refs.editor);
 		restoreRange(this.refs.editor);
-		if (action.modal) {
-			action.result.call(this, modal);
-		} else {
-			action.result.call(this);
-		}
-
+		action.result.apply(this, [modal, dropdown]);
 		this.handleButtonStatus();
 	},
 	handleButtonStatus: function handleButtonStatus() {
@@ -878,21 +1259,22 @@ function oncreate() {
 	var actionObj = getNewActionObj(actions, this.options.data && this.options.data.actions);
 	this.set({ actionBtns: getActionBtns(actionObj), actionObj: actionObj });
 	modal = new EditorModal({ target: this.refs.modal });
+	dropdown = new EditorDropdown({ target: this.refs.dropdown });
 }
 
 function encapsulateStyles(node) {
-	setAttribute(node, "svelte-2215322001", "");
+	setAttribute(node, "svelte-4027092575", "");
 }
 
 function add_css() {
 	var style = createElement("style");
-	style.id = 'svelte-2215322001-style';
-	style.textContent = "[svelte-2215322001].cl,[svelte-2215322001] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-2215322001].cl-content,[svelte-2215322001] .cl-content{box-sizing:border-box;height:300px;outline:0;overflow-y:auto;padding:10px;width:100%}[svelte-2215322001].cl-actionbar,[svelte-2215322001] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-2215322001].cl-button,[svelte-2215322001] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top}[svelte-2215322001].cl-button:hover,[svelte-2215322001] .cl-button:hover,[svelte-2215322001].cl-button.active,[svelte-2215322001] .cl-button.active{background-color:#fff}[svelte-2215322001].cl-button:disabled,[svelte-2215322001] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-2215322001].cl-textarea,[svelte-2215322001] .cl-textarea{display:none;width:100%;max-width:100%;border:none;padding:10px;box-sizing:border-box}[svelte-2215322001].cl-textarea:focus,[svelte-2215322001] .cl-textarea:focus{outline:none}";
+	style.id = 'svelte-4027092575-style';
+	style.textContent = "[svelte-4027092575].cl,[svelte-4027092575] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-4027092575].cl-content,[svelte-4027092575] .cl-content{box-sizing:border-box;height:300px;outline:0;overflow-y:auto;padding:10px;width:100%}[svelte-4027092575].cl-actionbar,[svelte-4027092575] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-4027092575].cl-button,[svelte-4027092575] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-4027092575].cl-button:hover,[svelte-4027092575] .cl-button:hover,[svelte-4027092575].cl-button.active,[svelte-4027092575] .cl-button.active{background-color:#fff}[svelte-4027092575].cl-button:disabled,[svelte-4027092575] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-4027092575].cl-button.dropdown::after,[svelte-4027092575] .cl-button.dropdown::after{display:block;content:\" \";position:absolute;top:25px;right:3px;height:0;width:0;border:3px solid rgba(0, 0, 0, 0);border-top-color:#555}[svelte-4027092575].cl-textarea,[svelte-4027092575] .cl-textarea{display:none;width:100%;max-width:100%;border:none;padding:10px;box-sizing:border-box}[svelte-4027092575].cl-textarea:focus,[svelte-4027092575] .cl-textarea:focus{outline:none}";
 	appendNode(style, document.head);
 }
 
 function create_main_fragment(state, component) {
-	var div, div_1, text_1, div_2, text_2, textarea, text_3, div_3;
+	var div, div_1, text_1, div_2, text_2, textarea, text_3, div_3, text_4, div_4;
 
 	var actionBtns = state.actionBtns;
 
@@ -933,6 +1315,8 @@ function create_main_fragment(state, component) {
 			textarea = createElement("textarea");
 			text_3 = createText("\r\n    ");
 			div_3 = createElement("div");
+			text_4 = createText("\r\n    ");
+			div_4 = createElement("div");
 			this.h();
 		},
 
@@ -968,6 +1352,9 @@ function create_main_fragment(state, component) {
 			appendNode(text_3, div);
 			appendNode(div_3, div);
 			component.refs.modal = div_3;
+			appendNode(text_4, div);
+			appendNode(div_4, div);
+			component.refs.dropdown = div_4;
 		},
 
 		p: function update(changed, state) {
@@ -1015,6 +1402,7 @@ function create_main_fragment(state, component) {
 			if (component.refs.editor === div_2) component.refs.editor = null;
 			if (component.refs.raw === textarea) component.refs.raw = null;
 			if (component.refs.modal === div_3) component.refs.modal = null;
+			if (component.refs.dropdown === div_4) component.refs.dropdown = null;
 		}
 	};
 }
@@ -1034,7 +1422,7 @@ function create_each_block(state, actionBtns, action, action_index, component) {
 		},
 
 		h: function hydrate() {
-			button.className = button_class_value = "cl-button " + (action.active ? 'active' : '');
+			button.className = button_class_value = "cl-button " + (action.active ? 'active' : '') + " " + (action.dropdown ? 'dropdown' : '');
 			button.title = button_title_value = action.title;
 			button.disabled = button_disabled_value = action.disabled;
 			addListener(button, "click", click_handler);
@@ -1052,7 +1440,7 @@ function create_each_block(state, actionBtns, action, action_index, component) {
 		},
 
 		p: function update(changed, state, actionBtns, action, action_index) {
-			if (changed.actionBtns && button_class_value !== (button_class_value = "cl-button " + (action.active ? 'active' : ''))) {
+			if (changed.actionBtns && button_class_value !== (button_class_value = "cl-button " + (action.active ? 'active' : '') + " " + (action.dropdown ? 'dropdown' : ''))) {
 				button.className = button_class_value;
 			}
 
@@ -1097,7 +1485,7 @@ function Editor(options) {
 	this.refs = {};
 	this._state = assign(data(), options.data);
 
-	if (!document.getElementById("svelte-2215322001-style")) add_css();
+	if (!document.getElementById("svelte-4027092575-style")) add_css();
 
 	var _oncreate = oncreate.bind(this);
 
@@ -1122,6 +1510,7 @@ assign(Editor.prototype, methods, proto);
 var editor = new Editor({
     target: document.querySelector('#clEditor')
 });
+//# sourceMappingURL=app.js.map
 
 }());
 //# sourceMappingURL=index.js.map
