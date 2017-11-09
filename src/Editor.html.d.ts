@@ -34,6 +34,18 @@ declare class Editor{
     getText(): string
 
     setHtml(html: string): void
+
+    refs: {
+        dropdown: HTMLDivElement,
+        editor: HTMLDivElement,
+        modal: HTMLDivElement,
+        raw: HTMLTextAreaElement
+    }
+
+    options: {
+        target: HTMLElement,
+        data: any
+    }
 	
 }
 
