@@ -17,6 +17,7 @@
   ],
   "author": "nenadpnc",
   "license": "MIT",
+  "homepage": "https://github.com/nenadpnc/cl-text-editor",
   "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.0",
