@@ -5,6 +5,7 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import tscompile from 'typescript';
 import babel from 'rollup-plugin-babel';
+import filesize from 'rollup-plugin-filesize';
 
 const plugins = [ 
     typescript({typescript: tscompile}),
@@ -19,7 +20,8 @@ const plugins = [
 		exclude: 'src/**/*.ts'
 	}),
 	babel({ exclude: 'node_modules/**'}),
-	uglify()
+	uglify(),
+	filesize()
 ];
 
 export default {

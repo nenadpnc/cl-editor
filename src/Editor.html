@@ -1,28 +1,29 @@
 <div class="cl">
-    <div class="cl-actionbar">
-      {{#each actionBtns as action}}
-        <button 
-          class="cl-button {{action.active ? 'active' : ''}} {{action.dropdown ? 'dropdown' : ''}}" 
-          title="{{action.title}}" 
-          on:click="btnClicked(action)" 
-          disabled="{{action.disabled}}">
-          {{{action.icon}}}
-        </button>
-      {{/each}}
-    </div>
-    <div ref:editor 
-      class="cl-content"
-      style="height: {{height}}"
-      contenteditable="true" 
-      on:input="onChange(event.target.innerHTML)" 
-      on:mouseup="handleButtonStatus()" 
-      on:keyup="handleButtonStatus()"
-      on:paste="onPaste(event)">
-    </div>
-    
-    <textarea ref:raw class="cl-textarea" style="height: {{height}}"></textarea>
-    <div ref:modal></div>
-    <div ref:dropdown></div>
+  <div class="cl-actionbar">
+    {{#each actionBtns as action}}
+      <button 
+        class="cl-button {{action.active ? 'active' : ''}} {{action.dropdown ? 'dropdown' : ''}}" 
+        title="{{action.title}}" 
+        on:click="_btnClicked(action)" 
+        disabled="{{action.disabled}}">
+        {{{action.icon}}}
+      </button>
+    {{/each}}
+  </div>
+  <div ref:editor 
+    class="cl-content"
+    style="height: {{height}}"
+    contenteditable="true"
+    on:input="_onChange(event.target.innerHTML)" 
+    on:mouseup="_handleButtonStatus()" 
+    on:keyup="_handleButtonStatus()"
+    on:paste="_onPaste(event)"
+    on:blur="_onBlur(event)">
+  </div>
+  
+  <textarea ref:raw class="cl-textarea" style="height: {{height}}"></textarea>
+  <div ref:modal></div>
+  <div ref:dropdown></div>
 </div>
 
 <script>
@@ -45,42 +46,63 @@
     data() {
       return {
         actionBtns: [],
-        height: '300px'
+        height: '300px',
+        html: ''
       }
     },
     oncreate() {
-      const actionObj = getNewActionObj(actions, this.options.data && this.options.data.actions);
+      const data = this.options.data || {};
+      const actionObj = getNewActionObj(actions, data.actions);
       this.set({ actionBtns: getActionBtns(actionObj), actionObj });
+      this.setHtml(data.html);
       modal = new EditorModal({ target: this.refs.modal });
       dropdown = new EditorDropdown({ target: this.refs.dropdown });
     },
     methods: {
-      btnClicked: function(action) {
+      _btnClicked: function(action) {
         saveRange(this.refs.editor);
         restoreRange(this.refs.editor);
         action.result.apply(this, [modal, dropdown]);
-        this.handleButtonStatus();
+        this._handleButtonStatus();
       },
-      handleButtonStatus: function() {
+      _handleButtonStatus: function() {
         const tags = getTagsRecursive(document.getSelection().focusNode);
         const actionObj = this.get('actionObj');
         Object.keys(actionObj).forEach((action) => actionObj[action].active = false);
         tags.forEach((tag) => (actionObj[tag.toLowerCase()] || {}).active = true);
         this.set({ actionBtns: getActionBtns(actionObj), actionObj });
       },
-      onPaste: function(event) {
+      _onPaste: function(event) {
         event.preventDefault();
         exec('insertHTML', cleanHtml(event.clipboardData.getData('text/html')));
       },
-      onChange: function(html) {
-        this.fire('onChange', html);
+      _onChange: function(html) {
+        this.fire('change', html);
+      },
+      _onBlur: function(event) {
+        this.fire('blur', event);
+      },
+      exec: (cmd, value) => {
+        exec(cmd, value)
+      },
+      getHtml: function() {
+        return this.refs.editor.innerHTML;
+      },
+      getText: function() {
+        return refs.editor.innerText;
+      },
+      setHtml: function(html) {
+        this.refs.editor.innerHTML = html || '';
       }
-    },
-    components: {EditorModal}
+    }
   }
 </script>
 
 <style type="text/css">
+  .cl * {
+    box-sizing: border-box;
+  }
+
   .cl {
     box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
     box-sizing: border-box;

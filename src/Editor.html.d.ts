@@ -3,7 +3,9 @@ declare class Editor{
         target: Element, 
         data?: {
             actions?: ({name: string, title?: string, icon?: string, result?: Function} | string)[],
-            height?: string
+            height?: string,
+            html?: string,
+            onPaste?: (event: ClipboardEvent) => {}
         } 
     });
 
@@ -23,7 +25,15 @@ declare class Editor{
     	options? :{ init?: boolean, defer?: boolean }) 
     : () => { cancel:() => any };
 
-    teardown();
+    destroy();
+
+    exec(cmd: string, value: any): void
+
+    getHtml(): string
+
+    getText(): string
+
+    setHtml(html: string): void
 	
 }
 

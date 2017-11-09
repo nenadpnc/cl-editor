@@ -6,7 +6,8 @@ let subscribeImage = false;
 const subscribeColor = {
   foreColor: false,
   backColor: false,
-  textColor: false
+  foreColorModal: false,
+  backColorModal: false
 };
 
 let actions = {
@@ -209,8 +210,8 @@ const colorPicker = (modal, dropdown, cmd, editorRef) => {
       if (item.modal) {
         modal.set({show: true, event: 'colorHref', title: 'Text color', label: cmd === 'foreColor' ? 'Text color' : 'Background color'});
         const command = cmd;
-        if (!subscribeColor.textColor) {
-          subscribeColor.textColor = true;
+        if (!subscribeColor[`${command}Modal`]) {
+          subscribeColor[`${command}Modal`] = true;
           modal.on('colorHref', (color) => {
             restoreRange(editorRef.refs.editor);
             exec(command, color);
