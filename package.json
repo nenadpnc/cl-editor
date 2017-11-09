@@ -4,10 +4,10 @@
   "description": "Lightweight text editor built with svelte + typescript",
   "scripts": {
     "copy": "copyfiles ./index.html ./dist",
-    "serve": "live-server dist --port=3000",
+    "serve": "live-server ./ --port=3000",
     "dev": "rollup -c rollup.config.dev.js",
-    "dev:w": "npm run copy && concurrently \"npm run dev -- -w\" \"npm run serve\"",
-    "prod": "rollup -c rollup.config.prod.js",
+    "dev:w": "concurrently \"npm run dev -- -w\" \"npm run serve\"",
+    "prod": "rollup -c rollup.config.dev.js && rollup -c rollup.config.prod.js",
     "prepublishOnly": "npm run prod"
   },
   "repository": {

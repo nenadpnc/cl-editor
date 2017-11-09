@@ -23,7 +23,7 @@ const plugins = [
 export default {
 	input: 'src/app.ts',
 	output:  {
-		file: 'dist/index.js',
+		file: 'dist/index.dev.js',
 		format: 'iife',
 	},
 	plugins,
