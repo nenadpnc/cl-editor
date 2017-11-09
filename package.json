@@ -1,6 +1,6 @@
 {
   "name": "cl-editor",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Lightweight text editor built with svelte + typescript",
   "scripts": {
     "copy": "copyfiles ./index.html ./dist",
