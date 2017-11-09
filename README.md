@@ -69,10 +69,9 @@ editor.exec(cmd, value) // execute document command (document.executeCommand(cmd
 editor.getHtml() // returns html string from editor
 editor.getText() // returns text string from editor
 editor.setHtml(html) // sets html for editor
-
-// there are also built in svelte methods like get, set, observe, fire, destroy
-// you can check them out at [https://svelte.technology/guide](https://svelte.technology/guide)
 ```
+* There are also built in svelte methods like get, set, observe, fire, destroy.
+* You can check them out at [https://svelte.technology/guide](https://svelte.technology/guide)
 ```js
 // Events
 editor.on('change', (html) => console.log(html)) // on every keyup event
