@@ -10,6 +10,10 @@
     "prod": "rollup -c rollup.config.prod.js",
     "prepublishOnly": "npm run prod"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nenadpnc/cl-text-editor"
+  },
   "keywords": [
     "html text editor",
     "svelte",

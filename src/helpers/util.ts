@@ -14,7 +14,7 @@ export const getTagsRecursive = (element: HTMLElement | any, tags: string[]) => 
   }
 
   const tag = element.tagName;
-  [element.style.textAlign || element.getAttribute('align'), element.style.color || tag === 'FONT' && 'forecolor', element.style.backgroundColor && 'backcolor']
+  [element.style && element.style.textAlign || element.getAttribute('align'), element.style.color || tag === 'FONT' && 'forecolor', element.style.backgroundColor && 'backcolor']
     .filter((item: string) => item)
     .forEach((item: string) => tags.push(item));
 

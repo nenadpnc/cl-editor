@@ -21,7 +21,7 @@
     on:blur="_onBlur(event)">
   </div>
   
-  <textarea ref:raw class="cl-textarea" style="height: {{height}}"></textarea>
+  <textarea ref:raw class="cl-textarea" style="max-height: {{height}}; min-height: {{height}}"></textarea>
   <div ref:modal></div>
   <div ref:dropdown></div>
 </div>
@@ -83,7 +83,7 @@
         this.fire('blur', event);
       },
       exec: (cmd, value) => {
-        exec(cmd, value)
+        exec(cmd, value);
       },
       getHtml: function() {
         return this.refs.editor.innerHTML;
@@ -111,7 +111,6 @@
   }
 
   .cl-content {
-    box-sizing: border-box;
     height: 300px;
     outline: 0;
     overflow-y: auto;
@@ -159,11 +158,10 @@
 
   .cl-textarea {
     display: none;
-    width: 100%;
     max-width: 100%;
+    min-width: 100%;
     border: none;
     padding: 10px;
-    box-sizing: border-box;
   }
 
   .cl-textarea:focus {

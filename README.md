@@ -24,6 +24,7 @@ cl-editor can be used in typescript or javascript projects.
 <body>
   ...
   <div id="editor"></div>
+  ...
 </body>
 ```
 
@@ -36,7 +37,7 @@ const Editor = require('cl-editor');
 ```js
 // Initialize editor
 const editor = new Editor({
-// <HTMLElement> required
+    // <HTMLElement> required
     target: document.getElementById('editor'),
     // optional
     data: {
@@ -47,8 +48,8 @@ const editor = new Editor({
         actions: [
             'b', 'i', 'u', 'strike', 'ul', 'ol',
             {
-                name: 'copy',
-                icon: 'C',
+                name: 'copy', // required
+                icon: '<b>C</b>', // string or html string (ex. <svg>...</svg>)
                 title: 'Copy',
                 result: () => console.log('copy')
             },
@@ -77,10 +78,14 @@ editor.setHtml(html) // sets html for editor
 editor.on('change', (html) => console.log(html)) // on every keyup event
 editor.on('blur', (event) => console.log(event)) // on editor blur event
 ```
-
+```js
+// Props
+editor.refs.<editor | raw | modal | dropdown> // references to editor, raw (textarea), modal and dropdown HTMLElements
+editor.options // current editor options
+```
 
 #### Run demo
-```
+```bash
 git clone https://github.com/nenadpnc/cl-text-editor.git cl-editor
 cd cl-editor
 npm i

@@ -4,8 +4,7 @@ declare class Editor{
         data?: {
             actions?: ({name: string, title?: string, icon?: string, result?: Function} | string)[],
             height?: string,
-            html?: string,
-            onPaste?: (event: ClipboardEvent) => {}
+            html?: string
         } 
     });
 
