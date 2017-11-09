@@ -2,7 +2,7 @@
 
 typescript + svelte (no external dependencies) 
 
-#### File size
+#### File size (bundle includes css, html and js)
 * min: 29kb
 * gzip: 9kb
 
