@@ -1,8 +1,9 @@
+<:Window on:click="_documentClick(event)" />
 <div class="cl">
   <div class="cl-actionbar">
     {{#each actionBtns as action}}
       <button 
-        class="cl-button {{action.active ? 'active' : ''}} {{action.colorPicker ? 'color-picker' : ''}}" 
+        class="cl-button {{action.active ? 'active' : ''}}" 
         title="{{action.title}}" 
         on:click="_btnClicked(action)" 
         disabled="{{action.disabled}}">
@@ -17,8 +18,7 @@
     on:input="_onChange(event.target.innerHTML)" 
     on:mouseup="_handleButtonStatus()" 
     on:keyup="_handleButtonStatus()"
-    on:paste="_onPaste(event)"
-    on:blur="_onBlur(event)">
+    on:paste="_onPaste(event)">
   </div>
   
   <textarea ref:raw class="cl-textarea" style="max-height: {{height}}; min-height: {{height}}"></textarea>
@@ -35,7 +35,8 @@
     cleanHtml,
     getActionBtns,
     getNewActionObj,
-    removeBadTags
+    removeBadTags,
+    isEditorClick
   } from './helpers/util';
   import actions from './helpers/actions';
   import EditorModal from './helpers/EditorModal.html';
@@ -80,8 +81,10 @@
       _onChange: function(html) {
         this.fire('change', html);
       },
-      _onBlur: function(event) {
-        this.fire('blur', event);
+      _documentClick: function(event) {
+        if (!isEditorClick(event.target)) {
+          this.fire('blur');
+        }
       },
       exec: (cmd, value) => {
         exec(cmd, value);
@@ -143,18 +146,6 @@
   .cl-button:disabled {
     opacity: .5;
     pointer-events: none;
-  }
-
-  .cl-button.color-picker::after {
-    display: block;
-    content: " ";
-    position: absolute;
-    top: 25px;
-    right: 3px;
-    height: 0;
-    width: 0;
-    border: 3px solid rgba(0, 0, 0, 0);
-    border-top-color: #555;
   }
 
   .cl-textarea {

@@ -1,5 +1,4 @@
-<div ref:modalWrapper>
-    {{#if show}}
+<div ref:modalWrapper style="display: {{show ? 'block' : 'none'}}">
     <div class="cl-editor-overlay" on:click="cancel()"></div>
     <div class="cl-editor-modal">
         <div class="modal-box">
@@ -19,7 +18,6 @@
             </form>
         </div>
     </div>
-    {{/if}}
 </div>
 
 <script>

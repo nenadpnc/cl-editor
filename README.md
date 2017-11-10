@@ -13,7 +13,6 @@ typescript + svelte (no external dependencies)
 ```bash
 npm install --save cl-editor
 ```
-cl-editor can be used in typescript or javascript projects. 
 
 #### HTML:
 
@@ -67,9 +66,9 @@ const editor = new Editor({
 ```js
 // Methods
 editor.exec(cmd, value) // execute document command (document.executeCommand(cmd, false, value))
-editor.getHtml() // returns html string from editor. if passed true as argument, html will be sanitized before return
+editor.getHtml(sanitize?: boolean) // returns html string from editor. if passed true as argument, html will be sanitized before return
 editor.getText() // returns text string from editor
-editor.setHtml(html) // sets html for editor. if second argument is true, html will be sanitized
+editor.setHtml(html, sanitize?: boolean) // sets html for editor. if second argument is true, html will be sanitized
 ```
 * There are also built in svelte methods like get, set, observe, fire, destroy.
 * You can check them out at [https://svelte.technology/guide](https://svelte.technology/guide)

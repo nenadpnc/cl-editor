@@ -14,9 +14,11 @@ export const getTagsRecursive = (element: HTMLElement | any, tags: string[]) => 
   }
 
   const tag = element.tagName;
-  [element.style && element.style.textAlign || element.getAttribute('align'), element.style.color || tag === 'FONT' && 'forecolor', element.style.backgroundColor && 'backcolor']
-    .filter((item: string) => item)
-    .forEach((item: string) => tags.push(item));
+  if (element.style && element.getAttribute) {
+    [element.style.textAlign || element.getAttribute('align'), element.style.color || tag === 'FONT' && 'forecolor', element.style.backgroundColor && 'backcolor']
+      .filter((item: string) => item)
+      .forEach((item: string) => tags.push(item));
+  }
 
   if (tag === 'DIV') {
     return tags;
@@ -164,4 +166,14 @@ export const removeBadTags = (html: string) => {
     });
 
     return html;
+}
+
+export const isEditorClick = (target: HTMLElement) => {
+    if (target.className === 'cl') {
+        return true;
+    }
+    if (target.parentElement) {
+        return isEditorClick(target.parentElement);
+    }
+    return false;
 }
