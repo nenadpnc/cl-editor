@@ -160,3 +160,11 @@ export const getNewActionObj = (actions: any, userActions = []) => {
         return actions;
     }
 }
+
+export const removeBadTags = (html: string) => {
+    ['script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag) => {
+        html = html.replace(new RegExp(`<${badTag}.*?${badTag}(.*?)>`, 'gi'), '')
+    });
+
+    return html;
+}

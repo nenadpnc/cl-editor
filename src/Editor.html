@@ -34,7 +34,8 @@
     exec,
     cleanHtml,
     getActionBtns,
-    getNewActionObj
+    getNewActionObj,
+    removeBadTags
   } from './helpers/util';
   import actions from './helpers/actions';
   import EditorModal from './helpers/EditorModal.html';
@@ -85,14 +86,14 @@
       exec: (cmd, value) => {
         exec(cmd, value);
       },
-      getHtml: function() {
-        return this.refs.editor.innerHTML;
+      getHtml: function(sanitize = false) {
+        return sanitize ? removeBadTags(this.refs.editor.innerHTML) : this.refs.editor.innerHTML;
       },
       getText: function() {
         return refs.editor.innerText;
       },
-      setHtml: function(html) {
-        this.refs.editor.innerHTML = html || '';
+      setHtml: function(html = '', sanitize = false) {
+        this.refs.editor.innerHTML = sanitize ? removeBadTags(html) : html;
       }
     }
   }
