@@ -2,7 +2,7 @@
   <div class="cl-actionbar">
     {{#each actionBtns as action}}
       <button 
-        class="cl-button {{action.active ? 'active' : ''}} {{action.dropdown ? 'dropdown' : ''}}" 
+        class="cl-button {{action.active ? 'active' : ''}} {{action.colorPicker ? 'color-picker' : ''}}" 
         title="{{action.title}}" 
         on:click="_btnClicked(action)" 
         disabled="{{action.disabled}}">
@@ -23,7 +23,7 @@
   
   <textarea ref:raw class="cl-textarea" style="max-height: {{height}}; min-height: {{height}}"></textarea>
   <div ref:modal></div>
-  <div ref:dropdown></div>
+  <div ref:colorPicker></div>
 </div>
 
 <script>
@@ -38,9 +38,9 @@
   } from './helpers/util';
   import actions from './helpers/actions';
   import EditorModal from './helpers/EditorModal.html';
-  import EditorDropdown from './helpers/EditorDropdown.html';
+  import EditorColorPicker from './helpers/EditorColorPicker.html';
   let modal;
-  let dropdown;
+  let colorPicker;
 
   export default {
     data() {
@@ -56,13 +56,13 @@
       this.set({ actionBtns: getActionBtns(actionObj), actionObj });
       this.setHtml(data.html);
       modal = new EditorModal({ target: this.refs.modal });
-      dropdown = new EditorDropdown({ target: this.refs.dropdown });
+      colorPicker = new EditorColorPicker({ target: this.refs.colorPicker });
     },
     methods: {
       _btnClicked: function(action) {
         saveRange(this.refs.editor);
         restoreRange(this.refs.editor);
-        action.result.apply(this, [modal, dropdown]);
+        action.result.apply(this, [modal, colorPicker]);
         this._handleButtonStatus();
       },
       _handleButtonStatus: function() {
@@ -144,7 +144,7 @@
     pointer-events: none;
   }
 
-  .cl-button.dropdown::after {
+  .cl-button.color-picker::after {
     display: block;
     content: " ";
     position: absolute;

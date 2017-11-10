@@ -80,7 +80,7 @@ editor.on('blur', (event) => console.log(event)) // on editor blur event
 ```
 ```js
 // Props
-editor.refs.<editor | raw | modal | dropdown> // references to editor, raw (textarea), modal and dropdown HTMLElements
+editor.refs.<editor | raw | modal | colorPicker> // references to editor, raw (textarea), modal and colorPicker HTMLElements
 editor.options // current editor options
 ```
 

@@ -168,17 +168,17 @@ let actions = {
   forecolor: {
     icon: '<svg id="trumbowyg-fore-color" viewBox="0 0 72 72" width="17px" height="100%"><path d="M32 15h7.8L56 57.1h-7.9l-4-11.1H27.4l-4 11.1h-7.6L32 15zm-2.5 25.4h12.9L36 22.3h-.2l-6.3 18.1z"></path></svg>',
     title: 'Text color',
-    dropdown: true,
-    result: function(modal, dropdown) {
-      colorPicker(modal, dropdown, 'foreColor', this);
+    colorPicker: true,
+    result: function(modal, colorPicker) {
+      showColorPicker(modal, colorPicker, 'foreColor', this);
     }
   },
   backcolor: {
     icon: '<svg id="trumbowyg-back-color" viewBox="0 0 72 72" width="17px" height="100%"><path d="M36.5 22.3l-6.3 18.1H43l-6.3-18.1z"></path><path d="M9 8.9v54.2h54.1V8.9H9zm39.9 48.2L45 46H28.2l-3.9 11.1h-7.6L32.8 15h7.8l16.2 42.1h-7.9z"></path></svg>',
     title: 'Background color',
-    dropdown: true,
-    result: function(modal, dropdown) {
-      colorPicker(modal, dropdown, 'backColor', this);
+    colorPicker: true,
+    result: function(modal, colorPicker) {
+      showColorPicker(modal, colorPicker, 'backColor', this);
     }
   },
   removeFromat: {
@@ -201,12 +201,12 @@ let actions = {
 
 export default actions;
 
-const colorPicker = (modal, dropdown, cmd, editorRef) => {
+const showColorPicker = (modal, colorPicker, cmd, editorRef) => {
   saveRange(editorRef.refs.editor);
-  dropdown.set({show: true, event: cmd});
+  colorPicker.set({show: true, event: cmd});
   if (!subscribeColor[cmd]) {
     subscribeColor[cmd] = true;
-    dropdown.on(cmd, (item) => {
+    colorPicker.on(cmd, (item) => {
       if (item.modal) {
         modal.set({show: true, event: 'colorHref', title: 'Text color', label: cmd === 'foreColor' ? 'Text color' : 'Background color'});
         const command = cmd;

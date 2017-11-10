@@ -35,7 +35,7 @@ declare class Editor{
     setHtml(html: string): void
 
     refs: {
-        dropdown: HTMLDivElement,
+        colorPicker: HTMLDivElement,
         editor: HTMLDivElement,
         modal: HTMLDivElement,
         raw: HTMLTextAreaElement

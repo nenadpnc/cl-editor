@@ -1,9 +1,9 @@
-<div ref:dropdownWrapper>
+<div>
     {{#if show}}
-    <div class="overlay" on:click="close()"></div>
-    <div class="dropdown-wrapper">
+    <div class="color-picker-overlay" on:click="close()"></div>
+    <div class="color-picker-wrapper">
         {{#each btns as btn}}
-        <button type="button" class="dropdown-btn" style="{{btn.style}}" on:click="selectColor(btn)">{{btn.text || ''}}</button>
+        <button type="button" class="color-picker-btn" style="{{btn.style}}" on:click="selectColor(btn)">{{btn.text || ''}}</button>
         {{/each}}
     </div>
     {{/if}}
@@ -50,22 +50,21 @@
 </script>
 
 <style>
-    .dropdown-wrapper {
+    .color-picker-wrapper {
         border: 1px solid #ecf0f1;
         border-top: none;
         background: #FFF;
-        margin-left: -1px;
         box-shadow: rgba(0,0,0,.1) 0 2px 3px;
-        width: 252px;
+        width: 290px;
         left: 50%;
         -webkit-transform: translateX(-50%);
         transform: translateX(-50%);
-        padding: 7px 5px;
+        padding: 0;
         position: absolute;
         top: 37px;
     }
 
-    .overlay {
+    .color-picker-overlay {
         position: absolute;
         background-color: rgba(255,255,255,.5);
         height: 100%;
@@ -74,7 +73,7 @@
         top: 0;
     }
 
-    .dropdown-btn {
+    .color-picker-btn {
         display: block;
         position: relative;
         float: left;
@@ -93,7 +92,7 @@
         transition: all 150ms;
     }
 
-    .dropdown-btn:hover::after {
+    .color-picker-btn:hover::after {
         content: " ";
         display: block;
         position: absolute;

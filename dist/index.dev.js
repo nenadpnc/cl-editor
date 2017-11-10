@@ -556,17 +556,17 @@ var actions = {
     forecolor: {
         icon: '<svg id="trumbowyg-fore-color" viewBox="0 0 72 72" width="17px" height="100%"><path d="M32 15h7.8L56 57.1h-7.9l-4-11.1H27.4l-4 11.1h-7.6L32 15zm-2.5 25.4h12.9L36 22.3h-.2l-6.3 18.1z"></path></svg>',
         title: 'Text color',
-        dropdown: true,
-        result: function result(modal, dropdown) {
-            colorPicker(modal, dropdown, 'foreColor', this);
+        colorPicker: true,
+        result: function result(modal, colorPicker) {
+            showColorPicker(modal, colorPicker, 'foreColor', this);
         }
     },
     backcolor: {
         icon: '<svg id="trumbowyg-back-color" viewBox="0 0 72 72" width="17px" height="100%"><path d="M36.5 22.3l-6.3 18.1H43l-6.3-18.1z"></path><path d="M9 8.9v54.2h54.1V8.9H9zm39.9 48.2L45 46H28.2l-3.9 11.1h-7.6L32.8 15h7.8l16.2 42.1h-7.9z"></path></svg>',
         title: 'Background color',
-        dropdown: true,
-        result: function result(modal, dropdown) {
-            colorPicker(modal, dropdown, 'backColor', this);
+        colorPicker: true,
+        result: function result(modal, colorPicker) {
+            showColorPicker(modal, colorPicker, 'backColor', this);
         }
     },
     removeFromat: {
@@ -586,12 +586,12 @@ var actions = {
         }
     }
 };
-var colorPicker = function colorPicker(modal, dropdown, cmd, editorRef) {
+var showColorPicker = function showColorPicker(modal, colorPicker, cmd, editorRef) {
     saveRange(editorRef.refs.editor);
-    dropdown.set({ show: true, event: cmd });
+    colorPicker.set({ show: true, event: cmd });
     if (!subscribeColor[cmd]) {
         subscribeColor[cmd] = true;
-        dropdown.on(cmd, function (item) {
+        colorPicker.on(cmd, function (item) {
             if (item.modal) {
                 modal.set({ show: true, event: 'colorHref', title: 'Text color', label: cmd === 'foreColor' ? 'Text color' : 'Background color' });
                 var command = cmd;
@@ -657,13 +657,13 @@ function oncreate$1() {
 }
 
 function encapsulateStyles$1(node) {
-	setAttribute(node, "svelte-379354018", "");
+	setAttribute(node, "svelte-1660483961", "");
 }
 
 function add_css$1() {
 	var style = createElement("style");
-	style.id = 'svelte-379354018-style';
-	style.textContent = "[svelte-379354018].cl-editor-modal,[svelte-379354018] .cl-editor-modal{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:170px;overflow:hidden;backface-visibility:hidden}[svelte-379354018].cl-editor-overlay,[svelte-379354018] .cl-editor-overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0}[svelte-379354018].modal-box,[svelte-379354018] .modal-box{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:45px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}[svelte-379354018].modal-title,[svelte-379354018] .modal-title{font-size:24px;font-weight:700;margin:0 0 20px;padding:15px 0 13px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}[svelte-379354018].modal-label,[svelte-379354018] .modal-label{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}[svelte-379354018].modal-label input,[svelte-379354018] .modal-label input{position:absolute;top:0;right:0;height:27px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}[svelte-379354018].modal-label input:focus,[svelte-379354018] .modal-label input:focus{outline:none}[svelte-379354018].input-error input,[svelte-379354018] .input-error input{border:1px solid #e74c3c}[svelte-379354018].input-info,[svelte-379354018] .input-info{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}[svelte-379354018].input-info span,[svelte-379354018] .input-info span{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:0 7px;width:150px}[svelte-379354018].input-error .input-info,[svelte-379354018] .input-error .input-info{margin-top:-27px}[svelte-379354018].input-error .msg-error,[svelte-379354018] .input-error .msg-error{color:#e74c3c}[svelte-379354018].modal-button,[svelte-379354018] .modal-button{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}[svelte-379354018].modal-submit,[svelte-379354018] .modal-submit{right:110px;background:#2bc06a}[svelte-379354018].modal-reset,[svelte-379354018] .modal-reset{color:#555;background:#e6e6e6}";
+	style.id = 'svelte-1660483961-style';
+	style.textContent = "[svelte-1660483961].cl-editor-modal,[svelte-1660483961] .cl-editor-modal{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:140px;backface-visibility:hidden}[svelte-1660483961].cl-editor-overlay,[svelte-1660483961] .cl-editor-overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0}[svelte-1660483961].modal-box,[svelte-1660483961] .modal-box{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:36px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}[svelte-1660483961].modal-title,[svelte-1660483961] .modal-title{font-size:24px;font-weight:700;margin:0 0 20px;padding:2px 0 4px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}[svelte-1660483961].modal-label,[svelte-1660483961] .modal-label{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}[svelte-1660483961].modal-label input,[svelte-1660483961] .modal-label input{position:absolute;top:0;right:0;height:27px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}[svelte-1660483961].modal-label input:focus,[svelte-1660483961] .modal-label input:focus{outline:none}[svelte-1660483961].input-error input,[svelte-1660483961] .input-error input{border:1px solid #e74c3c}[svelte-1660483961].input-info,[svelte-1660483961] .input-info{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}[svelte-1660483961].input-info span,[svelte-1660483961] .input-info span{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:0 7px;width:150px}[svelte-1660483961].input-error .input-info,[svelte-1660483961] .input-error .input-info{margin-top:-27px}[svelte-1660483961].input-error .msg-error,[svelte-1660483961] .input-error .msg-error{color:#e74c3c}[svelte-1660483961].modal-button,[svelte-1660483961] .modal-button{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}[svelte-1660483961].modal-submit,[svelte-1660483961] .modal-submit{right:110px;background:#2bc06a}[svelte-1660483961].modal-reset,[svelte-1660483961] .modal-reset{color:#555;background:#e6e6e6}";
 	appendNode(style, document.head);
 }
 
@@ -920,7 +920,7 @@ function EditorModal(options) {
 	this.refs = {};
 	this._state = assign(data$1(), options.data);
 
-	if (!document.getElementById("svelte-379354018-style")) add_css$1();
+	if (!document.getElementById("svelte-1660483961-style")) add_css$1();
 
 	var _oncreate = oncreate$1.bind(this);
 
@@ -942,7 +942,7 @@ function EditorModal(options) {
 
 assign(EditorModal.prototype, methods$1, proto);
 
-/* src\helpers\EditorDropdown.html generated by Svelte v1.41.2 */
+/* src\helpers\EditorColorPicker.html generated by Svelte v1.41.2 */
 var colors = ['ffffff', '000000', 'eeece1', '1f497d', '4f81bd', 'c0504d', '9bbb59', '8064a2', '4bacc6', 'f79646', 'ffff00', 'f2f2f2', '7f7f7f', 'ddd9c3', 'c6d9f0', 'dbe5f1', 'f2dcdb', 'ebf1dd', 'e5e0ec', 'dbeef3', 'fdeada', 'fff2ca', 'd8d8d8', '595959', 'c4bd97', '8db3e2', 'b8cce4', 'e5b9b7', 'd7e3bc', 'ccc1d9', 'b7dde8', 'fbd5b5', 'ffe694', 'bfbfbf', '3f3f3f', '938953', '548dd4', '95b3d7', 'd99694', 'c3d69b', 'b2a2c7', 'b7dde8', 'fac08f', 'f2c314', 'a5a5a5', '262626', '494429', '17365d', '366092', '953734', '76923c', '5f497a', '92cddc', 'e36c09', 'c09100', '7f7f7f', '0c0c0c', '1d1b10', '0f243e', '244061', '632423', '4f6128', '3f3151', '31859b', '974806', '7f6000'];
 
 var getBtns = function getBtns() {
@@ -982,13 +982,13 @@ function oncreate$2() {
 }
 
 function encapsulateStyles$2(node) {
-	setAttribute(node, "svelte-598518813", "");
+	setAttribute(node, "svelte-1757982853", "");
 }
 
 function add_css$2() {
 	var style = createElement("style");
-	style.id = 'svelte-598518813-style';
-	style.textContent = "[svelte-598518813].dropdown-wrapper,[svelte-598518813] .dropdown-wrapper{border:1px solid #ecf0f1;border-top:none;background:#FFF;margin-left:-1px;box-shadow:rgba(0,0,0,.1) 0 2px 3px;width:252px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);padding:7px 5px;position:absolute;top:37px}[svelte-598518813].overlay,[svelte-598518813] .overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0}[svelte-598518813].dropdown-btn,[svelte-598518813] .dropdown-btn{display:block;position:relative;float:left;height:20px;width:20px;border:1px solid #333;padding:0;margin:2px;line-height:35px;text-decoration:none;background:#FFF;color:#333!important;cursor:pointer;text-align:left;font-size:15px;transition:all 150ms}[svelte-598518813].dropdown-btn:hover::after,[svelte-598518813] .dropdown-btn:hover::after{content:\" \";display:block;position:absolute;top:-5px;left:-5px;height:27px;width:27px;background:inherit;border:1px solid #FFF;box-shadow:#000 0 0 2px;z-index:10}";
+	style.id = 'svelte-1757982853-style';
+	style.textContent = "[svelte-1757982853].color-picker-wrapper,[svelte-1757982853] .color-picker-wrapper{border:1px solid #ecf0f1;border-top:none;background:#FFF;box-shadow:rgba(0,0,0,.1) 0 2px 3px;width:290px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);padding:0;position:absolute;top:37px}[svelte-1757982853].color-picker-overlay,[svelte-1757982853] .color-picker-overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0}[svelte-1757982853].color-picker-btn,[svelte-1757982853] .color-picker-btn{display:block;position:relative;float:left;height:20px;width:20px;border:1px solid #333;padding:0;margin:2px;line-height:35px;text-decoration:none;background:#FFF;color:#333!important;cursor:pointer;text-align:left;font-size:15px;transition:all 150ms}[svelte-1757982853].color-picker-btn:hover::after,[svelte-1757982853] .color-picker-btn:hover::after{content:\" \";display:block;position:absolute;top:-5px;left:-5px;height:27px;width:27px;background:inherit;border:1px solid #FFF;box-shadow:#000 0 0 2px;z-index:10}";
 	appendNode(style, document.head);
 }
 
@@ -1010,7 +1010,6 @@ function create_main_fragment$2(state, component) {
 
 		m: function mount(target, anchor) {
 			insertNode(div, target, anchor);
-			component.refs.dropdownWrapper = div;
 			if (if_block) if_block.m(div, null);
 		},
 
@@ -1036,7 +1035,6 @@ function create_main_fragment$2(state, component) {
 		},
 
 		d: function destroy$$1() {
-			if (component.refs.dropdownWrapper === div) component.refs.dropdownWrapper = null;
 			if (if_block) if_block.d();
 		}
 	};
@@ -1058,7 +1056,7 @@ function create_each_block$1(state, btns, btn, btn_index, component) {
 
 		h: function hydrate() {
 			button.type = "button";
-			button.className = "dropdown-btn";
+			button.className = "color-picker-btn";
 			button.style.cssText = button_style_value = btn.style;
 			addListener(button, "click", click_handler$1);
 
@@ -1126,9 +1124,9 @@ function create_if_block$1(state, component) {
 		},
 
 		h: function hydrate() {
-			div.className = "overlay";
+			div.className = "color-picker-overlay";
 			addListener(div, "click", click_handler);
-			div_1.className = "dropdown-wrapper";
+			div_1.className = "color-picker-wrapper";
 		},
 
 		m: function mount(target, anchor) {
@@ -1189,12 +1187,11 @@ function click_handler$1(event) {
 	component.selectColor(btn);
 }
 
-function EditorDropdown(options) {
+function EditorColorPicker(options) {
 	init(this, options);
-	this.refs = {};
 	this._state = assign(data$2(), options.data);
 
-	if (!document.getElementById("svelte-598518813-style")) add_css$2();
+	if (!document.getElementById("svelte-1757982853-style")) add_css$2();
 
 	var _oncreate = oncreate$2.bind(this);
 
@@ -1214,11 +1211,11 @@ function EditorDropdown(options) {
 	}
 }
 
-assign(EditorDropdown.prototype, methods$2, proto);
+assign(EditorColorPicker.prototype, methods$2, proto);
 
 /* src\Editor.html generated by Svelte v1.41.2 */
 var modal = void 0;
-var dropdown = void 0;
+var colorPicker = void 0;
 
 function data() {
 	return {
@@ -1232,7 +1229,7 @@ var methods = {
 	_btnClicked: function _btnClicked(action) {
 		saveRange(this.refs.editor);
 		restoreRange(this.refs.editor);
-		action.result.apply(this, [modal, dropdown]);
+		action.result.apply(this, [modal, colorPicker]);
 		this._handleButtonStatus();
 	},
 	_handleButtonStatus: function _handleButtonStatus() {
@@ -1276,17 +1273,17 @@ function oncreate() {
 	this.set({ actionBtns: getActionBtns(actionObj), actionObj: actionObj });
 	this.setHtml(data.html);
 	modal = new EditorModal({ target: this.refs.modal });
-	dropdown = new EditorDropdown({ target: this.refs.dropdown });
+	colorPicker = new EditorColorPicker({ target: this.refs.colorPicker });
 }
 
 function encapsulateStyles(node) {
-	setAttribute(node, "svelte-3633286820", "");
+	setAttribute(node, "svelte-1814663022", "");
 }
 
 function add_css() {
 	var style = createElement("style");
-	style.id = 'svelte-3633286820-style';
-	style.textContent = "[svelte-3633286820].cl *,[svelte-3633286820] .cl *{box-sizing:border-box}[svelte-3633286820].cl,[svelte-3633286820] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-3633286820].cl-content,[svelte-3633286820] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%}[svelte-3633286820].cl-actionbar,[svelte-3633286820] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-3633286820].cl-button,[svelte-3633286820] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-3633286820].cl-button:hover,[svelte-3633286820] .cl-button:hover,[svelte-3633286820].cl-button.active,[svelte-3633286820] .cl-button.active{background-color:#fff}[svelte-3633286820].cl-button:disabled,[svelte-3633286820] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-3633286820].cl-button.dropdown::after,[svelte-3633286820] .cl-button.dropdown::after{display:block;content:\" \";position:absolute;top:25px;right:3px;height:0;width:0;border:3px solid rgba(0, 0, 0, 0);border-top-color:#555}[svelte-3633286820].cl-textarea,[svelte-3633286820] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-3633286820].cl-textarea:focus,[svelte-3633286820] .cl-textarea:focus{outline:none}";
+	style.id = 'svelte-1814663022-style';
+	style.textContent = "[svelte-1814663022].cl *,[svelte-1814663022] .cl *{box-sizing:border-box}[svelte-1814663022].cl,[svelte-1814663022] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-1814663022].cl-content,[svelte-1814663022] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%}[svelte-1814663022].cl-actionbar,[svelte-1814663022] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-1814663022].cl-button,[svelte-1814663022] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-1814663022].cl-button:hover,[svelte-1814663022] .cl-button:hover,[svelte-1814663022].cl-button.active,[svelte-1814663022] .cl-button.active{background-color:#fff}[svelte-1814663022].cl-button:disabled,[svelte-1814663022] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-1814663022].cl-button.color-picker::after,[svelte-1814663022] .cl-button.color-picker::after{display:block;content:\" \";position:absolute;top:25px;right:3px;height:0;width:0;border:3px solid rgba(0, 0, 0, 0);border-top-color:#555}[svelte-1814663022].cl-textarea,[svelte-1814663022] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-1814663022].cl-textarea:focus,[svelte-1814663022] .cl-textarea:focus{outline:none}";
 	appendNode(style, document.head);
 }
 
@@ -1377,7 +1374,7 @@ function create_main_fragment(state, component) {
 			component.refs.modal = div_3;
 			appendNode(text_4, div);
 			appendNode(div_4, div);
-			component.refs.dropdown = div_4;
+			component.refs.colorPicker = div_4;
 		},
 
 		p: function update(changed, state) {
@@ -1427,7 +1424,7 @@ function create_main_fragment(state, component) {
 			if (component.refs.editor === div_2) component.refs.editor = null;
 			if (component.refs.raw === textarea) component.refs.raw = null;
 			if (component.refs.modal === div_3) component.refs.modal = null;
-			if (component.refs.dropdown === div_4) component.refs.dropdown = null;
+			if (component.refs.colorPicker === div_4) component.refs.colorPicker = null;
 		}
 	};
 }
@@ -1447,7 +1444,7 @@ function create_each_block(state, actionBtns, action, action_index, component) {
 		},
 
 		h: function hydrate() {
-			button.className = button_class_value = "cl-button " + (action.active ? 'active' : '') + " " + (action.dropdown ? 'dropdown' : '');
+			button.className = button_class_value = "cl-button " + (action.active ? 'active' : '') + " " + (action.colorPicker ? 'color-picker' : '');
 			button.title = button_title_value = action.title;
 			button.disabled = button_disabled_value = action.disabled;
 			addListener(button, "click", click_handler);
@@ -1465,7 +1462,7 @@ function create_each_block(state, actionBtns, action, action_index, component) {
 		},
 
 		p: function update(changed, state, actionBtns, action, action_index) {
-			if (changed.actionBtns && button_class_value !== (button_class_value = "cl-button " + (action.active ? 'active' : '') + " " + (action.dropdown ? 'dropdown' : ''))) {
+			if (changed.actionBtns && button_class_value !== (button_class_value = "cl-button " + (action.active ? 'active' : '') + " " + (action.colorPicker ? 'color-picker' : ''))) {
 				button.className = button_class_value;
 			}
 
@@ -1510,7 +1507,7 @@ function Editor(options) {
 	this.refs = {};
 	this._state = assign(data(), options.data);
 
-	if (!document.getElementById("svelte-3633286820-style")) add_css();
+	if (!document.getElementById("svelte-1814663022-style")) add_css();
 
 	var _oncreate = oncreate.bind(this);
 

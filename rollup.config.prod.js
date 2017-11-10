@@ -16,7 +16,7 @@ const plugins = [
     }),
 	commonjs(),
 	svelte({
-		include: ['src/Editor.html', 'src/helpers/EditorModal.html', 'src/helpers/EditorDropdown.html'],
+		include: ['src/Editor.html', 'src/helpers/EditorModal.html', 'src/helpers/EditorColorPicker.html'],
 		exclude: 'src/**/*.ts'
 	}),
 	babel({ exclude: 'node_modules/**'}),
