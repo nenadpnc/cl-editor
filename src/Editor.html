@@ -83,7 +83,7 @@
       },
       _documentClick: function(event) {
         if (!isEditorClick(event.target)) {
-          this.fire('blur');
+          this.fire('blur', event);
         }
       },
       exec: (cmd, value) => {
