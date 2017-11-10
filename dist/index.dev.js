@@ -298,9 +298,7 @@ var cleanHtml = function cleanHtml(input) {
     var output = html && html[1] || '';
     output = output.replace(/(class=(")?Mso[a-zA-Z]+(")?)/g, ' ').replace(/<!--(.*?)-->/g, '').replace(new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font)(.*?)>', 'gi'), '').replace(/<!\[if !supportLists\]>(.*?)<!\[endif\]>/gi, '').replace(/style="[^"]*"/gi, '').replace(/style='[^']*'/gi, '').replace(/&nbsp;/gi, ' ');
     // 4. Remove everything in between and including tags '<style(.)style(.)>'
-    ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach(function (badTag) {
-        output = output.replace(new RegExp('<' + badTag + '.*?' + badTag + '(.*?)>', 'gi'), '');
-    });
+    output = removeBadTags(output);
     return output;
 };
 var unwrap = function unwrap(wrapper) {
@@ -349,7 +347,7 @@ var getNewActionObj = function getNewActionObj(actions) {
     }
 };
 var removeBadTags = function removeBadTags(html) {
-    ['script', 'applet', 'embed', 'noframes', 'noscript'].forEach(function (badTag) {
+    ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach(function (badTag) {
         html = html.replace(new RegExp('<' + badTag + '.*?' + badTag + '(.*?)>', 'gi'), '');
     });
     return html;
@@ -1262,19 +1260,14 @@ var methods = {
 	exec: function exec$$1(cmd, value) {
 		exec(cmd, value);
 	},
-	getHtml: function getHtml() {
-		var sanitize = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
+	getHtml: function getHtml(sanitize) {
 		return sanitize ? removeBadTags(this.refs.editor.innerHTML) : this.refs.editor.innerHTML;
 	},
 	getText: function getText() {
 		return refs.editor.innerText;
 	},
-	setHtml: function setHtml() {
-		var html = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-		var sanitize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-		this.refs.editor.innerHTML = sanitize ? removeBadTags(html) : html;
+	setHtml: function setHtml(html, sanitize) {
+		this.refs.editor.innerHTML = sanitize ? removeBadTags(html) : html || '';
 	}
 };
 
@@ -1288,13 +1281,13 @@ function oncreate() {
 }
 
 function encapsulateStyles(node) {
-	setAttribute(node, "svelte-520048443", "");
+	setAttribute(node, "svelte-2768784301", "");
 }
 
 function add_css() {
 	var style = createElement("style");
-	style.id = 'svelte-520048443-style';
-	style.textContent = "[svelte-520048443].cl *,[svelte-520048443] .cl *{box-sizing:border-box}[svelte-520048443].cl,[svelte-520048443] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-520048443].cl-content,[svelte-520048443] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%}[svelte-520048443].cl-actionbar,[svelte-520048443] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-520048443].cl-button,[svelte-520048443] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-520048443].cl-button:hover,[svelte-520048443] .cl-button:hover,[svelte-520048443].cl-button.active,[svelte-520048443] .cl-button.active{background-color:#fff}[svelte-520048443].cl-button:disabled,[svelte-520048443] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-520048443].cl-button.color-picker::after,[svelte-520048443] .cl-button.color-picker::after{display:block;content:\" \";position:absolute;top:25px;right:3px;height:0;width:0;border:3px solid rgba(0, 0, 0, 0);border-top-color:#555}[svelte-520048443].cl-textarea,[svelte-520048443] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-520048443].cl-textarea:focus,[svelte-520048443] .cl-textarea:focus{outline:none}";
+	style.id = 'svelte-2768784301-style';
+	style.textContent = "[svelte-2768784301].cl *,[svelte-2768784301] .cl *{box-sizing:border-box}[svelte-2768784301].cl,[svelte-2768784301] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-2768784301].cl-content,[svelte-2768784301] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%}[svelte-2768784301].cl-actionbar,[svelte-2768784301] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-2768784301].cl-button,[svelte-2768784301] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-2768784301].cl-button:hover,[svelte-2768784301] .cl-button:hover,[svelte-2768784301].cl-button.active,[svelte-2768784301] .cl-button.active{background-color:#fff}[svelte-2768784301].cl-button:disabled,[svelte-2768784301] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-2768784301].cl-button.color-picker::after,[svelte-2768784301] .cl-button.color-picker::after{display:block;content:\" \";position:absolute;top:25px;right:3px;height:0;width:0;border:3px solid rgba(0, 0, 0, 0);border-top-color:#555}[svelte-2768784301].cl-textarea,[svelte-2768784301] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-2768784301].cl-textarea:focus,[svelte-2768784301] .cl-textarea:focus{outline:none}";
 	appendNode(style, document.head);
 }
 
@@ -1518,7 +1511,7 @@ function Editor(options) {
 	this.refs = {};
 	this._state = assign(data(), options.data);
 
-	if (!document.getElementById("svelte-520048443-style")) add_css();
+	if (!document.getElementById("svelte-2768784301-style")) add_css();
 
 	var _oncreate = oncreate.bind(this);
 

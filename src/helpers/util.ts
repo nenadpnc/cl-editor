@@ -109,10 +109,7 @@ export const cleanHtml = (input: string) => {
                 .replace(/&nbsp;/gi, ' ');
                         
     // 4. Remove everything in between and including tags '<style(.)style(.)>'
-    ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag) => {
-        output = output.replace(new RegExp(`<${badTag}.*?${badTag}(.*?)>`, 'gi'), '')
-    });
-
+    output = removeBadTags(output);
     return output;
 }
 
@@ -162,7 +159,7 @@ export const getNewActionObj = (actions: any, userActions = []) => {
 }
 
 export const removeBadTags = (html: string) => {
-    ['script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag) => {
+    ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag) => {
         html = html.replace(new RegExp(`<${badTag}.*?${badTag}(.*?)>`, 'gi'), '')
     });
 

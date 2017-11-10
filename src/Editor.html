@@ -86,14 +86,14 @@
       exec: (cmd, value) => {
         exec(cmd, value);
       },
-      getHtml: function(sanitize = false) {
+      getHtml: function(sanitize) {
         return sanitize ? removeBadTags(this.refs.editor.innerHTML) : this.refs.editor.innerHTML;
       },
       getText: function() {
         return refs.editor.innerText;
       },
-      setHtml: function(html = '', sanitize = false) {
-        this.refs.editor.innerHTML = sanitize ? removeBadTags(html) : html;
+      setHtml: function(html, sanitize) {
+        this.refs.editor.innerHTML = sanitize ? removeBadTags(html) : (html || '');
       }
     }
   }

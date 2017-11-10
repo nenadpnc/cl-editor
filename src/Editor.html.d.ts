@@ -28,11 +28,11 @@ declare class Editor{
 
     exec(cmd: string, value: any): void
 
-    getHtml(): string
+    getHtml(sanitize?: boolean): string
 
     getText(): string
 
-    setHtml(html: string): void
+    setHtml(html: string, sanitize?: boolean): void
 
     refs: {
         colorPicker: HTMLDivElement,
