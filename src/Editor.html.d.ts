@@ -26,7 +26,7 @@ declare class Editor{
 
     destroy();
 
-    exec(cmd: string, value: any): void
+    exec(cmd: string, value?: string): void
 
     getHtml(sanitize?: boolean): string
 
@@ -42,7 +42,7 @@ declare class Editor{
     }
 
     options: {
-        target: HTMLElement,
+        target: Element,
         data: any
     }
 	
