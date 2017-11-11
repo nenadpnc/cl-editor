@@ -41,8 +41,6 @@
   import actions from './helpers/actions';
   import EditorModal from './helpers/EditorModal.html';
   import EditorColorPicker from './helpers/EditorColorPicker.html';
-  let modal;
-  let colorPicker;
 
   export default {
     data() {
@@ -57,14 +55,23 @@
       const actionObj = getNewActionObj(actions, data.actions);
       this.set({ actionBtns: getActionBtns(actionObj), actionObj });
       this.setHtml(data.html);
-      modal = new EditorModal({ target: this.refs.modal });
-      colorPicker = new EditorColorPicker({ target: this.refs.colorPicker });
+      this.modal = new EditorModal({ target: this.refs.modal });
+      this.colorPicker = new EditorColorPicker({ target: this.refs.colorPicker });
+      this.helper = {
+        foreColor: false,
+        backColor: false,
+        foreColorModal: false,
+        backColorModal: false,
+        image: false,
+        link: false,
+        showEditor: true
+      }
     },
     methods: {
       _btnClicked: function(action) {
         saveRange(this.refs.editor);
         restoreRange(this.refs.editor);
-        action.result.apply(this, [modal, colorPicker]);
+        action.result.call(this);
         this._handleButtonStatus();
       },
       _handleButtonStatus: function() {

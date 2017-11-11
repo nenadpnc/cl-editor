@@ -1,33 +1,23 @@
 import {exec, removeBlockTagsRecursive, getActionBtns, saveRange, restoreRange} from './util';
 
-let showEditor = true;
-let subscribeLink = false;
-let subscribeImage = false;
-const subscribeColor = {
-  foreColor: false,
-  backColor: false,
-  foreColorModal: false,
-  backColorModal: false
-};
-
 let actions = {
   viewHtml: {
     icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path fill="none" stroke="currentColor" stroke-width="8" stroke-miterlimit="10" d="M26.9 17.9L9 36.2 26.9 54M45 54l17.9-18.3L45 17.9"></path></svg>',
     title: 'View HTML',
     result: function() {
       const actionObj = this.get('actionObj');
-      showEditor = !showEditor;
-      this.refs.editor.style.display = showEditor ? 'block' : 'none';
-      this.refs.raw.style.display = showEditor ? 'none' : 'block';
-      if (showEditor) {
+      this.this.helper.showEditor = !this.helper.showEditor;
+      this.refs.editor.style.display = this.helper.showEditor ? 'block' : 'none';
+      this.refs.raw.style.display = this.helper.showEditor ? 'none' : 'block';
+      if (this.helper.showEditor) {
         this.refs.editor.innerHTML = this.refs.raw.value;
       } else {
         this.refs.raw.value = this.refs.editor.innerHTML;
       }
       setTimeout(() =>{
-        Object.keys(actionObj).forEach((action: string) => actionObj[action].disabled = !showEditor);
+        Object.keys(actionObj).forEach((action: string) => actionObj[action].disabled = !this.helper.showEditor);
         actionObj.viewHtml.disabled = false;
-        actionObj.viewHtml.active = !showEditor;
+        actionObj.viewHtml.active = !this.helper.showEditor;
         this.set({ actionBtns: getActionBtns(actionObj),  actionObj });
       })
     }
@@ -120,7 +110,7 @@ let actions = {
   a: {
     icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M31.1 48.9l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9L15 50.4c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L11 41.8c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7c2.5-2.6 3.1-6.7 1.5-10l-5.9 5.9zM38.7 22.5l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2L42 38c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1c0 .1 0 .1 0 0z"></path><path d="M44.2 30.5c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.3-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.9 40.6c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM49.9 55.4h-8.5v-5h8.5v-8.9h5.2v8.9h8.5v5h-8.5v8.9h-5.2v-8.9z"></path></svg>',
     title: 'Insert link',
-    result: function(modal) {
+    result: function() {
       const actionObj = this.get('actionObj');
       if (actionObj.a.active) {
         const selection = window.getSelection();
@@ -134,10 +124,10 @@ let actions = {
         this.set({actionBtns: getActionBtns(actionObj), actionObj});
       } else {
         saveRange(this.refs.editor);
-        modal.set({show: true, event: 'linkUrl', title: 'Insert link', label: 'Url'});
-        if (!subscribeLink) {
-          subscribeLink = true;
-          modal.on('linkUrl', (url) => {
+        this.modal.set({show: true, event: 'linkUrl', title: 'Insert link', label: 'Url'});
+        if (!this.helper.link) {
+          this.helper.link = true;
+          this.modal.on('linkUrl', (url) => {
             restoreRange(this.refs.editor);
             exec('createLink', url);
             actionObj.a.title = 'Unlink';
@@ -153,12 +143,12 @@ let actions = {
   image: {
     icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M64 17v38H8V17h56m8-8H0v54h72V9z"></path><path d="M17.5 22C15 22 13 24 13 26.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5zM16 50h27L29.5 32zM36 36.2l8.9-8.5L60.2 50H45.9S35.6 35.9 36 36.2z"></path></svg>',
     title: 'Image',
-    result: function(modal) {
+    result: function() {
       saveRange(this.refs.editor);
-      modal.set({show: true, event: 'imageUrl', title: 'Insert image', label: 'Url'});
-      if (!subscribeImage) {
-        subscribeImage = true;
-        modal.on('imageUrl', (url: string) => {
+      this.modal.set({show: true, event: 'imageUrl', title: 'Insert image', label: 'Url'});
+      if (!this.helper.image) {
+        this.helper.image = true;
+        this.modal.on('imageUrl', (url: string) => {
           restoreRange(this.refs.editor);
           exec('insertImage', url);
         });
@@ -169,16 +159,16 @@ let actions = {
     icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M32 15h7.8L56 57.1h-7.9l-4-11.1H27.4l-4 11.1h-7.6L32 15zm-2.5 25.4h12.9L36 22.3h-.2l-6.3 18.1z"></path></svg>',
     title: 'Text color',
     colorPicker: true,
-    result: function(modal, colorPicker) {
-      showColorPicker(modal, colorPicker, 'foreColor', this);
+    result: function() {
+      showColorPicker.call(this, 'foreColor');
     }
   },
   backcolor: {
     icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M36.5 22.3l-6.3 18.1H43l-6.3-18.1z"></path><path d="M9 8.9v54.2h54.1V8.9H9zm39.9 48.2L45 46H28.2l-3.9 11.1h-7.6L32.8 15h7.8l16.2 42.1h-7.9z"></path></svg>',
     title: 'Background color',
     colorPicker: true,
-    result: function(modal, colorPicker) {
-      showColorPicker(modal, colorPicker, 'backColor', this);
+    result: function() {
+      showColorPicker.call(this, 'backColor');
     }
   },
   removeFormat: {
@@ -201,24 +191,24 @@ let actions = {
 
 export default actions;
 
-const showColorPicker = (modal, colorPicker, cmd, editorRef) => {
-  saveRange(editorRef.refs.editor);
-  colorPicker.set({show: true, event: cmd});
-  if (!subscribeColor[cmd]) {
-    subscribeColor[cmd] = true;
-    colorPicker.on(cmd, (item) => {
+const showColorPicker = function(cmd) {
+  saveRange(this.refs.editor);
+  this.colorPicker.set({show: true, event: cmd});
+  if (!this.helper[cmd]) {
+    this.helper[cmd] = true;
+    this.colorPicker.on(cmd, (item) => {
       if (item.modal) {
-        modal.set({show: true, event: 'colorHref', title: 'Text color', label: cmd === 'foreColor' ? 'Text color' : 'Background color'});
+        this.modal.set({show: true, event: 'colorHref', title: 'Text color', label: cmd === 'foreColor' ? 'Text color' : 'Background color'});
         const command = cmd;
-        if (!subscribeColor[`${command}Modal`]) {
-          subscribeColor[`${command}Modal`] = true;
-          modal.on('colorHref', (color) => {
-            restoreRange(editorRef.refs.editor);
+        if (!this.helper[`${command}Modal`]) {
+          this.helper[`${command}Modal`] = true;
+          this.modal.on('colorHref', (color) => {
+            restoreRange(this.refs.editor);
             exec(command, color);
           });
         }
       } else {
-        restoreRange(editorRef.refs.editor);
+        restoreRange(this.refs.editor);
         exec(cmd, item.color);
       }
     });

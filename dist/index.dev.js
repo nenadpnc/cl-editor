@@ -364,15 +364,6 @@ var isEditorClick = function isEditorClick(target) {
     return false;
 };
 
-var showEditor = true;
-var subscribeLink = false;
-var subscribeImage = false;
-var subscribeColor = {
-    foreColor: false,
-    backColor: false,
-    foreColorModal: false,
-    backColorModal: false
-};
 var actions = {
     viewHtml: {
         icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path fill="none" stroke="currentColor" stroke-width="8" stroke-miterlimit="10" d="M26.9 17.9L9 36.2 26.9 54M45 54l17.9-18.3L45 17.9"></path></svg>',
@@ -381,20 +372,20 @@ var actions = {
             var _this = this;
 
             var actionObj = this.get('actionObj');
-            showEditor = !showEditor;
-            this.refs.editor.style.display = showEditor ? 'block' : 'none';
-            this.refs.raw.style.display = showEditor ? 'none' : 'block';
-            if (showEditor) {
+            this.this.helper.showEditor = !this.helper.showEditor;
+            this.refs.editor.style.display = this.helper.showEditor ? 'block' : 'none';
+            this.refs.raw.style.display = this.helper.showEditor ? 'none' : 'block';
+            if (this.helper.showEditor) {
                 this.refs.editor.innerHTML = this.refs.raw.value;
             } else {
                 this.refs.raw.value = this.refs.editor.innerHTML;
             }
             setTimeout(function () {
                 Object.keys(actionObj).forEach(function (action) {
-                    return actionObj[action].disabled = !showEditor;
+                    return actionObj[action].disabled = !_this.helper.showEditor;
                 });
                 actionObj.viewHtml.disabled = false;
-                actionObj.viewHtml.active = !showEditor;
+                actionObj.viewHtml.active = !_this.helper.showEditor;
                 _this.set({ actionBtns: getActionBtns(actionObj), actionObj: actionObj });
             });
         }
@@ -521,7 +512,7 @@ var actions = {
     a: {
         icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M31.1 48.9l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9L15 50.4c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L11 41.8c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7c2.5-2.6 3.1-6.7 1.5-10l-5.9 5.9zM38.7 22.5l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2L42 38c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1c0 .1 0 .1 0 0z"></path><path d="M44.2 30.5c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.3-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.9 40.6c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM49.9 55.4h-8.5v-5h8.5v-8.9h5.2v8.9h8.5v5h-8.5v8.9h-5.2v-8.9z"></path></svg>',
         title: 'Insert link',
-        result: function result(modal) {
+        result: function result() {
             var _this2 = this;
 
             var actionObj = this.get('actionObj');
@@ -537,10 +528,10 @@ var actions = {
                 this.set({ actionBtns: getActionBtns(actionObj), actionObj: actionObj });
             } else {
                 saveRange(this.refs.editor);
-                modal.set({ show: true, event: 'linkUrl', title: 'Insert link', label: 'Url' });
-                if (!subscribeLink) {
-                    subscribeLink = true;
-                    modal.on('linkUrl', function (url) {
+                this.modal.set({ show: true, event: 'linkUrl', title: 'Insert link', label: 'Url' });
+                if (!this.helper.link) {
+                    this.helper.link = true;
+                    this.modal.on('linkUrl', function (url) {
                         restoreRange(_this2.refs.editor);
                         exec('createLink', url);
                         actionObj.a.title = 'Unlink';
@@ -554,14 +545,14 @@ var actions = {
     image: {
         icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M64 17v38H8V17h56m8-8H0v54h72V9z"></path><path d="M17.5 22C15 22 13 24 13 26.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5zM16 50h27L29.5 32zM36 36.2l8.9-8.5L60.2 50H45.9S35.6 35.9 36 36.2z"></path></svg>',
         title: 'Image',
-        result: function result(modal) {
+        result: function result() {
             var _this3 = this;
 
             saveRange(this.refs.editor);
-            modal.set({ show: true, event: 'imageUrl', title: 'Insert image', label: 'Url' });
-            if (!subscribeImage) {
-                subscribeImage = true;
-                modal.on('imageUrl', function (url) {
+            this.modal.set({ show: true, event: 'imageUrl', title: 'Insert image', label: 'Url' });
+            if (!this.helper.image) {
+                this.helper.image = true;
+                this.modal.on('imageUrl', function (url) {
                     restoreRange(_this3.refs.editor);
                     exec('insertImage', url);
                 });
@@ -572,16 +563,16 @@ var actions = {
         icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M32 15h7.8L56 57.1h-7.9l-4-11.1H27.4l-4 11.1h-7.6L32 15zm-2.5 25.4h12.9L36 22.3h-.2l-6.3 18.1z"></path></svg>',
         title: 'Text color',
         colorPicker: true,
-        result: function result(modal, colorPicker) {
-            showColorPicker(modal, colorPicker, 'foreColor', this);
+        result: function result() {
+            showColorPicker.call(this, 'foreColor');
         }
     },
     backcolor: {
         icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M36.5 22.3l-6.3 18.1H43l-6.3-18.1z"></path><path d="M9 8.9v54.2h54.1V8.9H9zm39.9 48.2L45 46H28.2l-3.9 11.1h-7.6L32.8 15h7.8l16.2 42.1h-7.9z"></path></svg>',
         title: 'Background color',
         colorPicker: true,
-        result: function result(modal, colorPicker) {
-            showColorPicker(modal, colorPicker, 'backColor', this);
+        result: function result() {
+            showColorPicker.call(this, 'backColor');
         }
     },
     removeFormat: {
@@ -601,24 +592,26 @@ var actions = {
         }
     }
 };
-var showColorPicker = function showColorPicker(modal, colorPicker, cmd, editorRef) {
-    saveRange(editorRef.refs.editor);
-    colorPicker.set({ show: true, event: cmd });
-    if (!subscribeColor[cmd]) {
-        subscribeColor[cmd] = true;
-        colorPicker.on(cmd, function (item) {
+var showColorPicker = function showColorPicker(cmd) {
+    var _this4 = this;
+
+    saveRange(this.refs.editor);
+    this.colorPicker.set({ show: true, event: cmd });
+    if (!this.helper[cmd]) {
+        this.helper[cmd] = true;
+        this.colorPicker.on(cmd, function (item) {
             if (item.modal) {
-                modal.set({ show: true, event: 'colorHref', title: 'Text color', label: cmd === 'foreColor' ? 'Text color' : 'Background color' });
+                _this4.modal.set({ show: true, event: 'colorHref', title: 'Text color', label: cmd === 'foreColor' ? 'Text color' : 'Background color' });
                 var command = cmd;
-                if (!subscribeColor[command + 'Modal']) {
-                    subscribeColor[command + 'Modal'] = true;
-                    modal.on('colorHref', function (color) {
-                        restoreRange(editorRef.refs.editor);
+                if (!_this4.helper[command + 'Modal']) {
+                    _this4.helper[command + 'Modal'] = true;
+                    _this4.modal.on('colorHref', function (color) {
+                        restoreRange(_this4.refs.editor);
                         exec(command, color);
                     });
                 }
             } else {
-                restoreRange(editorRef.refs.editor);
+                restoreRange(_this4.refs.editor);
                 exec(cmd, item.color);
             }
         });
@@ -1136,9 +1129,6 @@ function EditorColorPicker(options) {
 assign(EditorColorPicker.prototype, methods$2, proto);
 
 /* src\Editor.html generated by Svelte v1.41.2 */
-var modal = void 0;
-var colorPicker = void 0;
-
 function data() {
 	return {
 		actionBtns: [],
@@ -1151,7 +1141,7 @@ var methods = {
 	_btnClicked: function _btnClicked(action) {
 		saveRange(this.refs.editor);
 		restoreRange(this.refs.editor);
-		action.result.apply(this, [modal, colorPicker]);
+		action.result.call(this);
 		this._handleButtonStatus();
 	},
 	_handleButtonStatus: function _handleButtonStatus() {
@@ -1196,18 +1186,27 @@ function oncreate() {
 	var actionObj = getNewActionObj(actions, data.actions);
 	this.set({ actionBtns: getActionBtns(actionObj), actionObj: actionObj });
 	this.setHtml(data.html);
-	modal = new EditorModal({ target: this.refs.modal });
-	colorPicker = new EditorColorPicker({ target: this.refs.colorPicker });
+	this.modal = new EditorModal({ target: this.refs.modal });
+	this.colorPicker = new EditorColorPicker({ target: this.refs.colorPicker });
+	this.helper = {
+		foreColor: false,
+		backColor: false,
+		foreColorModal: false,
+		backColorModal: false,
+		image: false,
+		link: false,
+		showEditor: true
+	};
 }
 
 function encapsulateStyles(node) {
-	setAttribute(node, "svelte-3932763025", "");
+	setAttribute(node, "svelte-659845184", "");
 }
 
 function add_css() {
 	var style = createElement("style");
-	style.id = 'svelte-3932763025-style';
-	style.textContent = "[svelte-3932763025].cl *,[svelte-3932763025] .cl *{box-sizing:border-box}[svelte-3932763025].cl,[svelte-3932763025] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-3932763025].cl-content,[svelte-3932763025] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%}[svelte-3932763025].cl-actionbar,[svelte-3932763025] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-3932763025].cl-button,[svelte-3932763025] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-3932763025].cl-button:hover,[svelte-3932763025] .cl-button:hover,[svelte-3932763025].cl-button.active,[svelte-3932763025] .cl-button.active{background-color:#fff}[svelte-3932763025].cl-button:disabled,[svelte-3932763025] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-3932763025].cl-textarea,[svelte-3932763025] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-3932763025].cl-textarea:focus,[svelte-3932763025] .cl-textarea:focus{outline:none}";
+	style.id = 'svelte-659845184-style';
+	style.textContent = "[svelte-659845184].cl *,[svelte-659845184] .cl *{box-sizing:border-box}[svelte-659845184].cl,[svelte-659845184] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-659845184].cl-content,[svelte-659845184] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%}[svelte-659845184].cl-actionbar,[svelte-659845184] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-659845184].cl-button,[svelte-659845184] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-659845184].cl-button:hover,[svelte-659845184] .cl-button:hover,[svelte-659845184].cl-button.active,[svelte-659845184] .cl-button.active{background-color:#fff}[svelte-659845184].cl-button:disabled,[svelte-659845184] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-659845184].cl-textarea,[svelte-659845184] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-659845184].cl-textarea:focus,[svelte-659845184] .cl-textarea:focus{outline:none}";
 	appendNode(style, document.head);
 }
 
@@ -1436,7 +1435,7 @@ function Editor(options) {
 	this.refs = {};
 	this._state = assign(data(), options.data);
 
-	if (!document.getElementById("svelte-3932763025-style")) add_css();
+	if (!document.getElementById("svelte-659845184-style")) add_css();
 
 	var _oncreate = oncreate.bind(this);
 
@@ -1462,8 +1461,17 @@ var editor = new Editor({
     target: document.querySelector('#clEditor'),
     data: {
         actions: [],
-        html: '<ul><li>test</li></ul>'
+        html: '<ul><li>test</li></ul>',
+        height: '100px'
     }
+});
+setTimeout(function () {
+    var editor2 = new Editor({
+        target: document.getElementById('editor2'),
+        data: {
+            height: '100px'
+        }
+    });
 });
 
 }());
