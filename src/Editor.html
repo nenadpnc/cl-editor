@@ -102,7 +102,7 @@
         return sanitize ? removeBadTags(this.refs.editor.innerHTML) : this.refs.editor.innerHTML;
       },
       getText: function() {
-        return refs.editor.innerText;
+        return this.refs.editor.innerText;
       },
       setHtml: function(html, sanitize) {
         this.refs.editor.innerHTML = sanitize ? removeBadTags(html) : (html || '');

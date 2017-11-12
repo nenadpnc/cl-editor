@@ -39,4 +39,7 @@ jobs:
       - store_artifacts:
           path: /tmp/dist
 
-
+theme: jekyll-theme-minimal
+title: Cl-editor
+description: Lightweight text editor, built with svelte + typescript (no external dependencies)
+show_downloads: true
