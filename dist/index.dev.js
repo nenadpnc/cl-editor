@@ -354,16 +354,18 @@ var removeBadTags = function removeBadTags(html) {
     });
     return html;
 };
-var isEditorClick = function isEditorClick(target) {
-    if (target.className === 'cl') {
+var isEditorClick = function isEditorClick(target, editorWrapper) {
+    if (target === editorWrapper) {
         return true;
     }
     if (target.parentElement) {
-        return isEditorClick(target.parentElement);
+        return isEditorClick(target.parentElement, editorWrapper);
     }
     return false;
 };
 
+var linkSvg = '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M31.1 48.9l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9L15 50.4c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L11 41.8c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7c2.5-2.6 3.1-6.7 1.5-10l-5.9 5.9zM38.7 22.5l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2L42 38c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1c0 .1 0 .1 0 0z"></path><path d="M44.2 30.5c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.3-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.9 40.6c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM49.9 55.4h-8.5v-5h8.5v-8.9h5.2v8.9h8.5v5h-8.5v8.9h-5.2v-8.9z"></path></svg>';
+var unlinkSvg = '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M30.9 49.1l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9l-5.2-5.2c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L10.8 42c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7C38 50.5 38.6 46.3 37 43l-6.1 6.1zM38.5 22.7l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2-6.5 6.5c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1z"></path><path d="M44.1 30.7c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.2-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.8 40.8c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM41.3 55.8v-5h22.2v5H41.3z"></path></svg>';
 var actions = {
     viewHtml: {
         icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path fill="none" stroke="currentColor" stroke-width="8" stroke-miterlimit="10" d="M26.9 17.9L9 36.2 26.9 54M45 54l17.9-18.3L45 17.9"></path></svg>',
@@ -372,7 +374,7 @@ var actions = {
             var _this = this;
 
             var actionObj = this.get('actionObj');
-            this.this.helper.showEditor = !this.helper.showEditor;
+            this.helper.showEditor = !this.helper.showEditor;
             this.refs.editor.style.display = this.helper.showEditor ? 'block' : 'none';
             this.refs.raw.style.display = this.helper.showEditor ? 'none' : 'block';
             if (this.helper.showEditor) {
@@ -510,7 +512,7 @@ var actions = {
         }
     },
     a: {
-        icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M31.1 48.9l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9L15 50.4c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L11 41.8c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7c2.5-2.6 3.1-6.7 1.5-10l-5.9 5.9zM38.7 22.5l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2L42 38c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1c0 .1 0 .1 0 0z"></path><path d="M44.2 30.5c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.3-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.9 40.6c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM49.9 55.4h-8.5v-5h8.5v-8.9h5.2v8.9h8.5v5h-8.5v8.9h-5.2v-8.9z"></path></svg>',
+        icon: linkSvg,
         title: 'Insert link',
         result: function result() {
             var _this2 = this;
@@ -524,7 +526,7 @@ var actions = {
                 selection.addRange(range);
                 exec('unlink');
                 actionObj.a.title = 'Insert link';
-                actionObj.a.icon = '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M31.1 48.9l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9L15 50.4c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L11 41.8c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7c2.5-2.6 3.1-6.7 1.5-10l-5.9 5.9zM38.7 22.5l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2L42 38c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1c0 .1 0 .1 0 0z"></path><path d="M44.2 30.5c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.3-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.9 40.6c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM49.9 55.4h-8.5v-5h8.5v-8.9h5.2v8.9h8.5v5h-8.5v8.9h-5.2v-8.9z"></path></svg>';
+                actionObj.a.icon = linkSvg;
                 this.set({ actionBtns: getActionBtns(actionObj), actionObj: actionObj });
             } else {
                 saveRange(this.refs.editor);
@@ -535,7 +537,7 @@ var actions = {
                         restoreRange(_this2.refs.editor);
                         exec('createLink', url);
                         actionObj.a.title = 'Unlink';
-                        actionObj.a.icon = '<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M30.9 49.1l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9l-5.2-5.2c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L10.8 42c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7C38 50.5 38.6 46.3 37 43l-6.1 6.1zM38.5 22.7l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2-6.5 6.5c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1z"></path><path d="M44.1 30.7c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.2-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.8 40.8c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM41.3 55.8v-5h22.2v5H41.3z"></path></svg>';
+                        actionObj.a.icon = unlinkSvg;
                         _this2.set({ actionBtns: getActionBtns(actionObj), actionObj: actionObj });
                     });
                 }
@@ -622,7 +624,7 @@ var showColorPicker = function showColorPicker(cmd) {
 function data$1() {
 	return {
 		show: false,
-		url: '',
+		text: '',
 		event: '',
 		title: '',
 		label: '',
@@ -633,17 +635,17 @@ function data$1() {
 var methods$1 = {
 	confirm: function confirm(event) {
 		event.preventDefault();
-		var url = this.get('url');
-		if (url) {
-			this.fire(this.get('event'), url);
+		var text = this.get('text');
+		if (text) {
+			this.fire(this.get('event'), text);
 			this.cancel();
 		} else {
 			this.set({ error: true });
-			this.refs.modalWrapper.querySelector('input').focus();
+			this.refs.text.focus();
 		}
 	},
 	cancel: function cancel() {
-		this.set({ show: false, url: '', error: false });
+		this.set({ show: false, text: '', error: false });
 	},
 	hideError: function hideError() {
 		this.set({ error: false });
@@ -655,23 +657,21 @@ function oncreate$1() {
 
 	this.observe('show', function (show) {
 		if (show) {
-			(function (modalWrapper) {
-				setTimeout(function () {
-					modalWrapper.querySelector('input').focus();
-				});
-			})(_this.refs.modalWrapper);
+			setTimeout(function () {
+				_this.refs.text.focus();
+			});
 		}
 	}, { init: false });
 }
 
 function encapsulateStyles$1(node) {
-	setAttribute(node, "svelte-3164729195", "");
+	setAttribute(node, "svelte-814353032", "");
 }
 
 function add_css$1() {
 	var style = createElement("style");
-	style.id = 'svelte-3164729195-style';
-	style.textContent = "[svelte-3164729195].cl-editor-modal,[svelte-3164729195] .cl-editor-modal{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:140px;backface-visibility:hidden}[svelte-3164729195].cl-editor-overlay,[svelte-3164729195] .cl-editor-overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0}[svelte-3164729195].modal-box,[svelte-3164729195] .modal-box{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:36px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}[svelte-3164729195].modal-title,[svelte-3164729195] .modal-title{font-size:24px;font-weight:700;margin:0 0 20px;padding:2px 0 4px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}[svelte-3164729195].modal-label,[svelte-3164729195] .modal-label{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}[svelte-3164729195].modal-label input,[svelte-3164729195] .modal-label input{position:absolute;top:0;right:0;height:27px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}[svelte-3164729195].modal-label input:focus,[svelte-3164729195] .modal-label input:focus{outline:none}[svelte-3164729195].input-error input,[svelte-3164729195] .input-error input{border:1px solid #e74c3c}[svelte-3164729195].input-info,[svelte-3164729195] .input-info{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}[svelte-3164729195].input-info span,[svelte-3164729195] .input-info span{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:0 7px;width:150px}[svelte-3164729195].input-error .input-info,[svelte-3164729195] .input-error .input-info{margin-top:-27px}[svelte-3164729195].input-error .msg-error,[svelte-3164729195] .input-error .msg-error{color:#e74c3c}[svelte-3164729195].modal-button,[svelte-3164729195] .modal-button{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}[svelte-3164729195].modal-submit,[svelte-3164729195] .modal-submit{right:110px;background:#2bc06a}[svelte-3164729195].modal-reset,[svelte-3164729195] .modal-reset{color:#555;background:#e6e6e6}";
+	style.id = 'svelte-814353032-style';
+	style.textContent = "[svelte-814353032].cl-editor-modal,[svelte-814353032] .cl-editor-modal{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:140px;backface-visibility:hidden;z-index:11}[svelte-814353032].cl-editor-overlay,[svelte-814353032] .cl-editor-overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0;z-index:10}[svelte-814353032].modal-box,[svelte-814353032] .modal-box{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:36px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}[svelte-814353032].modal-title,[svelte-814353032] .modal-title{font-size:24px;font-weight:700;margin:0 0 20px;padding:2px 0 4px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}[svelte-814353032].modal-label,[svelte-814353032] .modal-label{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}[svelte-814353032].modal-label input,[svelte-814353032] .modal-label input{position:absolute;top:0;right:0;height:27px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}[svelte-814353032].modal-label input:focus,[svelte-814353032] .modal-label input:focus{outline:none}[svelte-814353032].input-error input,[svelte-814353032] .input-error input{border:1px solid #e74c3c}[svelte-814353032].input-info,[svelte-814353032] .input-info{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}[svelte-814353032].input-info span,[svelte-814353032] .input-info span{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:0 7px;width:150px}[svelte-814353032].input-error .input-info,[svelte-814353032] .input-error .input-info{margin-top:-27px}[svelte-814353032].input-error .msg-error,[svelte-814353032] .input-error .msg-error{color:#e74c3c}[svelte-814353032].modal-button,[svelte-814353032] .modal-button{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}[svelte-814353032].modal-submit,[svelte-814353032] .modal-submit{right:110px;background:#2bc06a}[svelte-814353032].modal-reset,[svelte-814353032] .modal-reset{color:#555;background:#e6e6e6}";
 	appendNode(style, document.head);
 }
 
@@ -709,7 +709,7 @@ function create_main_fragment$1(state, component) {
 
 	function input_input_handler() {
 		input_updating = true;
-		component.set({ url: input.value });
+		component.set({ text: input.value });
 		input_updating = false;
 	}
 
@@ -762,7 +762,7 @@ function create_main_fragment$1(state, component) {
 			addListener(form, "submit", submit_handler);
 			label.className = label_class_value = "modal-label " + (state.error ? 'input-error' : '');
 			input.type = "text";
-			input.name = "url";
+			input.name = "text";
 			addListener(input, "input", input_input_handler);
 			addListener(input, "keyup", keyup_handler);
 			span_1.className = "input-info";
@@ -775,7 +775,6 @@ function create_main_fragment$1(state, component) {
 
 		m: function mount(target, anchor) {
 			insertNode(div, target, anchor);
-			component.refs.modalWrapper = div;
 			appendNode(div_1, div);
 			appendNode(text, div);
 			appendNode(div_2, div);
@@ -786,9 +785,9 @@ function create_main_fragment$1(state, component) {
 			appendNode(form, div_3);
 			appendNode(label, form);
 			appendNode(input, label);
-			component.refs.url = input;
+			component.refs.text = input;
 
-			input.value = state.url;
+			input.value = state.text;
 
 			appendNode(text_3, label);
 			appendNode(span_1, label);
@@ -816,7 +815,7 @@ function create_main_fragment$1(state, component) {
 			}
 
 			if (!input_updating) {
-				input.value = state.url;
+				input.value = state.text;
 			}
 
 			if (changed.label) {
@@ -842,12 +841,11 @@ function create_main_fragment$1(state, component) {
 		},
 
 		d: function destroy$$1() {
-			if (component.refs.modalWrapper === div) component.refs.modalWrapper = null;
 			removeListener(div_1, "click", click_handler);
 			removeListener(form, "submit", submit_handler);
 			removeListener(input, "input", input_input_handler);
 			removeListener(input, "keyup", keyup_handler);
-			if (component.refs.url === input) component.refs.url = null;
+			if (component.refs.text === input) component.refs.text = null;
 			if (if_block) if_block.d();
 			removeListener(button_1, "click", click_handler_1);
 		}
@@ -886,7 +884,7 @@ function EditorModal(options) {
 	this.refs = {};
 	this._state = assign(data$1(), options.data);
 
-	if (!document.getElementById("svelte-3164729195-style")) add_css$1();
+	if (!document.getElementById("svelte-814353032-style")) add_css$1();
 
 	var _oncreate = oncreate$1.bind(this);
 
@@ -941,13 +939,13 @@ function oncreate$2() {
 }
 
 function encapsulateStyles$2(node) {
-	setAttribute(node, "svelte-92172614", "");
+	setAttribute(node, "svelte-2091826607", "");
 }
 
 function add_css$2() {
 	var style = createElement("style");
-	style.id = 'svelte-92172614-style';
-	style.textContent = "[svelte-92172614].color-picker-wrapper,[svelte-92172614] .color-picker-wrapper{border:1px solid #ecf0f1;border-top:none;background:#FFF;box-shadow:rgba(0,0,0,.1) 0 2px 3px;width:290px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);padding:0;position:absolute;top:37px}[svelte-92172614].color-picker-overlay,[svelte-92172614] .color-picker-overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0}[svelte-92172614].color-picker-btn,[svelte-92172614] .color-picker-btn{display:block;position:relative;float:left;height:20px;width:20px;border:1px solid #333;padding:0;margin:2px;line-height:35px;text-decoration:none;background:#FFF;color:#333!important;cursor:pointer;text-align:left;font-size:15px;transition:all 150ms;line-height:20px;padding:0px 5px}[svelte-92172614].color-picker-btn:hover::after,[svelte-92172614] .color-picker-btn:hover::after{content:\" \";display:block;position:absolute;top:-5px;left:-5px;height:27px;width:27px;background:inherit;border:1px solid #FFF;box-shadow:#000 0 0 2px;z-index:10}";
+	style.id = 'svelte-2091826607-style';
+	style.textContent = "[svelte-2091826607].color-picker-wrapper,[svelte-2091826607] .color-picker-wrapper{border:1px solid #ecf0f1;border-top:none;background:#FFF;box-shadow:rgba(0,0,0,.1) 0 2px 3px;width:290px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);padding:0;position:absolute;top:37px;z-index:11}[svelte-2091826607].color-picker-overlay,[svelte-2091826607] .color-picker-overlay{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0;z-index:10}[svelte-2091826607].color-picker-btn,[svelte-2091826607] .color-picker-btn{display:block;position:relative;float:left;height:20px;width:20px;border:1px solid #333;padding:0;margin:2px;line-height:35px;text-decoration:none;background:#FFF;color:#333!important;cursor:pointer;text-align:left;font-size:15px;transition:all 150ms;line-height:20px;padding:0px 5px}[svelte-2091826607].color-picker-btn:hover::after,[svelte-2091826607] .color-picker-btn:hover::after{content:\" \";display:block;position:absolute;top:-5px;left:-5px;height:27px;width:27px;background:inherit;border:1px solid #FFF;box-shadow:#000 0 0 2px;z-index:10}";
 	appendNode(style, document.head);
 }
 
@@ -1106,7 +1104,7 @@ function EditorColorPicker(options) {
 	init(this, options);
 	this._state = assign(data$2(), options.data);
 
-	if (!document.getElementById("svelte-92172614-style")) add_css$2();
+	if (!document.getElementById("svelte-2091826607-style")) add_css$2();
 
 	var _oncreate = oncreate$2.bind(this);
 
@@ -1139,13 +1137,14 @@ function data() {
 
 var methods = {
 	_btnClicked: function _btnClicked(action) {
+		this.refs.editor.focus();
 		saveRange(this.refs.editor);
 		restoreRange(this.refs.editor);
 		action.result.call(this);
 		this._handleButtonStatus();
 	},
-	_handleButtonStatus: function _handleButtonStatus() {
-		var tags = getTagsRecursive(document.getSelection().focusNode);
+	_handleButtonStatus: function _handleButtonStatus(clearBtns) {
+		var tags = clearBtns ? [] : getTagsRecursive(document.getSelection().focusNode);
 		var actionObj = this.get('actionObj');
 		Object.keys(actionObj).forEach(function (action) {
 			return actionObj[action].active = false;
@@ -1163,7 +1162,8 @@ var methods = {
 		this.fire('change', html);
 	},
 	_documentClick: function _documentClick(event) {
-		if (!isEditorClick(event.target)) {
+		if (!isEditorClick(event.target, this.refs.editorWrapper)) {
+			this._handleButtonStatus(true);
 			this.fire('blur', event);
 		}
 	},
@@ -1200,13 +1200,13 @@ function oncreate() {
 }
 
 function encapsulateStyles(node) {
-	setAttribute(node, "svelte-659845184", "");
+	setAttribute(node, "svelte-3554465226", "");
 }
 
 function add_css() {
 	var style = createElement("style");
-	style.id = 'svelte-659845184-style';
-	style.textContent = "[svelte-659845184].cl *,[svelte-659845184] .cl *{box-sizing:border-box}[svelte-659845184].cl,[svelte-659845184] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-659845184].cl-content,[svelte-659845184] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%}[svelte-659845184].cl-actionbar,[svelte-659845184] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-659845184].cl-button,[svelte-659845184] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-659845184].cl-button:hover,[svelte-659845184] .cl-button:hover,[svelte-659845184].cl-button.active,[svelte-659845184] .cl-button.active{background-color:#fff}[svelte-659845184].cl-button:disabled,[svelte-659845184] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-659845184].cl-textarea,[svelte-659845184] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-659845184].cl-textarea:focus,[svelte-659845184] .cl-textarea:focus{outline:none}";
+	style.id = 'svelte-3554465226-style';
+	style.textContent = "[svelte-3554465226].cl *,[svelte-3554465226] .cl *{box-sizing:border-box}[svelte-3554465226].cl,[svelte-3554465226] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-3554465226].cl-content,[svelte-3554465226] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%}[svelte-3554465226].cl-actionbar,[svelte-3554465226] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-3554465226].cl-button,[svelte-3554465226] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-3554465226].cl-button:hover,[svelte-3554465226] .cl-button:hover,[svelte-3554465226].cl-button.active,[svelte-3554465226] .cl-button.active{background-color:#fff}[svelte-3554465226].cl-button:disabled,[svelte-3554465226] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-3554465226].cl-textarea,[svelte-3554465226] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-3554465226].cl-textarea:focus,[svelte-3554465226] .cl-textarea:focus{outline:none}";
 	appendNode(style, document.head);
 }
 
@@ -1283,6 +1283,7 @@ function create_main_fragment(state, component) {
 		m: function mount(target, anchor) {
 			insertNode(text, target, anchor);
 			insertNode(div, target, anchor);
+			component.refs.editorWrapper = div;
 			appendNode(div_1, div);
 
 			for (var i = 0; i < each_blocks.length; i += 1) {
@@ -1342,6 +1343,8 @@ function create_main_fragment(state, component) {
 
 		d: function destroy$$1() {
 			window.removeEventListener("click", onwindowclick);
+
+			if (component.refs.editorWrapper === div) component.refs.editorWrapper = null;
 
 			destroyEach(each_blocks);
 
@@ -1435,7 +1438,7 @@ function Editor(options) {
 	this.refs = {};
 	this._state = assign(data(), options.data);
 
-	if (!document.getElementById("svelte-659845184-style")) add_css();
+	if (!document.getElementById("svelte-3554465226-style")) add_css();
 
 	var _oncreate = oncreate.bind(this);
 
@@ -1465,13 +1468,11 @@ var editor = new Editor({
         height: '100px'
     }
 });
-setTimeout(function () {
-    var editor2 = new Editor({
-        target: document.getElementById('editor2'),
-        data: {
-            height: '100px'
-        }
-    });
+var editor2 = new Editor({
+    target: document.getElementById('editor2'),
+    data: {
+        height: '100px'
+    }
 });
 
 }());

@@ -168,12 +168,12 @@ export const removeBadTags = (html: string) => {
     return html;
 }
 
-export const isEditorClick = (target: HTMLElement) => {
-    if (target.className === 'cl') {
+export const isEditorClick = (target: HTMLElement, editorWrapper: HTMLElement) => {
+    if (target === editorWrapper) {
         return true;
     }
     if (target.parentElement) {
-        return isEditorClick(target.parentElement);
+        return isEditorClick(target.parentElement, editorWrapper);
     }
     return false;
 }

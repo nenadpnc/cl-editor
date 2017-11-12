@@ -1,5 +1,5 @@
 <:Window on:click="_documentClick(event)" />
-<div class="cl">
+<div class="cl" ref:editorWrapper>
   <div class="cl-actionbar">
     {{#each actionBtns as action}}
       <button 
@@ -69,13 +69,14 @@
     },
     methods: {
       _btnClicked: function(action) {
+        this.refs.editor.focus();
         saveRange(this.refs.editor);
         restoreRange(this.refs.editor);
         action.result.call(this);
         this._handleButtonStatus();
       },
-      _handleButtonStatus: function() {
-        const tags = getTagsRecursive(document.getSelection().focusNode);
+      _handleButtonStatus: function(clearBtns) {
+        const tags = clearBtns ? [] : getTagsRecursive(document.getSelection().focusNode);
         const actionObj = this.get('actionObj');
         Object.keys(actionObj).forEach((action) => actionObj[action].active = false);
         tags.forEach((tag) => (actionObj[tag.toLowerCase()] || {}).active = true);
@@ -89,7 +90,8 @@
         this.fire('change', html);
       },
       _documentClick: function(event) {
-        if (!isEditorClick(event.target)) {
+        if (!isEditorClick(event.target, this.refs.editorWrapper)) {
+          this._handleButtonStatus(true);
           this.fire('blur', event);
         }
       },
