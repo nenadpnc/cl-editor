@@ -55,11 +55,11 @@ const editor = new Editor({
                     const selection = window.getSelection();
                     if (!selection.toString().length) {
                         const range = document.createRange();
-                        range.selectNodeContents(editor2.refs.editor);
+                        range.selectNodeContents(editor.refs.editor);
                         selection.removeAllRanges();
                         selection.addRange(range);
                     }
-                    editor2.exec('copy');
+                    editor.exec('copy');
                 }
             },
             'h1', 'h2', 'p'
