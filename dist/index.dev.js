@@ -1518,6 +1518,7 @@ var toogleEdit = function toogleEdit(showEditor) {
                 html: text.innerHTML
             }
         });
+        inlineEditor.refs.editor.focus();
         inlineEditor.on('blur', function () {
             if (init) {
                 text.innerHTML = inlineEditor.getHtml();
