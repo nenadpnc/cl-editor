@@ -90,6 +90,8 @@ const toogleEdit = (showEditor?: boolean) => {
       }
     });
 
+		inlineEditor.refs.editor.focus();
+
     inlineEditor.on('blur', () => {
       if (init) {
         text.innerHTML = inlineEditor.getHtml();
