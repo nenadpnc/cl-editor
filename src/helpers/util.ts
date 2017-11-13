@@ -104,7 +104,7 @@ export const cleanHtml = (input: string) => {
                 // 2. strip Word generated HTML comments
                 .replace(/<!--(.*?)-->/g, '')
                 // 3. remove tags leave content if any
-                .replace(new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font)(.*?)>','gi'), '')
+                .replace(new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font|w:sdt)(.*?)>','gi'), '')
                 .replace(/<!\[if !supportLists\]>(.*?)<!\[endif\]>/gi, '')
                 .replace(/style="[^"]*"/gi, '')
                 .replace(/style='[^']*'/gi, '')
@@ -128,7 +128,7 @@ export const unwrap = (wrapper: HTMLElement) => {
 
 export const removeBlockTagsRecursive = (elements: HTMLCollection) => {
   Array.from(elements).forEach((item: HTMLElement) => {
-    if (['h1', 'h2', 'p', 'div', 'blockquote'].some((tag) => tag === item.tagName.toLowerCase())) {
+    if (['h1', 'h2', 'blockquote'].some((tag) => tag === item.tagName.toLowerCase())) {
       if (item.children.length) {
         removeBlockTagsRecursive(item.children);
       }

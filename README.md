@@ -42,7 +42,7 @@ const editor = new Editor({
     data: {
         // <Array[string | Object]> string if overwriting, object if customizing/creating
         // available actions:
-        // 'viewHtml', 'undo', 'redo', 'b', 'i', 'u', 'strike', 'h1', 'h2', 'p', 'blockquote', 
+        // 'viewHtml', 'undo', 'redo', 'b', 'i', 'u', 'strike', 'sup', 'sub', 'h1', 'h2', 'p', 'blockquote', 
         // 'ol', 'ul', 'hr', 'left', 'right', 'center', 'justify', 'a', 'image', 'forecolor', 'backcolor', 'removeFormat'
         actions: [
             'b', 'i', 'u', 'strike', 'ul', 'ol',
@@ -50,7 +50,17 @@ const editor = new Editor({
                 name: 'copy', // required
                 icon: '<b>C</b>', // string or html string (ex. <svg>...</svg>)
                 title: 'Copy',
-                result: () => console.log('copy')
+                result: () => {
+                    // copy current selection or whole editor content
+                    const selection = window.getSelection();
+                    if (!selection.toString().length) {
+                        const range = document.createRange();
+                        range.selectNodeContents(editor2.refs.editor);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }
+                    editor2.exec('copy');
+                }
             },
             'h1', 'h2', 'p'
         ],
@@ -72,6 +82,7 @@ editor.setHtml(html, sanitize?: boolean) // sets html for editor. if second argu
 ```
 * There are also built in svelte methods like get, set, observe, fire, destroy.
 * You can check them out at [https://svelte.technology/guide](https://svelte.technology/guide)
+* For list af available _**exec**_ command visit [https://codepen.io/netsi1964/pen/QbLLGW?editors=0010](https://codepen.io/netsi1964/pen/QbLLGW?editors=0010)
 ```js
 // Events
 editor.on('change', (html) => console.log(html)) // on every keyup event

@@ -56,6 +56,16 @@ export default {
     title: 'Strike-through',
     result: () => exec('strikeThrough')
   },
+  sup: {
+    icon: 'A<sup>2</sup>',
+    title: 'Superscript',
+    result: () => exec('superscript')
+  },
+  sub: {
+    icon: 'A<sub>2</sub>',
+    title: 'Subscript',
+    result: () => exec('subscript')
+  },
   h1: {
     icon: '<b>H<sub>1</sub></b>',
     title: 'Heading 1',

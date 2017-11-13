@@ -298,7 +298,7 @@ var cleanHtml = function cleanHtml(input) {
     // remove line brakers and find relevant html
     var html = input.replace(/\r?\n|\r/g, ' ').match(/<!--StartFragment-->(.*?)<!--EndFragment-->/);
     var output = html && html[1] || '';
-    output = output.replace(/(class=(")?Mso[a-zA-Z]+(")?)/g, ' ').replace(/<!--(.*?)-->/g, '').replace(new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font)(.*?)>', 'gi'), '').replace(/<!\[if !supportLists\]>(.*?)<!\[endif\]>/gi, '').replace(/style="[^"]*"/gi, '').replace(/style='[^']*'/gi, '').replace(/&nbsp;/gi, ' ');
+    output = output.replace(/(class=(")?Mso[a-zA-Z]+(")?)/g, ' ').replace(/<!--(.*?)-->/g, '').replace(new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font|w:sdt)(.*?)>', 'gi'), '').replace(/<!\[if !supportLists\]>(.*?)<!\[endif\]>/gi, '').replace(/style="[^"]*"/gi, '').replace(/style='[^']*'/gi, '').replace(/&nbsp;/gi, ' ');
     // 4. Remove everything in between and including tags '<style(.)style(.)>'
     output = removeBadTags(output);
     return output;
@@ -314,7 +314,7 @@ var unwrap = function unwrap(wrapper) {
 };
 var removeBlockTagsRecursive = function removeBlockTagsRecursive(elements) {
     Array.from(elements).forEach(function (item) {
-        if (['h1', 'h2', 'p', 'div', 'blockquote'].some(function (tag) {
+        if (['h1', 'h2', 'blockquote'].some(function (tag) {
             return tag === item.tagName.toLowerCase();
         })) {
             if (item.children.length) {
@@ -431,6 +431,20 @@ var actions = {
         title: 'Strike-through',
         result: function result() {
             return exec('strikeThrough');
+        }
+    },
+    sup: {
+        icon: 'A<sup>2</sup>',
+        title: 'Superscript',
+        result: function result() {
+            return exec('superscript');
+        }
+    },
+    sub: {
+        icon: 'A<sub>2</sub>',
+        title: 'Subscript',
+        result: function result() {
+            return exec('subscript');
         }
     },
     h1: {
