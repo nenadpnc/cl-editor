@@ -42,7 +42,7 @@ const editor2 = new Editor({
         }
       ],
       html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a odio neque. Duis ac laoreet lacus.',
-	    height: '150px'
+      height: '150px'
     }
 })
 ```
@@ -77,8 +77,8 @@ btn.addEventListener('click', () => {
 });
 
 const toogleEdit = (showEditor?: boolean) => {
-	textWrapper.style.display = showEditor ? 'none' : 'block';
-	inlineEdit.style.display = showEditor ? 'block' : 'none';
+  textWrapper.style.display = showEditor ? 'none' : 'block';
+  inlineEdit.style.display = showEditor ? 'block' : 'none';
   if (showEditor) {
     let init = false;
     inlineEditor = new Editor({
