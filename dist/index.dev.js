@@ -1458,22 +1458,64 @@ function Editor(options) {
 
 assign(Editor.prototype, methods, proto);
 
+var inlineEditor = void 0;
+var textWrapper = document.getElementById('textWrapper');
+var text = document.getElementById('text');
+var inlineEdit = document.getElementById('inlineEdit');
+var btn = document.getElementById('editBtn');
+btn.addEventListener('click', function () {
+    toogleEdit(true);
+});
 var editor = new Editor({
-    target: document.querySelector('#clEditor'),
-    data: {
-        actions: [],
-        html: '<ul><li>test</li></ul>',
-        height: '200px'
-    }
+    target: document.getElementById('editor1')
 });
 var editor2 = new Editor({
-    target: document.querySelector('#clEditor2'),
+    target: document.getElementById('editor2'),
     data: {
-        actions: [],
-        html: '<ul><li>test</li></ul>',
-        height: '200px'
+        actions: ['b', 'i', 'u', 'strike', 'h1', 'h2', 'p', {
+            name: 'copy',
+            icon: '&#128203;',
+            title: 'Copy',
+            result: function result() {
+                var selection = window.getSelection();
+                if (!selection.toString().length) {
+                    var range = document.createRange();
+                    range.selectNodeContents(editor2.refs.editor);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+                editor2.exec('copy');
+            }
+        }],
+        html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a odio neque. Duis ac laoreet lacus.',
+        height: '150px'
     }
 });
+var toogleEdit = function toogleEdit(showEditor) {
+    textWrapper.style.display = showEditor ? 'none' : 'block';
+    inlineEdit.style.display = showEditor ? 'block' : 'none';
+    if (showEditor) {
+        var init = false;
+        inlineEditor = new Editor({
+            target: inlineEdit,
+            data: {
+                actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
+                height: '50px',
+                html: text.innerHTML
+            }
+        });
+        inlineEditor.on('blur', function () {
+            if (init) {
+                text.innerHTML = inlineEditor.getHtml();
+                inlineEditor.destroy();
+                toogleEdit();
+            }
+            init = true;
+        });
+    } else {
+        inlineEditor.destroy();
+    }
+};
 
 }());
 //# sourceMappingURL=index.dev.js.map

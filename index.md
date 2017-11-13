@@ -2,124 +2,96 @@
 layout: default
 ---
 
-Text can be **bold**, _italic_, or ~~strikethrough~~.
+## [](#header-2)Basic Example
 
-[Link to another page](another-page).
-
-There should be whitespace between paragraphs.
-
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
-
-# [](#header-1)Header 1
-
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
-
-## [](#header-2)Header 2
-
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
-
-### [](#header-3)Header 3
+Includes all available actions and default height.
 
 ```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
+const editor = new Editor({
+    target: document.getElementById('editor1')
+})
+```
+<div id="editor1"></div>
+
+## [](#header-2)Custom action example
+
+Example of custom ```copy``` action.
+
+```js
+const editor2 = new Editor({
+    target: document.getElementById('editor2'),
+    data: {
+      actions: [
+        'b', 'i', 'u', 'strike', 'h1', 'h2', 'p',
+        {
+            name: 'copy', 
+            icon: '&#128203;',
+            title: 'Copy',
+            result: () => {
+              const selection = window.getSelection();
+              if (!selection.toString().length) {
+                const range = document.createRange();
+                range.selectNodeContents(editor2.refs.editor);
+                selection.removeAllRanges();
+                selection.addRange(range);
+              }
+              editor2.exec('copy');
+            }
+        }
+      ],
+      html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a odio neque. Duis ac laoreet lacus.',
+	    height: '150px'
+    }
+})
+```
+
+<div id="editor2"></div>
+
+## [](#header-2)Example using ```blur``` event
+
+```js
+let inlineEditor;
+const textWrapper = document.getElementById('textWrapper');
+const text = document.getElementById('text');
+const inlineEdit = document.getElementById('inlineEdit');
+const btn = document.getElementById('editBtn');
+
+btn.addEventListener('click', () => {
+	toogleEdit(true);
+});
+
+const toogleEdit = (showEditor?: boolean) => {
+	textWrapper.style.display = showEditor ? 'none' : 'block';
+	inlineEdit.style.display = showEditor ? 'block' : 'none';
+	if (showEditor) {
+		let init = false;
+		inlineEditor = new Editor({
+			target: inlineEdit,
+			data: {
+				actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
+				height: '50px',
+				html: text.innerHTML
+			}
+		});
+
+		inlineEditor.on('blur', () => {
+			if (init) {
+				text.innerHTML = inlineEditor.getHtml();
+				inlineEditor.destroy();
+				toogleEdit();
+			}
+			init = true;
+		});
+	} else {
+		inlineEditor.destroy();
+	}
 }
 ```
 
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
-```
-
-#### [](#header-4)Header 4
-
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-
-##### [](#header-5)Header 5
-
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
-
-###### [](#header-6)Header 6
-
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
-
-### There's a horizontal rule below this.
-
-* * *
-
-### Here is an unordered list:
-
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
-
-### And an ordered list:
-
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-
-### Small image
-
-![](https://assets-cdn.github.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![](https://guides.github.com/activities/hello-world/branching.png)
-
-
-### Definition lists can be used with HTML syntax.
-
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
-
-<div id="clEditor"></div>
-
-```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
-```
-
-```
-The final element.
-```
+<div>
+    <div id="textWrapper">
+        <span id="text">Edit this line of <b>text</b></span>
+        <a id="editBtn">&#128393;</a>
+    </div>
+    <div id="inlineEdit" style="display: none"></div>
+</div>
