@@ -61,7 +61,7 @@ You can use editor _blur_ event to inline edit text.
         <span id="text">Edit this line of <b>text</b></span>
         <a id="editBtn">&#128393;</a>
     </div>
-    <div id="inlineEdit" style="display: none"></div>
+    <div id="inlineEdit"></div>
 </div>
 ```
 
@@ -79,28 +79,28 @@ btn.addEventListener('click', () => {
 const toogleEdit = (showEditor?: boolean) => {
 	textWrapper.style.display = showEditor ? 'none' : 'block';
 	inlineEdit.style.display = showEditor ? 'block' : 'none';
-	if (showEditor) {
-		let init = false;
-		inlineEditor = new Editor({
-			target: inlineEdit,
-			data: {
-				actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
-				height: '42px',
-				html: text.innerHTML
-			}
-		});
+  if (showEditor) {
+    let init = false;
+    inlineEditor = new Editor({
+      target: inlineEdit,
+      data: {
+        actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
+        height: '42px',
+        html: text.innerHTML
+      }
+    });
 
-		inlineEditor.on('blur', () => {
-			if (init) {
-				text.innerHTML = inlineEditor.getHtml();
-				inlineEditor.destroy();
-				toogleEdit();
-			}
-			init = true;
-		});
-	} else {
-		inlineEditor.destroy();
-	}
+    inlineEditor.on('blur', () => {
+      if (init) {
+        text.innerHTML = inlineEditor.getHtml();
+        inlineEditor.destroy();
+        toogleEdit();
+      }
+      init = true;
+    });
+  } else {
+    inlineEditor.destroy();
+  }
 }
 ```
 <br>
@@ -109,7 +109,7 @@ const toogleEdit = (showEditor?: boolean) => {
         <span id="text">Edit this line of <b>text</b></span>
         <a id="editBtn">&#128393;</a>
     </div>
-    <div id="inlineEdit" style="display: none"></div>
+    <div id="inlineEdit"></div>
 </div>
 
 <br>
