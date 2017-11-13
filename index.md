@@ -73,7 +73,7 @@ const inlineEdit = document.getElementById('inlineEdit');
 const btn = document.getElementById('editBtn');
 
 btn.addEventListener('click', () => {
-	toogleEdit(true);
+  toogleEdit(true);
 });
 
 const toogleEdit = (showEditor?: boolean) => {

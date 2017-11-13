@@ -48,7 +48,7 @@
   "types": "./src/Editor.html.d.ts",
   "bundlesize": [
     {
-      "path": "./dist/index.js",
+      "path": "./dist/index.min.js",
       "maxSize": "10 kB"
     }
   ]
