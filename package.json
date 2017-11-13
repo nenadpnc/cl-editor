@@ -7,7 +7,7 @@
     "serve": "live-server ./dist/ --port=3000",
     "dev": "rollup -c rollup.config.dev.js",
     "dev:w": "concurrently \"npm run dev -- -w\" \"npm run serve\"",
-    "prod": "rollup -c rollup.config.dev.js && rollup -c rollup.config.prod.js",
+    "prod": "rollup -c rollup.config.dev.js && rollup -c rollup.config.prod.js && cross-env NODE_ENV=prod rollup -c rollup.config.prod.js",
     "prepublishOnly": "npm run prod"
   },
   "repository": {
@@ -30,6 +30,7 @@
     "bundlesize": "^0.15.3",
     "concurrently": "^3.5.0",
     "copyfiles": "^1.0.0",
+    "cross-env": "^5.1.1",
     "install": "^0.8.2",
     "live-server": "^1.1.0",
     "rollup": "^0.50.0",

@@ -7,6 +7,8 @@ import tscompile from 'typescript';
 import babel from 'rollup-plugin-babel';
 import filesize from 'rollup-plugin-filesize';
 
+const isProd = process.env.NODE_ENV === 'prod';
+
 const plugins = [ 
     typescript({typescript: tscompile}),
     nodeResolve({ 
@@ -19,15 +21,17 @@ const plugins = [
 		include: ['src/Editor.html', 'src/helpers/EditorModal.html', 'src/helpers/EditorColorPicker.html'],
 		exclude: 'src/**/*.ts'
 	}),
-	babel({ exclude: 'node_modules/**'}),
-	uglify(),
-	filesize()
+	babel({ exclude: 'node_modules/**'})
 ];
+if (isProd) {
+	plugins.push(uglify());
+	plugins.push(filesize());
+}
 
 export default {
 	input: 'src/Editor.html',
 	output:  {
-		file: 'dist/index.js',
+		file: isProd ? 'dist/index.min.js' : 'dist/index.js',
 		format: 'umd',
 	},
 	name: 'clEditor',

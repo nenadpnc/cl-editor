@@ -8,6 +8,7 @@ export default {
     icon: '<svg viewBox="0 0 72 72" width="17px" height="100%"><path fill="none" stroke="currentColor" stroke-width="8" stroke-miterlimit="10" d="M26.9 17.9L9 36.2 26.9 54M45 54l17.9-18.3L45 17.9"></path></svg>',
     title: 'View HTML',
     result: function() {
+      const _this = this;
       const actionObj = this.get('actionObj');
       this.helper.showEditor = !this.helper.showEditor;
       this.refs.editor.style.display = this.helper.showEditor ? 'block' : 'none';
@@ -18,10 +19,10 @@ export default {
         this.refs.raw.value = this.refs.editor.innerHTML;
       }
       setTimeout(() =>{
-        Object.keys(actionObj).forEach((action: string) => actionObj[action].disabled = !this.helper.showEditor);
+        Object.keys(actionObj).forEach((action: string) => actionObj[action].disabled = !_this.helper.showEditor);
         actionObj.viewHtml.disabled = false;
-        actionObj.viewHtml.active = !this.helper.showEditor;
-        this.set({ actionBtns: getActionBtns(actionObj),  actionObj });
+        actionObj.viewHtml.active = !_this.helper.showEditor;
+        _this.set({ actionBtns: getActionBtns(actionObj),  actionObj });
       })
     }
   },

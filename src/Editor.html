@@ -91,7 +91,6 @@
       },
       _documentClick: function(event) {
         if (!isEditorClick(event.target, this.refs.editorWrapper)) {
-          this._handleButtonStatus(true);
           this.fire('blur', event);
         }
       },
@@ -129,6 +128,7 @@
     overflow-y: auto;
     padding: 10px;
     width: 100%;
+    background-color: white;
   }
 
   .cl-actionbar {
