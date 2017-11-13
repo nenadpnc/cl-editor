@@ -12,10 +12,12 @@ const editor = new Editor({
 })
 ```
 <div id="editor1"></div>
+<br>
+<br>
 
 ## [](#header-2)Custom action example
 
-Example of custom ```copy``` action.
+Example of custom _**copy**_ action.
 
 ```js
 const editor2 = new Editor({
@@ -46,8 +48,10 @@ const editor2 = new Editor({
 ```
 
 <div id="editor2"></div>
+<br>
+<br>
 
-## [](#header-2)Example using ```blur``` event
+## [](#header-2)Example using _**blur**_ event
 
 ```js
 let inlineEditor;
@@ -95,3 +99,8 @@ const toogleEdit = (showEditor?: boolean) => {
     </div>
     <div id="inlineEdit" style="display: none"></div>
 </div>
+
+<br>
+<br>
+<br>
+<br>
