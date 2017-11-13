@@ -53,6 +53,18 @@ const editor2 = new Editor({
 
 ## [](#header-2)Example using _**blur**_ event
 
+You can use editor _blur_ event to inline edit text.
+
+```html
+<div>
+    <div id="textWrapper">
+        <span id="text">Edit this line of <b>text</b></span>
+        <a id="editBtn">&#128393;</a>
+    </div>
+    <div id="inlineEdit" style="display: none"></div>
+</div>
+```
+
 ```js
 let inlineEditor;
 const textWrapper = document.getElementById('textWrapper');
@@ -73,7 +85,7 @@ const toogleEdit = (showEditor?: boolean) => {
 			target: inlineEdit,
 			data: {
 				actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
-				height: '50px',
+				height: '42px',
 				html: text.innerHTML
 			}
 		});
@@ -91,7 +103,7 @@ const toogleEdit = (showEditor?: boolean) => {
 	}
 }
 ```
-
+<br>
 <div>
     <div id="textWrapper">
         <span id="text">Edit this line of <b>text</b></span>

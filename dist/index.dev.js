@@ -1500,7 +1500,7 @@ var toogleEdit = function toogleEdit(showEditor) {
             target: inlineEdit,
             data: {
                 actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
-                height: '50px',
+                height: '42px',
                 html: text.innerHTML
             }
         });
