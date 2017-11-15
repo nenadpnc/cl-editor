@@ -105,6 +105,12 @@
       },
       setHtml: function(html, sanitize) {
         this.refs.editor.innerHTML = sanitize ? removeBadTags(html) : (html || '');
+      },
+      saveRange: function() {
+        saveRange(this.refs.editor);
+      },
+      restoreRange: function() {
+        restoreRange(this.refs.editor);
       }
     }
   }
