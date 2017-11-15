@@ -315,13 +315,13 @@ var unwrap = function unwrap(wrapper) {
     // replace wrapper with document fragment
     wrapper.parentNode.replaceChild(docFrag, wrapper);
 };
-var removeBlockTagsRecursive = function removeBlockTagsRecursive(elements) {
+var removeBlockTagsRecursive = function removeBlockTagsRecursive(elements, tagsToRemove) {
     Array.from(elements).forEach(function (item) {
-        if (['h1', 'h2', 'blockquote'].some(function (tag) {
+        if (tagsToRemove.some(function (tag) {
             return tag === item.tagName.toLowerCase();
         })) {
             if (item.children.length) {
-                removeBlockTagsRecursive(item.children);
+                removeBlockTagsRecursive(item.children, tagsToRemove);
             }
             unwrap(item);
         }
@@ -599,7 +599,7 @@ var actions = {
         result: function result() {
             var selection = window.getSelection();
             if (!selection.toString().length) {
-                removeBlockTagsRecursive(this.refs.editor.children);
+                removeBlockTagsRecursive(this.refs.editor.children, this.get('removeFormatTags'));
                 var range = document.createRange();
                 range.selectNodeContents(this.refs.editor);
                 selection.removeAllRanges();
@@ -1147,7 +1147,8 @@ function data() {
 	return {
 		actionBtns: [],
 		height: '300px',
-		html: ''
+		html: '',
+		removeFormatTags: ['h1', 'h2', 'blockquote']
 	};
 }
 
@@ -1221,13 +1222,13 @@ function oncreate() {
 }
 
 function encapsulateStyles(node) {
-	setAttribute(node, "svelte-3486914031", "");
+	setAttribute(node, "svelte-3889973598", "");
 }
 
 function add_css() {
 	var style = createElement("style");
-	style.id = 'svelte-3486914031-style';
-	style.textContent = "[svelte-3486914031].cl *,[svelte-3486914031] .cl *{box-sizing:border-box}[svelte-3486914031].cl,[svelte-3486914031] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-3486914031].cl-content,[svelte-3486914031] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%;background-color:white}[svelte-3486914031].cl-actionbar,[svelte-3486914031] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-3486914031].cl-button,[svelte-3486914031] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-3486914031].cl-button:hover,[svelte-3486914031] .cl-button:hover,[svelte-3486914031].cl-button.active,[svelte-3486914031] .cl-button.active{background-color:#fff}[svelte-3486914031].cl-button:disabled,[svelte-3486914031] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-3486914031].cl-textarea,[svelte-3486914031] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-3486914031].cl-textarea:focus,[svelte-3486914031] .cl-textarea:focus{outline:none}";
+	style.id = 'svelte-3889973598-style';
+	style.textContent = "[svelte-3889973598].cl *,[svelte-3889973598] .cl *{box-sizing:border-box}[svelte-3889973598].cl,[svelte-3889973598] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-3889973598].cl-content,[svelte-3889973598] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%;background-color:white}[svelte-3889973598].cl-actionbar,[svelte-3889973598] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-3889973598].cl-button,[svelte-3889973598] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-3889973598].cl-button:hover,[svelte-3889973598] .cl-button:hover,[svelte-3889973598].cl-button.active,[svelte-3889973598] .cl-button.active{background-color:#fff}[svelte-3889973598].cl-button:disabled,[svelte-3889973598] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-3889973598].cl-textarea,[svelte-3889973598] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-3889973598].cl-textarea:focus,[svelte-3889973598] .cl-textarea:focus{outline:none}";
 	appendNode(style, document.head);
 }
 
@@ -1459,7 +1460,7 @@ function Editor(options) {
 	this.refs = {};
 	this._state = assign(data(), options.data);
 
-	if (!document.getElementById("svelte-3486914031-style")) add_css();
+	if (!document.getElementById("svelte-3889973598-style")) add_css();
 
 	var _oncreate = oncreate.bind(this);
 

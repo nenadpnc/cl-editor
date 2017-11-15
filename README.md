@@ -3,7 +3,7 @@
 typescript + svelte (no external dependencies) 
 
 #### File size (bundle includes css, html and js)
-* min: 29kb
+* min: 28kb
 * gzip: 9kb
 
 ## Installation
@@ -67,7 +67,10 @@ const editor = new Editor({
         // default 300px
         height: '300px',
         // initial html
-        html: ''
+        html: '',
+        // remove format action clears formatting, but also removes some html tags.
+        // you can specify which tags you want to be removed.
+        removeFormatTags: ['h1', 'h2', 'blackquote'] // default
     }
 })
 ```

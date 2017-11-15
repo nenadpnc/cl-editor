@@ -115,7 +115,7 @@ export const cleanHtml = (input: string) => {
     return output;
 }
 
-export const unwrap = (wrapper: HTMLElement) => {
+export const unwrap = (wrapper: Node) => {
 	const docFrag = document.createDocumentFragment();
 	while (wrapper.firstChild) {
 		const child = wrapper.removeChild(wrapper.firstChild);
@@ -126,11 +126,11 @@ export const unwrap = (wrapper: HTMLElement) => {
 	wrapper.parentNode.replaceChild(docFrag, wrapper);
 }
 
-export const removeBlockTagsRecursive = (elements: HTMLCollection) => {
+export const removeBlockTagsRecursive = (elements: HTMLCollection, tagsToRemove: string[]) => {
   Array.from(elements).forEach((item: HTMLElement) => {
-    if (['h1', 'h2', 'blockquote'].some((tag) => tag === item.tagName.toLowerCase())) {
+    if (tagsToRemove.some((tag: string) => tag === item.tagName.toLowerCase())) {
       if (item.children.length) {
-        removeBlockTagsRecursive(item.children);
+        removeBlockTagsRecursive(item.children, tagsToRemove);
       }
       unwrap(item);
     }
@@ -161,7 +161,7 @@ export const getNewActionObj = (actions: any, userActions = []) => {
 }
 
 export const removeBadTags = (html: string) => {
-    ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag) => {
+    ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag: string) => {
         html = html.replace(new RegExp(`<${badTag}.*?${badTag}(.*?)>`, 'gi'), '')
     });
 
