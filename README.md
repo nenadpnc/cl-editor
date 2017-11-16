@@ -78,10 +78,10 @@ const editor = new Editor({
 #### API
 ```js
 // Methods
-editor.exec(cmd, value) // execute document command (document.executeCommand(cmd, false, value))
+editor.exec(cmd: string, value?: string) // execute document command (document.executeCommand(cmd, false, value))
 editor.getHtml(sanitize?: boolean) // returns html string from editor. if passed true as argument, html will be sanitized before return
 editor.getText() // returns text string from editor
-editor.setHtml(html, sanitize?: boolean) // sets html for editor. if second argument is true, html will be sanitized
+editor.setHtml(html: string, sanitize?: boolean) // sets html for editor. if second argument is true, html will be sanitized
 editor.saveRange() // saves current editor cursor position or user selection
 editor.restoreRange() // restores cursor position or user selection
 // saveRange and restoreRange are useful when making custom actions
@@ -89,7 +89,7 @@ editor.restoreRange() // restores cursor position or user selection
 ```
 * There are also built in svelte methods like get, set, observe, fire, destroy.
 * You can check them out at [https://svelte.technology/guide](https://svelte.technology/guide)
-* For list af available _**exec**_ command visit [https://codepen.io/netsi1964/pen/QbLLG](https://codepen.io/netsi1964/pen/QbLLGW)
+* For list of available _**exec**_ command visit [https://codepen.io/netsi1964/pen/QbLLG](https://codepen.io/netsi1964/pen/QbLLGW)
 ```js
 // Events
 editor.on('change', (html) => console.log(html)) // on every keyup event
