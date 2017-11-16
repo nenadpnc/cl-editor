@@ -1,10 +1,13 @@
+import { saveRange, restoreRange } from "./helpers/util";
+
 declare class Editor{
 	constructor(options: { 
         target: Element, 
         data?: {
             actions?: ({name: string, title?: string, icon?: string, result?: Function} | string)[],
             height?: string,
-            html?: string
+            html?: string,
+            removeFormatTags?: string[]
         } 
     });
 
@@ -33,6 +36,10 @@ declare class Editor{
     getText(): string
 
     setHtml(html: string, sanitize?: boolean): void
+
+    saveRange(element: Element): void
+
+    restoreRange(element: Element): void
 
     refs: {
         colorPicker: HTMLDivElement,

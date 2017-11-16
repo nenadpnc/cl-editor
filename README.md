@@ -3,7 +3,7 @@
 typescript + svelte (no external dependencies) 
 
 #### File size (bundle includes css, html and js)
-* min: 29kb
+* min: 28kb
 * gzip: 9kb
 
 ## Installation
@@ -67,7 +67,10 @@ const editor = new Editor({
         // default 300px
         height: '300px',
         // initial html
-        html: ''
+        html: '',
+        // remove format action clears formatting, but also removes some html tags.
+        // you can specify which tags you want to be removed.
+        removeFormatTags: ['h1', 'h2', 'blackquote'] // default
     }
 })
 ```
@@ -79,10 +82,14 @@ editor.exec(cmd, value) // execute document command (document.executeCommand(cmd
 editor.getHtml(sanitize?: boolean) // returns html string from editor. if passed true as argument, html will be sanitized before return
 editor.getText() // returns text string from editor
 editor.setHtml(html, sanitize?: boolean) // sets html for editor. if second argument is true, html will be sanitized
+editor.saveRange() // saves current editor cursor position or user selection
+editor.restoreRange() // restores cursor position or user selection
+// saveRange and restoreRange are useful when making custom actions
+// that demands that focus is shifted from editor to, for example, modal window.
 ```
 * There are also built in svelte methods like get, set, observe, fire, destroy.
 * You can check them out at [https://svelte.technology/guide](https://svelte.technology/guide)
-* For list af available _**exec**_ command visit [https://codepen.io/netsi1964/pen/QbLLGW?editors=0010](https://codepen.io/netsi1964/pen/QbLLGW?editors=0010)
+* For list af available _**exec**_ command visit [https://codepen.io/netsi1964/pen/QbLLG](https://codepen.io/netsi1964/pen/QbLLGW)
 ```js
 // Events
 editor.on('change', (html) => console.log(html)) // on every keyup event
