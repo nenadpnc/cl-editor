@@ -85,7 +85,7 @@
       },
       _onPaste: function(event) {
         event.preventDefault();
-        exec('insertHTML', cleanHtml(event.clipboardData.getData('text/html')));
+        exec('insertHTML', event.clipboardData.getData('text') ? event.clipboardData.getData('text') : cleanHtml(event.clipboardData.getData('text/html')));
       },
       _onChange: function(html) {
         this.fire('change', html);
