@@ -52,7 +52,7 @@
     },
     oncreate() {
       const data = this.options.data || {};
-      const actionObj = getNewActionObj(actions, data.actions);
+      const actionObj = getNewActionObj(JSON.parse(JSON.stringify(actions)), data.actions);
       this.set({ actionBtns: getActionBtns(actionObj), actionObj });
       this.setHtml(data.html);
       this.modal = new EditorModal({ target: this.refs.modal });

@@ -24,7 +24,7 @@ declare class Editor{
     	options? :{ init?: boolean, defer?: boolean }) 
     : () => { cancel:() => any };
 
-    destroy();
+    destroy(detach?: boolean);
 
     exec(cmd: string, value?: string): void
 
