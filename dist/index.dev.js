@@ -336,11 +336,11 @@ var getNewActionObj = function getNewActionObj(actions) {
         var newActions = {};
         userActions.forEach(function (action) {
             if (typeof action === 'string') {
-                newActions[action] = actions[action];
+                newActions[action] = Object.assign({}, actions[action]);
             } else if (actions[action.name]) {
                 newActions[action.name] = Object.assign(actions[action.name], action);
             } else {
-                newActions[action.name] = action;
+                newActions[action.name] = Object.assign({}, action);
             }
         });
         return newActions;
@@ -1520,7 +1520,7 @@ var toogleEdit = function toogleEdit(showEditor) {
         inlineEditor = new Editor({
             target: inlineEdit,
             data: {
-                actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
+                actions: ['viewHtml', 'b', 'i', 'u', 'strike', 'removeFormat'],
                 height: '42px',
                 html: text.innerHTML
             }

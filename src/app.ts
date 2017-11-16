@@ -47,7 +47,7 @@ const toogleEdit = (showEditor?: boolean) => {
 		inlineEditor = new Editor({
 			target: inlineEdit,
 			data: {
-				actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
+				actions: ['viewHtml', 'b', 'i', 'u', 'strike', 'removeFormat'],
 				height: '42px',
 				html: text.innerHTML
 			}

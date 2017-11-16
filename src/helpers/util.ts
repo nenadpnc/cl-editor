@@ -146,11 +146,11 @@ export const getNewActionObj = (actions: any, userActions = []) => {
         const newActions = {};
         userActions.forEach((action) => {
             if (typeof action === 'string') {
-                newActions[action] = actions[action];
+                newActions[action] = Object.assign({}, actions[action]);
             } else if (actions[action.name]) {
                 newActions[action.name] = Object.assign(actions[action.name], action);
             } else {
-                newActions[action.name] = action;
+                newActions[action.name] = Object.assign({}, action);
             }
         });
     
