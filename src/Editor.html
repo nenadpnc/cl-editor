@@ -95,7 +95,7 @@
         if (!isEditorClick(event.target, this.refs.editorWrapper) && this.helper.blurActive) {
           this.fire('blur', event);
         }
-        this.helper.init = true;
+        this.helper.blurActive = true;
       },
       exec: (cmd, value) => {
         exec(cmd, value);
