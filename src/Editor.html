@@ -17,7 +17,7 @@
     contenteditable="true"
     on:input="_onChange(event.target.innerHTML)" 
     on:mouseup="_handleButtonStatus()" 
-    on:keyup="_handleButtonStatus()"
+    on:keyup="_handleButtonStatus(event)"
     on:paste="_onPaste(event)">
   </div>
   
@@ -86,7 +86,7 @@
       },
       _onPaste: function(event) {
         event.preventDefault();
-        exec('insertHTML', event.clipboardData.getData('text') ? event.clipboardData.getData('text') : cleanHtml(event.clipboardData.getData('text/html')));
+        exec('insertHTML', event.clipboardData.getData('text/html') ? cleanHtml(event.clipboardData.getData('text/html')) : event.clipboardData.getData('text'));
       },
       _onChange: function(html) {
         this.fire('change', html);

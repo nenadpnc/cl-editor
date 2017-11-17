@@ -298,7 +298,7 @@ var cleanHtml = function cleanHtml(input) {
     // remove line brakers and find relevant html
     var html = input.replace(/\r?\n|\r/g, ' ').match(/<!--StartFragment-->(.*?)<!--EndFragment-->/);
     var output = html && html[1] || '';
-    output = output.replace(/(class=(")?Mso[a-zA-Z]+(")?)/g, ' ').replace(/<!--(.*?)-->/g, '').replace(new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font|w:sdt)(.*?)>', 'gi'), '').replace(/<!\[if !supportLists\]>(.*?)<!\[endif\]>/gi, '').replace(/style="[^"]*"/gi, '').replace(/style='[^']*'/gi, '').replace(/&nbsp;/gi, ' ');
+    output = output.replace(/(class=(")?Mso[a-zA-Z]+(")?)/g, ' ').replace(/<!--(.*?)-->/g, '').replace(new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font|w:sdt)(.*?)>', 'gi'), '').replace(/<!\[if !supportLists\]>(.*?)<!\[endif\]>/gi, '').replace(/style="[^"]*"/gi, '').replace(/style='[^']*'/gi, '').replace(/&nbsp;/gi, ' ').replace(/>(\s+)</g, '><');
     // 4. Remove everything in between and including tags '<style(.)style(.)>'
     output = removeBadTags(output);
     return output;
@@ -1170,7 +1170,7 @@ var methods = {
 	},
 	_onPaste: function _onPaste(event) {
 		event.preventDefault();
-		exec('insertHTML', event.clipboardData.getData('text') ? event.clipboardData.getData('text') : cleanHtml(event.clipboardData.getData('text/html')));
+		exec('insertHTML', event.clipboardData.getData('text/html') ? cleanHtml(event.clipboardData.getData('text/html')) : event.clipboardData.getData('text'));
 	},
 	_onChange: function _onChange(html) {
 		this.fire('change', html);
@@ -1221,13 +1221,13 @@ function oncreate() {
 }
 
 function encapsulateStyles(node) {
-	setAttribute(node, "svelte-3269664375", "");
+	setAttribute(node, "svelte-794056085", "");
 }
 
 function add_css() {
 	var style = createElement("style");
-	style.id = 'svelte-3269664375-style';
-	style.textContent = "[svelte-3269664375].cl *,[svelte-3269664375] .cl *{box-sizing:border-box}[svelte-3269664375].cl,[svelte-3269664375] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-3269664375].cl-content,[svelte-3269664375] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%;background-color:white}[svelte-3269664375].cl-actionbar,[svelte-3269664375] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-3269664375].cl-button,[svelte-3269664375] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-3269664375].cl-button:hover,[svelte-3269664375] .cl-button:hover,[svelte-3269664375].cl-button.active,[svelte-3269664375] .cl-button.active{background-color:#fff}[svelte-3269664375].cl-button:disabled,[svelte-3269664375] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-3269664375].cl-textarea,[svelte-3269664375] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-3269664375].cl-textarea:focus,[svelte-3269664375] .cl-textarea:focus{outline:none}";
+	style.id = 'svelte-794056085-style';
+	style.textContent = "[svelte-794056085].cl *,[svelte-794056085] .cl *{box-sizing:border-box}[svelte-794056085].cl,[svelte-794056085] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-794056085].cl-content,[svelte-794056085] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%;background-color:white}[svelte-794056085].cl-actionbar,[svelte-794056085] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-794056085].cl-button,[svelte-794056085] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-794056085].cl-button:hover,[svelte-794056085] .cl-button:hover,[svelte-794056085].cl-button.active,[svelte-794056085] .cl-button.active{background-color:#fff}[svelte-794056085].cl-button:disabled,[svelte-794056085] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-794056085].cl-textarea,[svelte-794056085] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-794056085].cl-textarea:focus,[svelte-794056085] .cl-textarea:focus{outline:none}";
 	appendNode(style, document.head);
 }
 
@@ -1257,7 +1257,7 @@ function create_main_fragment(state, component) {
 	}
 
 	function keyup_handler(event) {
-		component._handleButtonStatus();
+		component._handleButtonStatus(event);
 	}
 
 	function paste_handler(event) {
@@ -1459,7 +1459,7 @@ function Editor(options) {
 	this.refs = {};
 	this._state = assign(data(), options.data);
 
-	if (!document.getElementById("svelte-3269664375-style")) add_css();
+	if (!document.getElementById("svelte-794056085-style")) add_css();
 
 	var _oncreate = oncreate.bind(this);
 

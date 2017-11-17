@@ -108,7 +108,8 @@ export const cleanHtml = (input: string) => {
                 .replace(/<!\[if !supportLists\]>(.*?)<!\[endif\]>/gi, '')
                 .replace(/style="[^"]*"/gi, '')
                 .replace(/style='[^']*'/gi, '')
-                .replace(/&nbsp;/gi, ' ');
+                .replace(/&nbsp;/gi, ' ')
+                .replace(/>(\s+)</g, '><');
                         
     // 4. Remove everything in between and including tags '<style(.)style(.)>'
     output = removeBadTags(output);
