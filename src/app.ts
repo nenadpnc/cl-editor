@@ -43,7 +43,6 @@ const toogleEdit = (showEditor?: boolean) => {
 	textWrapper.style.display = showEditor ? 'none' : 'block';
 	inlineEdit.style.display = showEditor ? 'block' : 'none';
 	if (showEditor) {
-		let init = false;
 		inlineEditor = new Editor({
 			target: inlineEdit,
 			data: {
@@ -54,12 +53,9 @@ const toogleEdit = (showEditor?: boolean) => {
 		});
 
 		inlineEditor.on('blur', () => {
-			if (init) {
-				text.innerHTML = inlineEditor.getHtml();
-				inlineEditor.destroy();
-				toogleEdit();
-			}
-			init = true;
+			text.innerHTML = inlineEditor.getHtml();
+			inlineEditor.destroy();
+			toogleEdit();
 		});
 	} else {
 		inlineEditor.destroy();

@@ -65,7 +65,8 @@
         backColorModal: false,
         image: false,
         link: false,
-        showEditor: true
+        showEditor: true,
+        blurActive: false
       }
     },
     methods: {
@@ -91,9 +92,10 @@
         this.fire('change', html);
       },
       _documentClick: function(event) {
-        if (!isEditorClick(event.target, this.refs.editorWrapper)) {
+        if (!isEditorClick(event.target, this.refs.editorWrapper) && this.helper.blurActive) {
           this.fire('blur', event);
         }
+        this.helper.init = true;
       },
       exec: (cmd, value) => {
         exec(cmd, value);
