@@ -41,7 +41,7 @@ function showEditor() {
 		target: inlineEdit,
 		data: {
 			actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
-			height: '42px',
+			height: 'auto',
 			html: html
 		}
 	});
