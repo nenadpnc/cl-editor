@@ -1482,13 +1482,8 @@ function Editor(options) {
 assign(Editor.prototype, methods, proto);
 
 var inlineEditor = void 0;
-var textWrapper = document.getElementById('textWrapper');
-var text = document.getElementById('text');
 var inlineEdit = document.getElementById('inlineEdit');
-var btn = document.getElementById('editBtn');
-btn.addEventListener('click', function () {
-    toogleEdit(true);
-});
+inlineEdit.addEventListener('click', showEditor);
 var editor = new Editor({
     target: document.getElementById('editor1')
 });
@@ -1514,27 +1509,25 @@ var editor2 = new Editor({
         height: '150px'
     }
 });
-var toogleEdit = function toogleEdit(showEditor) {
-    textWrapper.style.display = showEditor ? 'none' : 'block';
-    inlineEdit.style.display = showEditor ? 'block' : 'none';
-    if (showEditor) {
-        inlineEditor = new Editor({
-            target: inlineEdit,
-            data: {
-                actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
-                height: '42px',
-                html: text.innerHTML
-            }
-        });
-        inlineEditor.on('blur', function () {
-            text.innerHTML = inlineEditor.getHtml();
-            inlineEditor.destroy();
-            toogleEdit();
-        });
-    } else {
+function showEditor() {
+    var html = inlineEdit.innerHTML;
+    inlineEdit.innerHTML = '';
+    inlineEditor = new Editor({
+        target: inlineEdit,
+        data: {
+            actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
+            height: '42px',
+            html: html
+        }
+    });
+    inlineEdit.removeEventListener('click', showEditor);
+    inlineEditor.on('blur', function () {
+        html = inlineEditor.getHtml();
         inlineEditor.destroy();
-    }
-};
+        inlineEdit.innerHTML = html;
+        inlineEdit.addEventListener('click', showEditor);
+    });
+}
 
 }());
 //# sourceMappingURL=index.dev.js.map
