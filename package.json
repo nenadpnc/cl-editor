@@ -46,6 +46,10 @@
   },
   "main": "./dist/index.js",
   "types": "./src/Editor.html.d.ts",
+  "files": [
+    "dist/*.js",
+    "dist/*.map"
+  ],
   "bundlesize": [
     {
       "path": "./dist/index.min.js",
