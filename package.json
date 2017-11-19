@@ -48,7 +48,8 @@
   "types": "./src/Editor.html.d.ts",
   "files": [
     "dist/*.js",
-    "dist/*.map"
+    "dist/*.map",
+    "src/Editor.html.d.ts"
   ],
   "bundlesize": [
     {
