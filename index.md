@@ -56,56 +56,43 @@ const editor2 = new Editor({
 You can use editor _blur_ event to inline edit text.
 
 ```html
-<div>
-    <div id="textWrapper">
-        <span id="text">Edit this line of <b>text</b></span>
-        <a id="editBtn">&#128393;</a>
-    </div>
-    <div id="inlineEdit"></div>
+<div id="inlineEdit">
+  Edit this line of <b>text</b>
 </div>
 ```
 
 ```js
 let inlineEditor;
-const textWrapper = document.getElementById('textWrapper');
-const text = document.getElementById('text');
 const inlineEdit = document.getElementById('inlineEdit');
-const btn = document.getElementById('editBtn');
+inlineEdit.addEventListener('click', showEditor);
 
-btn.addEventListener('click', () => {
-  toogleEdit(true);
-});
+function showEditor() {
+  let html = inlineEdit.innerHTML;
+  inlineEdit.innerHTML = '';
+  inlineEditor = new Editor({
+    target: inlineEdit,
+    data: {
+      actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
+      height: 'auto',
+      html: html
+    }
+  });
 
-const toogleEdit = (showEditor?: boolean) => {
-  textWrapper.style.display = showEditor ? 'none' : 'block';
-  inlineEdit.style.display = showEditor ? 'block' : 'none';
-  if (showEditor) {
-    inlineEditor = new Editor({
-      target: inlineEdit,
-      data: {
-        actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
-        height: '42px',
-        html: text.innerHTML
-      }
-    });
+  inlineEdit.removeEventListener('click', showEditor);
 
-    inlineEditor.on('blur', () => {
-      text.innerHTML = inlineEditor.getHtml();
-      inlineEditor.destroy();
-      toogleEdit();
-    });
-  } else {
+  inlineEditor.on('blur', () => {
+    html = inlineEditor.getHtml();
     inlineEditor.destroy();
-  }
+    inlineEdit.innerHTML = html;
+    inlineEdit.addEventListener('click', showEditor);
+  });
 }
 ```
 <br>
 <div>
-    <div id="textWrapper">
-        <span id="text">Edit this line of <b>text</b></span>
-        <a id="editBtn">&#128393;</a>
-    </div>
-    <div id="inlineEdit"></div>
+  <div id="inlineEdit">
+    Edit this line of <b>text</b>
+  </div>
 </div>
 
 <br>

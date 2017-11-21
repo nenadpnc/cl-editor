@@ -1,6 +1,4 @@
-import { saveRange, restoreRange } from "./helpers/util";
-
-declare class Editor{
+declare class Editor {
 	constructor(options: { 
         target: Element, 
         data?: {

@@ -8,14 +8,11 @@ a {
 }
 
 #inlineEdit {
-    margin-top: -46px;
-    display: none;
+    display: inline-block;
 }
 
-#text {
-    padding-left: 10px;
-}
-
-#editBtn {
-    padding-left: 5px;
+#inlineEdit .cl {
+    margin-top: -46.5px;
+    margin-left: -10px;
+    margin-right: 10px;
 }

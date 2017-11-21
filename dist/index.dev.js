@@ -1221,13 +1221,13 @@ function oncreate() {
 }
 
 function encapsulateStyles(node) {
-	setAttribute(node, "svelte-794056085", "");
+	setAttribute(node, "svelte-2572321869", "");
 }
 
 function add_css() {
 	var style = createElement("style");
-	style.id = 'svelte-794056085-style';
-	style.textContent = "[svelte-794056085].cl *,[svelte-794056085] .cl *{box-sizing:border-box}[svelte-794056085].cl,[svelte-794056085] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-794056085].cl-content,[svelte-794056085] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%;background-color:white}[svelte-794056085].cl-actionbar,[svelte-794056085] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-794056085].cl-button,[svelte-794056085] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-794056085].cl-button:hover,[svelte-794056085] .cl-button:hover,[svelte-794056085].cl-button.active,[svelte-794056085] .cl-button.active{background-color:#fff}[svelte-794056085].cl-button:disabled,[svelte-794056085] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-794056085].cl-textarea,[svelte-794056085] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-794056085].cl-textarea:focus,[svelte-794056085] .cl-textarea:focus{outline:none}";
+	style.id = 'svelte-2572321869-style';
+	style.textContent = "[svelte-2572321869].cl *,[svelte-2572321869] .cl *{box-sizing:border-box}[svelte-2572321869].cl,[svelte-2572321869] .cl{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}[svelte-2572321869].cl-content,[svelte-2572321869] .cl-content{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%;background-color:white}[svelte-2572321869].cl-actionbar,[svelte-2572321869] .cl-actionbar{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}[svelte-2572321869].cl-button,[svelte-2572321869] .cl-button{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}[svelte-2572321869].cl-button:hover,[svelte-2572321869] .cl-button:hover,[svelte-2572321869].cl-button.active,[svelte-2572321869] .cl-button.active{background-color:#fff}[svelte-2572321869].cl-button:disabled,[svelte-2572321869] .cl-button:disabled{opacity:.5;pointer-events:none}[svelte-2572321869].cl-textarea,[svelte-2572321869] .cl-textarea{display:none;max-width:100%;min-width:100%;border:none;padding:10px}[svelte-2572321869].cl-textarea:focus,[svelte-2572321869] .cl-textarea:focus{outline:none}";
 	appendNode(style, document.head);
 }
 
@@ -1257,7 +1257,7 @@ function create_main_fragment(state, component) {
 	}
 
 	function keyup_handler(event) {
-		component._handleButtonStatus(event);
+		component._handleButtonStatus();
 	}
 
 	function paste_handler(event) {
@@ -1459,7 +1459,7 @@ function Editor(options) {
 	this.refs = {};
 	this._state = assign(data(), options.data);
 
-	if (!document.getElementById("svelte-794056085-style")) add_css();
+	if (!document.getElementById("svelte-2572321869-style")) add_css();
 
 	var _oncreate = oncreate.bind(this);
 
@@ -1482,13 +1482,8 @@ function Editor(options) {
 assign(Editor.prototype, methods, proto);
 
 var inlineEditor = void 0;
-var textWrapper = document.getElementById('textWrapper');
-var text = document.getElementById('text');
 var inlineEdit = document.getElementById('inlineEdit');
-var btn = document.getElementById('editBtn');
-btn.addEventListener('click', function () {
-    toogleEdit(true);
-});
+inlineEdit.addEventListener('click', showEditor);
 var editor = new Editor({
     target: document.getElementById('editor1')
 });
@@ -1514,27 +1509,25 @@ var editor2 = new Editor({
         height: '150px'
     }
 });
-var toogleEdit = function toogleEdit(showEditor) {
-    textWrapper.style.display = showEditor ? 'none' : 'block';
-    inlineEdit.style.display = showEditor ? 'block' : 'none';
-    if (showEditor) {
-        inlineEditor = new Editor({
-            target: inlineEdit,
-            data: {
-                actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
-                height: '42px',
-                html: text.innerHTML
-            }
-        });
-        inlineEditor.on('blur', function () {
-            text.innerHTML = inlineEditor.getHtml();
-            inlineEditor.destroy();
-            toogleEdit();
-        });
-    } else {
+function showEditor() {
+    var html = inlineEdit.innerHTML;
+    inlineEdit.innerHTML = '';
+    inlineEditor = new Editor({
+        target: inlineEdit,
+        data: {
+            actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
+            height: 'auto',
+            html: html
+        }
+    });
+    inlineEdit.removeEventListener('click', showEditor);
+    inlineEditor.on('blur', function () {
+        html = inlineEditor.getHtml();
         inlineEditor.destroy();
-    }
-};
+        inlineEdit.innerHTML = html;
+        inlineEdit.addEventListener('click', showEditor);
+    });
+}
 
 }());
 //# sourceMappingURL=index.dev.js.map

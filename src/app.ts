@@ -1,13 +1,8 @@
 import Editor from './Editor.html';
 
 let inlineEditor;
-const textWrapper = document.getElementById('textWrapper');
-const text = document.getElementById('text');
 const inlineEdit = document.getElementById('inlineEdit');
-const btn = document.getElementById('editBtn');
-btn.addEventListener('click', () => {
-	toogleEdit(true);
-});
+inlineEdit.addEventListener('click', showEditor);
 
 const editor = new Editor({
 	target: document.getElementById('editor1')
@@ -39,25 +34,24 @@ const editor2 = new Editor({
     }
 });
 
-const toogleEdit = (showEditor?: boolean) => {
-	textWrapper.style.display = showEditor ? 'none' : 'block';
-	inlineEdit.style.display = showEditor ? 'block' : 'none';
-	if (showEditor) {
-		inlineEditor = new Editor({
-			target: inlineEdit,
-			data: {
-				actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
-				height: '42px',
-				html: text.innerHTML
-			}
-		});
+function showEditor() {
+	let html = inlineEdit.innerHTML;
+	inlineEdit.innerHTML = '';
+	inlineEditor = new Editor({
+		target: inlineEdit,
+		data: {
+			actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
+			height: 'auto',
+			html: html
+		}
+	});
 
-		inlineEditor.on('blur', () => {
-			text.innerHTML = inlineEditor.getHtml();
-			inlineEditor.destroy();
-			toogleEdit();
-		});
-	} else {
+	inlineEdit.removeEventListener('click', showEditor);
+
+	inlineEditor.on('blur', () => {
+		html = inlineEditor.getHtml();
 		inlineEditor.destroy();
-	}
+		inlineEdit.innerHTML = html;
+		inlineEdit.addEventListener('click', showEditor);
+	});
 }
