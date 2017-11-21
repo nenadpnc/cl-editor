@@ -3,11 +3,8 @@
   "version": "1.2.4",
   "description": "Lightweight text editor built with svelte + typescript",
   "scripts": {
-    "copy": "copyfiles ./index.html ./dist",
-    "serve": "live-server ./dist/ --port=3000",
-    "dev": "rollup -c rollup.config.dev.js",
-    "dev:w": "concurrently \"npm run dev -- -w\" \"npm run serve\"",
-    "prod": "rollup -c rollup.config.dev.js && rollup -c rollup.config.prod.js && cross-env NODE_ENV=prod rollup -c rollup.config.prod.js",
+    "dev": "concurrently \"rollup -c rollup.config.dev.js -w\" \"live-server ./dist/ --port=3000\"",
+    "prod": "rollup -c rollup.config.prod.js",
     "prepublishOnly": "npm run prod"
   },
   "repository": {
@@ -45,6 +42,7 @@
     "typescript": "^2.3.4"
   },
   "main": "./dist/index.js",
+  "svelte": "./src/Editor.html",
   "types": "./src/Editor.html.d.ts",
   "bundlesize": [
     {

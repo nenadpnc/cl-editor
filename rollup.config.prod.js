@@ -1,40 +1,47 @@
 import svelte from 'rollup-plugin-svelte';
 import uglify from 'rollup-plugin-uglify';
-import commonjs from 'rollup-plugin-commonjs';
-import nodeResolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import tscompile from 'typescript';
 import babel from 'rollup-plugin-babel';
 import filesize from 'rollup-plugin-filesize';
 
-const isProd = process.env.NODE_ENV === 'prod';
-
 const plugins = [ 
     typescript({typescript: tscompile}),
-    nodeResolve({ 
-    	jsnext: true, 
-    	main: true,
-    	browser: true
-    }),
-	commonjs(),
 	svelte({
 		include: ['src/Editor.html', 'src/helpers/EditorModal.html', 'src/helpers/EditorColorPicker.html'],
 		exclude: 'src/**/*.ts'
 	}),
 	babel({ exclude: 'node_modules/**'})
 ];
-if (isProd) {
-	plugins.push(uglify());
-	plugins.push(filesize());
-}
 
-export default {
-	input: 'src/Editor.html',
-	output:  {
-		file: isProd ? 'dist/index.min.js' : 'dist/index.js',
-		format: 'umd',
-	},
-	name: 'clEditor',
-	plugins,
-	sourcemap: true
-};
+export default [
+	{
+	   input: 'src/Editor.html',
+	   output:  {
+		   file: 'dist/index.min.js',
+		   format: 'umd',
+	   },
+	   name: 'clEditor',
+	   plugins: [...plugins, uglify(), filesize()],
+	   sourcemap: true
+   },
+   {
+		input: 'src/Editor.html',
+		output:  {
+			file: 'dist/index.js',
+			format: 'umd',
+		},
+		name: 'clEditor',
+		plugins,
+		sourcemap: true
+   },
+   {
+		input: 'src/app.ts',
+		output:  {
+			file: 'dist/index.dev.js',
+			format: 'iife',
+		},
+		plugins,
+		sourcemap: true
+   }
+];
