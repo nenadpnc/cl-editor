@@ -95,23 +95,22 @@ export const restoreRange = (editor: HTMLElement) => {
 }
 
 export const cleanHtml = (input: string) => {
-    // remove line brakers and find relevant html
-    const html = input.replace(/\r?\n|\r/g, ' ').match(/<!--StartFragment-->(.*?)<!--EndFragment-->/);
-    let output = html && html[1] || '';
-    output = output
-                // 1. removeMso classes
-                .replace(/(class=(")?Mso[a-zA-Z]+(")?)/g, ' ')
-                // 2. strip Word generated HTML comments
-                .replace(/<!--(.*?)-->/g, '')
-                // 3. remove tags leave content if any
-                .replace(new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font|w:sdt)(.*?)>','gi'), '')
-                .replace(/<!\[if !supportLists\]>(.*?)<!\[endif\]>/gi, '')
-                .replace(/style="[^"]*"/gi, '')
-                .replace(/style='[^']*'/gi, '')
-                .replace(/&nbsp;/gi, ' ')
-                .replace(/>(\s+)</g, '><');
-                        
-    // 4. Remove everything in between and including tags '<style(.)style(.)>'
+  const html = input.match(/<!--StartFragment-->(.*?)<!--EndFragment-->/);
+  let output = html && html[1] || input;
+  output = output
+    .replace(/\r?\n|\r/g, ' ')
+    .replace(/<!--(.*?)-->/g, '')
+    .replace(new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font|w:sdt)(.*?)>', 'gi'), '')
+    .replace(/<!\[if !supportLists\]>(.*?)<!\[endif\]>/gi, '')
+    .replace(/style="[^"]*"/gi, '')
+    .replace(/style='[^']*'/gi, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/>(\s+)</g, '><')
+    .replace(/class="[^"]*"/gi, '')
+    .replace(/class='[^']*'/gi, '')
+    .replace(/<[^/].*?>/g, i => i.split(/[ >]/g)[0] + '>')
+    .trim()
+
     output = removeBadTags(output);
     return output;
 }
