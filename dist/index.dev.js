@@ -489,7 +489,7 @@ var actions = {
             return exec('insertUnorderedList');
         }
     },
-    line: {
+    hr: {
         icon: '&#8213;',
         title: 'Horizontal Line',
         result: function result() {

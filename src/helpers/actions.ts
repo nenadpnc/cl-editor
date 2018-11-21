@@ -96,7 +96,7 @@ export default {
     title: 'Unordered List',
     result: () => exec('insertUnorderedList')
   },
-  line: {
+  hr: {
     icon: '&#8213;',
     title: 'Horizontal Line',
     result: () => exec('insertHorizontalRule')
