@@ -58,7 +58,7 @@
   "files": [
     "dist/*.js",
     "dist/*.map",
-    "src/Editor.html.d.ts"
+    "src/**/*"
   ],
   "bundlesize": [
     {
