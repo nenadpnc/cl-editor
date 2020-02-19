@@ -65,13 +65,14 @@
         error = false;
     }
 
-    export function showModal(options){
-        if(options.show) show = options.show;
-        if(options.text) text = options.text;
-        if(options.event) event = options.event;
-        if(options.title) title = options.title;
-        if(options.label) label = options.label;
-    }
+    // no longer needed with $set
+    // export function showModal(options){
+    //     if(options.show) show = options.show;
+    //     if(options.text) text = options.text;
+    //     if(options.event) event = options.event;
+    //     if(options.title) title = options.title;
+    //     if(options.label) label = options.label;
+    // }
 </script>
 
 <style>

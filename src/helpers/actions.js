@@ -280,7 +280,7 @@ const showColorPicker = function(cmd) {
 		refs.colorPicker.$on(cmd, event => {
 			let item = event.detail;
 			if (item.modal) {
-				this.modal.showModal({
+				this.modal.$set({
 					show: true,
 					event: "colorHref",
 					title: "Text color",
