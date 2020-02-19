@@ -48,9 +48,9 @@ function showEditor() {
 
 	inlineEdit.removeEventListener('click', showEditor);
 
-	inlineEditor.on('blur', () => {
+	inlineEditor.$on('blur', () => {
 		html = inlineEditor.getHtml();
-		inlineEditor.destroy();
+		inlineEditor.$destroy();
 		inlineEdit.innerHTML = html;
 		inlineEdit.addEventListener('click', showEditor);
 	});

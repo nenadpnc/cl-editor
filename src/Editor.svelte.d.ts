@@ -9,23 +9,7 @@ declare class Editor {
         }
     });
 
-    // get(name: string);
-    // set(data: any);
-	//
-    // on(
-    //     eventName: string,
-    //     callback?: (event?: any) => any)
-    // : () => { cancel:() => any };
-	//
-    // fire(eventName: string, event?: any);
-	//
-    // observe(
-    // 	name:string,
-    // 	callback: (newValue?, oldValue?) => any ,
-    // 	options? :{ init?: boolean, defer?: boolean })
-    // : () => { cancel:() => any };
-
-    destroy(detach?: boolean);
+    $destroy(detach?: boolean);
 
     exec(cmd: string, value?: string): void
 
@@ -44,11 +28,6 @@ declare class Editor {
         editor: HTMLDivElement,
         modal: HTMLDivElement,
         raw: HTMLTextAreaElement
-    }
-
-    options: {
-        target: Element,
-        data: any
     }
 
 }

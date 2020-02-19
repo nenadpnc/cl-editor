@@ -87,8 +87,6 @@ editor.restoreRange() // restores cursor position or user selection
 // saveRange and restoreRange are useful when making custom actions
 // that demands that focus is shifted from editor to, for example, modal window.
 ```
-* There are also built in svelte methods like get, set, observe, fire, destroy.
-* You can check them out at [https://svelte.technology/guide](https://svelte.technology/guide)
 * For list of available _**exec**_ command visit [https://codepen.io/netsi1964/pen/QbLLG](https://codepen.io/netsi1964/pen/QbLLGW)
 ```js
 // Events
@@ -98,7 +96,6 @@ editor.on('blur', (event) => console.log(event)) // on editor blur event
 ```js
 // Props
 editor.refs.<editor | raw | modal | colorPicker> // references to editor, raw (textarea), modal and colorPicker HTMLElements
-editor.options // current editor options
 ```
 
 #### Run demo

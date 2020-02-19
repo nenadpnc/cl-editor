@@ -20,7 +20,7 @@ export default {
 			'<svg viewBox="0 0 72 72" width="17px" height="100%"><path fill="none" stroke="currentColor" stroke-width="8" stroke-miterlimit="10" d="M26.9 17.9L9 36.2 26.9 54M45 54l17.9-18.3L45 17.9"></path></svg>',
 		title: "View HTML",
 		result: function() {
-			let refs = get(this.refs);
+			let refs = get(this.references);
 			let actionObj = get(this.state).actionObj;
 			let helper = get(this.helper);
 
@@ -155,7 +155,7 @@ export default {
 		title: "Insert link",
 		result: function() {
 			const actionObj = get(this.state).actionObj;
-			const refs = get(this.refs);
+			const refs = get(this.references);
 
 			if (actionObj.a.active) {
 				const selection = window.getSelection();
@@ -206,7 +206,7 @@ export default {
 		title: "Image",
 		result: function() {
 			const actionObj = get(this.state).actionObj;
-			const refs = get(this.refs);
+			const refs = get(this.references);
 			saveRange(refs.editor);
 			refs.modal.$set({
 				show: true,
@@ -249,7 +249,7 @@ export default {
 			'<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M58.2 54.6L52 48.5l3.6-3.6 6.1 6.1 6.4-6.4 3.8 3.8-6.4 6.4 6.1 6.1-3.6 3.6-6.1-6.1-6.4 6.4-3.7-3.8 6.4-6.4zM21.7 52.1H50V57H21.7zM18.8 15.2h34.1v6.4H39.5v24.2h-7.4V21.5H18.8v-6.3z"></path></svg>',
 		title: "Remove format",
 		result: function() {
-			const refs = get(this.refs);
+			const refs = get(this.references);
 			const selection = window.getSelection();
 			if (!selection.toString().length) {
 				removeBlockTagsRecursive(
@@ -268,7 +268,7 @@ export default {
 };
 
 const showColorPicker = function(cmd) {
-	const refs = get(this.refs);
+	const refs = get(this.references);
 	saveRange(refs.editor);
 	console.log(refs.colorPicker);
 	refs.colorPicker.$set({show: true, event: cmd});

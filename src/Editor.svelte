@@ -3,7 +3,7 @@
 </script>
 <svelte:window on:click="{ event => _documentClick(event) }" />
 <svelte:options accessors={true}></svelte:options>
-<div class="cl" bind:this={$refs.editorWrapper}>
+<div class="cl" bind:this={$references.editorWrapper}>
   <div class="cl-actionbar">
     {#each $state.actionBtns as action}
       <button
@@ -15,19 +15,19 @@
       </button>
     {/each}
   </div>
-  <div bind:this={$refs.editor}
+  <div bind:this={$references.editor}
     class="cl-content"
     style="height: {height}"
     contenteditable="true"
     on:input="{event => _onChange(event.target.innerHTML)}"
-    on:mouseup="{_handleButtonStatus}"
-    on:keyup="{_handleButtonStatus}"
+    on:mouseup="{() => _handleButtonStatus()}"
+    on:keyup="{() => _handleButtonStatus()}"
     on:paste="{event => _onPaste(event)}">
   </div>
 
-  <textarea bind:this={$refs.raw} class="cl-textarea" style="max-height: {height}; min-height: {height}"></textarea>
-  <EditorModal bind:this={$refs.modal}></EditorModal>
-  <EditorColorPicker bind:this={$refs.colorPicker}></EditorColorPicker>
+  <textarea bind:this={$references.raw} class="cl-textarea" style="max-height: {height}; min-height: {height}"></textarea>
+  <EditorModal bind:this={$references.modal}></EditorModal>
+  <EditorColorPicker bind:this={$references.colorPicker}></EditorColorPicker>
 </div>
 
 <script>
@@ -75,7 +75,7 @@
 
   let state = createStateStore(contextKey);
 
-  let refs = writable({});
+  let references = writable({});
   $state.actionObj = getNewActionObj(defaultActions, actions);
 
   let context = {
@@ -86,7 +86,7 @@
       saveRange,
       restoreRange,
       helper,
-      refs,
+      references,
       state,
       removeFormatTags
   }
@@ -94,16 +94,15 @@
   setContext(contextKey, context);
 
   onMount(() => {
-      //const data = this.options.data || {};
       $state.actionBtns = getActionBtns($state.actionObj);
       setHtml(html);
   });
 
   function _btnClicked(action) {
-    $refs.editor.focus();
-    saveRange($refs.editor);
-    restoreRange($refs.editor);
-    action.result.call(context)
+    $references.editor.focus();
+    saveRange($references.editor);
+    restoreRange($references.editor);
+    action.result.call(context);
     _handleButtonStatus();
   }
 
@@ -125,7 +124,7 @@
   }
 
   function _documentClick(event) {
-    if (!isEditorClick(event.target, $refs.editorWrapper) && $helper.blurActive) {
+    if (!isEditorClick(event.target, $references.editorWrapper) && $helper.blurActive) {
       dispatcher('blur',event);
     }
     $helper.blurActive = true;
@@ -136,20 +135,21 @@
   };
 
   export function getHtml(sanitize) {
-    return sanitize ? removeBadTags($refs.editor.innerHTML) : $refs.editor.innerHTML;
+    return sanitize ? removeBadTags($references.editor.innerHTML) : $references.editor.innerHTML;
   }
   export function getText() {
-    return $refs.editor.innerText;
+    return $references.editor.innerText;
   }
   export function setHtml(html, sanitize) {
-    $refs.editor.innerHTML = sanitize ? removeBadTags(html) : (html || '');
+    $references.editor.innerHTML = sanitize ? removeBadTags(html) : (html || '');
   }
   export function saveRange() {
-    _saveRange($refs.editor);
+    _saveRange($references.editor);
   }
   export function restoreRange() {
-    _restoreRange($refs.editor);
+    _restoreRange($references.editor);
   }
+  export const refs = $references;
 </script>
 
 <style>
