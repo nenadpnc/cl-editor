@@ -1,6 +1,6 @@
 {
   "name": "cl-editor",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "Lightweight text editor built with svelte + typescript",
   "scripts": {
     "dev": "concurrently \"rollup -c rollup.config.prod.js \" \"live-server ./dist/ --port=3000\"",
