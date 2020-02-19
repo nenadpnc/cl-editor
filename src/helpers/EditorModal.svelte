@@ -1,65 +1,76 @@
-<div style="display: {{show ? 'block' : 'none'}}">
-    <div class="cl-editor-overlay" on:click="cancel()"></div>
+<svelte:options accessors={true}></svelte:options>
+<div style="display: {show ? 'block' : 'none'}">
+    <div class="cl-editor-overlay" on:click="{cancel}"></div>
     <div class="cl-editor-modal">
         <div class="modal-box">
-            <span class="modal-title">{{title}}</span>
-            <form on:submit="confirm(event)">
-                <label class="modal-label {{error ? 'input-error' : ''}}">
-                    <input ref:text on:keyup="hideError()" type="text" name="text" bind:value="text">
+            <span class="modal-title">{title}</span>
+            <form on:submit|preventDefault="{event=>confirm()}">
+                <label class="modal-label" class:input-error={error}>
+                    <input bind:this={refs.text} on:keyup="{hideError}" type="text" name="text" bind:value="{text}">
                     <span class="input-info">
-                        <span>{{label}}</span>
-                        {{#if error}}
+                        <span>{label}</span>
+                        {#if error}
                         <span class="msg-error">Required</span>
-                        {{/if}}
+                        {/if}
                     </span>
                 </label>
                 <button class="modal-button modal-submit" type="submit">Confirm</button>
-                <button class="modal-button modal-reset" type="reset" on:click="cancel()">Cancel</button>
+                <button class="modal-button modal-reset" type="reset" on:click="{cancel}">Cancel</button>
             </form>
         </div>
     </div>
 </div>
 
 <script>
-    export default {
-        data() {
-            return {
-                show: false,
-                text: '',
-                event: '',
-                title: '',
-                label: '',
-                error: false
-            }
-        },
-        oncreate() {
-            this.observe('show', show => {
-                if (show) {
-                    setTimeout(() => {
-                        this.refs.text.focus();
-                    });
-                }
-            }, {init: false});
-        },
-        methods: {
-            confirm: function(event) {
-                event.preventDefault();
-                const text = this.get('text');
-                if (text) {
-                    this.fire(this.get('event'), text);
-                    this.cancel();
-                } else {
-                    this.set({error: true});
-                    this.refs.text.focus();
-                }
-            },
-            cancel: function() {
-                this.set({show: false, text: '', error: false});
-            },
-            hideError: function() {
-                this.set({error: false});
-            }
+    import {onMount, createEventDispatcher } from "svelte";
+
+    let dispatcher = new createEventDispatcher();
+
+    export let show = false;
+    export let text = '';
+    export let event = '';
+    export let title = '';
+    export let label = '';
+    export let error = false;
+
+    let refs = {}
+
+    $:{
+        if(show){
+            setTimeout(() => {
+                refs.text.focus();
+            });
         }
+    }
+
+
+    function confirm() {
+        if (text) {
+            console.log('dispatcher',text,event)
+            dispatcher(event,text);
+            cancel();
+        } else {
+            error = true;
+            refs.text.focus();
+        }
+    }
+
+    function cancel() {
+        show = false;
+        text = '';
+        error = false;
+    }
+
+    function hideError() {
+        error = false;
+    }
+
+    export function showModal(options){
+        if(options.show) show = options.show;
+        if(options.text) text = options.text;
+        if(options.event) event = options.event;
+        if(options.title) title = options.title;
+        if(options.label) label = options.label;
     }
 </script>
 

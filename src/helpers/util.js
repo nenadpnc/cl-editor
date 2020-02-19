@@ -1,10 +1,10 @@
-let t: any = {};
+let t = {};
 
-export const exec = (command: string, value = null) => {
+export const exec = (command, value = null) => {
   document.execCommand(command, false, value)
 }
 
-export const getTagsRecursive = (element: HTMLElement | any, tags: string[]) => {
+export const getTagsRecursive = (element, tags) => {
   tags = tags || (element && element.tagName ? [element.tagName] : []);
 
   if (element && element.parentNode) {
@@ -16,8 +16,8 @@ export const getTagsRecursive = (element: HTMLElement | any, tags: string[]) => 
   const tag = element.tagName;
   if (element.style && element.getAttribute) {
     [element.style.textAlign || element.getAttribute('align'), element.style.color || tag === 'FONT' && 'forecolor', element.style.backgroundColor && 'backcolor']
-      .filter((item: string) => item)
-      .forEach((item: string) => tags.push(item));
+      .filter((item) => item)
+      .forEach((item) => tags.push(item));
   }
 
   if (tag === 'DIV') {
@@ -29,7 +29,7 @@ export const getTagsRecursive = (element: HTMLElement | any, tags: string[]) => 
   return getTagsRecursive(element, tags).filter((_tag) => _tag != null);
 }
 
-export const saveRange = (editor: HTMLElement) => {
+export const saveRange = (editor) => {
   const documentSelection = document.getSelection();
 
   t.range = null;
@@ -47,7 +47,7 @@ export const saveRange = (editor: HTMLElement) => {
       };
   }
 }
-export const restoreRange = (editor: HTMLElement) => {
+export const restoreRange = (editor) => {
   let metaRange = t.metaRange;
   let savedRange = t.range;
   let documentSelection = document.getSelection();
@@ -94,7 +94,7 @@ export const restoreRange = (editor: HTMLElement) => {
   documentSelection.addRange(range || savedRange);
 }
 
-export const cleanHtml = (input: string) => {
+export const cleanHtml = (input) => {
   const html = input.match(/<!--StartFragment-->(.*?)<!--EndFragment-->/);
   let output = html && html[1] || input;
   output = output
@@ -115,7 +115,7 @@ export const cleanHtml = (input: string) => {
     return output;
 }
 
-export const unwrap = (wrapper: Node) => {
+export const unwrap = (wrapper) => {
 	const docFrag = document.createDocumentFragment();
 	while (wrapper.firstChild) {
 		const child = wrapper.removeChild(wrapper.firstChild);
@@ -126,9 +126,9 @@ export const unwrap = (wrapper: Node) => {
 	wrapper.parentNode.replaceChild(docFrag, wrapper);
 }
 
-export const removeBlockTagsRecursive = (elements: HTMLCollection, tagsToRemove: string[]) => {
-  Array.from(elements).forEach((item: HTMLElement) => {
-    if (tagsToRemove.some((tag: string) => tag === item.tagName.toLowerCase())) {
+export const removeBlockTagsRecursive = (elements, tagsToRemove) => {
+  Array.from(elements).forEach((item) => {
+    if (tagsToRemove.some((tag) => tag === item.tagName.toLowerCase())) {
       if (item.children.length) {
         removeBlockTagsRecursive(item.children, tagsToRemove);
       }
@@ -141,7 +141,7 @@ export const getActionBtns = (actions) => {
   return Object.keys(actions).map((action) => actions[action]);
 }
 
-export const getNewActionObj = (actions: any, userActions = []) => {
+export const getNewActionObj = (actions, userActions = []) => {
     if (userActions && userActions.length) {
         const newActions = {};
         userActions.forEach((action) => {
@@ -153,22 +153,22 @@ export const getNewActionObj = (actions: any, userActions = []) => {
                 newActions[action.name] = Object.assign({}, action);
             }
         });
-    
+
         return newActions;
     } else {
         return actions;
     }
 }
 
-export const removeBadTags = (html: string) => {
-    ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag: string) => {
+export const removeBadTags = (html) => {
+    ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag) => {
         html = html.replace(new RegExp(`<${badTag}.*?${badTag}(.*?)>`, 'gi'), '')
     });
 
     return html;
 }
 
-export const isEditorClick = (target: HTMLElement, editorWrapper: HTMLElement) => {
+export const isEditorClick = (target, editorWrapper) => {
     if (target === editorWrapper) {
         return true;
     }
