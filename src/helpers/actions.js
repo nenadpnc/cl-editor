@@ -7,8 +7,7 @@ import {
 	unwrap
 } from "./util";
 
-import { get } from "svelte/store";
-
+import {get} from "svelte/store";
 
 const linkSvg =
 	'<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M31.1 48.9l-6.7 6.7c-.8.8-1.6.9-2.1.9s-1.4-.1-2.1-.9L15 50.4c-1.1-1.1-1.1-3.1 0-4.2l6.1-6.1.2-.2 6.5-6.5c-1.2-.6-2.5-.9-3.8-.9-2.3 0-4.6.9-6.3 2.6L11 41.8c-3.5 3.5-3.5 9.2 0 12.7l5.2 5.2c1.7 1.7 4 2.6 6.3 2.6s4.6-.9 6.3-2.6l6.7-6.7c2.5-2.6 3.1-6.7 1.5-10l-5.9 5.9zM38.7 22.5l6.7-6.7c.8-.8 1.6-.9 2.1-.9s1.4.1 2.1.9l5.2 5.2c1.1 1.1 1.1 3.1 0 4.2l-6.1 6.1-.2.2L42 38c1.2.6 2.5.9 3.8.9 2.3 0 4.6-.9 6.3-2.6l6.7-6.7c3.5-3.5 3.5-9.2 0-12.7l-5.2-5.2c-1.7-1.7-4-2.6-6.3-2.6s-4.6.9-6.3 2.6l-6.7 6.7c-2.7 2.7-3.3 6.9-1.7 10.2l6.1-6.1c0 .1 0 .1 0 0z"></path><path d="M44.2 30.5c.2-.2.4-.6.4-.9 0-.3-.1-.6-.4-.9l-2.3-2.3c-.3-.2-.6-.4-.9-.4-.3 0-.6.1-.9.4L25.9 40.6c-.2.2-.4.6-.4.9 0 .3.1.6.4.9l2.3 2.3c.2.2.6.4.9.4.3 0 .6-.1.9-.4l14.2-14.2zM49.9 55.4h-8.5v-5h8.5v-8.9h5.2v8.9h8.5v5h-8.5v8.9h-5.2v-8.9z"></path></svg>';
@@ -21,17 +20,13 @@ export default {
 			'<svg viewBox="0 0 72 72" width="17px" height="100%"><path fill="none" stroke="currentColor" stroke-width="8" stroke-miterlimit="10" d="M26.9 17.9L9 36.2 26.9 54M45 54l17.9-18.3L45 17.9"></path></svg>',
 		title: "View HTML",
 		result: function() {
-            let refs = get(this.refs);
-            let actionObj = get(this.state).actionObj;
-            let helper = get(this.helper);
+			let refs = get(this.refs);
+			let actionObj = get(this.state).actionObj;
+			let helper = get(this.helper);
 
 			helper.showEditor = !helper.showEditor;
-			refs.editor.style.display = helper.showEditor
-				? "block"
-				: "none";
-			refs.raw.style.display = helper.showEditor
-				? "none"
-				: "block";
+			refs.editor.style.display = helper.showEditor ? "block" : "none";
+			refs.raw.style.display = helper.showEditor ? "none" : "block";
 			if (helper.showEditor) {
 				refs.editor.innerHTML = refs.raw.value;
 			} else {
@@ -39,18 +34,16 @@ export default {
 			}
 			setTimeout(() => {
 				Object.keys(actionObj).forEach(
-					action =>
-						(actionObj[action].disabled = !helper.showEditor)
+					action => (actionObj[action].disabled = !helper.showEditor)
 				);
 				actionObj.viewHtml.disabled = false;
 				actionObj.viewHtml.active = !helper.showEditor;
 
-                this.state.update(state => {
-                    state.actionBtns = getActionBtns(actionObj);
-                    state.actionObj = actionObj;
-                    return state
-                })
-
+				this.state.update(state => {
+					state.actionBtns = getActionBtns(actionObj);
+					state.actionObj = actionObj;
+					return state;
+				});
 			});
 		}
 	},
@@ -161,8 +154,8 @@ export default {
 		icon: linkSvg,
 		title: "Insert link",
 		result: function() {
-			const actionObj = get(this.state).actionObj
-            const refs = get(this.refs);
+			const actionObj = get(this.state).actionObj;
+			const refs = get(this.refs);
 
 			if (actionObj.a.active) {
 				const selection = window.getSelection();
@@ -173,11 +166,11 @@ export default {
 				exec("unlink");
 				actionObj.a.title = "Insert link";
 				actionObj.a.icon = linkSvg;
-                this.state.update(state => {
-                    state.actionBtn = getActionBtns(actionObj);
-                    state.actionObj = actionObj
-                    return state;
-                })
+				this.state.update(state => {
+					state.actionBtn = getActionBtns(actionObj);
+					state.actionObj = actionObj;
+					return state;
+				});
 			} else {
 				saveRange(refs.editor);
 				refs.modal.$set({
@@ -188,20 +181,20 @@ export default {
 				});
 				if (!get(this.helper).link) {
 					this.helper.update(state => {
-                        state.link = true;
-                        return state;
-                    });
+						state.link = true;
+						return state;
+					});
 					refs.modal.$on("linkUrl", event => {
 						restoreRange(refs.editor);
 						exec("createLink", event.detail);
 						actionObj.a.title = "Unlink";
 						actionObj.a.icon = unlinkSvg;
 
-                        this.state.update(state => {
-                            state.actionBtn = getActionBtns(actionObj);
-                            state.actionObj = actionObj
-                            return state;
-                        })
+						this.state.update(state => {
+							state.actionBtn = getActionBtns(actionObj);
+							state.actionObj = actionObj;
+							return state;
+						});
 					});
 				}
 			}
@@ -212,8 +205,8 @@ export default {
 			'<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M64 17v38H8V17h56m8-8H0v54h72V9z"></path><path d="M17.5 22C15 22 13 24 13 26.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5zM16 50h27L29.5 32zM36 36.2l8.9-8.5L60.2 50H45.9S35.6 35.9 36 36.2z"></path></svg>',
 		title: "Image",
 		result: function() {
-            const actionObj = get(this.state).actionObj
-            const refs = get(this.refs);
+			const actionObj = get(this.state).actionObj;
+			const refs = get(this.refs);
 			saveRange(refs.editor);
 			refs.modal.$set({
 				show: true,
@@ -222,7 +215,10 @@ export default {
 				label: "Url"
 			});
 			if (!get(this.helper).image) {
-				this.helper.update(state=> { state.image=true; return state;});
+				this.helper.update(state => {
+					state.image = true;
+					return state;
+				});
 				refs.modal.$on("imageUrl", event => {
 					restoreRange(refs.editor);
 					exec("insertImage", event.detail);
@@ -253,7 +249,7 @@ export default {
 			'<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M58.2 54.6L52 48.5l3.6-3.6 6.1 6.1 6.4-6.4 3.8 3.8-6.4 6.4 6.1 6.1-3.6 3.6-6.1-6.1-6.4 6.4-3.7-3.8 6.4-6.4zM21.7 52.1H50V57H21.7zM18.8 15.2h34.1v6.4H39.5v24.2h-7.4V21.5H18.8v-6.3z"></path></svg>',
 		title: "Remove format",
 		result: function() {
-            const refs = get(this.refs);
+			const refs = get(this.refs);
 			const selection = window.getSelection();
 			if (!selection.toString().length) {
 				removeBlockTagsRecursive(
@@ -272,26 +268,30 @@ export default {
 };
 
 const showColorPicker = function(cmd) {
-    const refs = get(this.refs);
+	const refs = get(this.refs);
 	saveRange(refs.editor);
-    console.log(refs.colorPicker);
+	console.log(refs.colorPicker);
 	refs.colorPicker.$set({show: true, event: cmd});
 	if (!get(this.helper)[cmd]) {
-		this.helper.update(state => { state[cmd] = true; return state });
+		this.helper.update(state => {
+			state[cmd] = true;
+			return state;
+		});
 		refs.colorPicker.$on(cmd, event => {
-            let item = event.detail;
+			let item = event.detail;
 			if (item.modal) {
 				this.modal.showModal({
 					show: true,
 					event: "colorHref",
 					title: "Text color",
-					label: cmd === "foreColor" ? "Text color" : "Background color"
+					label:
+						cmd === "foreColor" ? "Text color" : "Background color"
 				});
 				const command = cmd;
 				if (!get(this.helper)[`${command}Modal`]) {
 					get(this.helper)[`${command}Modal`] = true;
 					this.modal.$on("colorHref", event => {
-                        let color = event.detail;
+						let color = event.detail;
 						restoreRange(refs.editor);
 						exec(command, color);
 					});
