@@ -1,29 +1,29 @@
 declare class Editor {
-	constructor(options: { 
-        target: Element, 
-        data?: {
+	constructor(options: {
+        target: Element,
+        props?: {
             actions?: ({name: string, title?: string, icon?: string, result?: Function} | string)[],
             height?: string,
             html?: string,
             removeFormatTags?: string[]
-        } 
+        }
     });
 
-    get(name: string);
-    set(data: any);
-
-    on(
-        eventName: string, 
-        callback?: (event?: any) => any) 
-    : () => { cancel:() => any };
-
-    fire(eventName: string, event?: any);
-
-    observe(
-    	name:string, 
-    	callback: (newValue?, oldValue?) => any , 
-    	options? :{ init?: boolean, defer?: boolean }) 
-    : () => { cancel:() => any };
+    // get(name: string);
+    // set(data: any);
+	//
+    // on(
+    //     eventName: string,
+    //     callback?: (event?: any) => any)
+    // : () => { cancel:() => any };
+	//
+    // fire(eventName: string, event?: any);
+	//
+    // observe(
+    // 	name:string,
+    // 	callback: (newValue?, oldValue?) => any ,
+    // 	options? :{ init?: boolean, defer?: boolean })
+    // : () => { cancel:() => any };
 
     destroy(detach?: boolean);
 
@@ -50,7 +50,7 @@ declare class Editor {
         target: Element,
         data: any
     }
-	
+
 }
 
 export default Editor;

@@ -1,4 +1,4 @@
-import Editor from './Editor.html';
+import Editor from './Editor.svelte';
 
 let inlineEditor;
 const inlineEdit = document.getElementById('inlineEdit');
@@ -10,11 +10,11 @@ const editor = new Editor({
 
 const editor2 = new Editor({
     target: document.getElementById('editor2'),
-    data: {
+    props: {
       actions: [
         'b', 'i', 'u', 'strike', 'h1', 'h2', 'p',
         {
-            name: 'copy', 
+            name: 'copy',
             icon: '&#128203;',
             title: 'Copy',
             result: () => {
@@ -39,7 +39,7 @@ function showEditor() {
 	inlineEdit.innerHTML = '';
 	inlineEditor = new Editor({
 		target: inlineEdit,
-		data: {
+		props: {
 			actions: ['b', 'i', 'u', 'strike', 'removeFormat'],
 			height: 'auto',
 			html: html
