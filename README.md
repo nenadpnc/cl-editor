@@ -39,7 +39,7 @@ const editor = new Editor({
     // <HTMLElement> required
     target: document.getElementById('editor'),
     // optional
-    data: {
+    props: {
         // <Array[string | Object]> string if overwriting, object if customizing/creating
         // available actions:
         // 'viewHtml', 'undo', 'redo', 'b', 'i', 'u', 'strike', 'sup', 'sub', 'h1', 'h2', 'p', 'blockquote', 
