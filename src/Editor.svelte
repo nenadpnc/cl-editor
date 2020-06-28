@@ -119,19 +119,19 @@
     exec('insertHTML', event.clipboardData.getData('text/html') ? cleanHtml(event.clipboardData.getData('text/html')) : event.clipboardData.getData('text'));
   }
 
-  function _onChange(html) {
-     dispatcher('change',html)
+  function _onChange(event) {
+     dispatcher('change', event)
   }
 
   function _documentClick(event) {
     if (!isEditorClick(event.target, $references.editorWrapper) && $helper.blurActive) {
-      dispatcher('blur',event);
+      dispatcher('blur', event);
     }
     $helper.blurActive = true;
   }
 
-  export function exec(cmd,value){
-      _exec(cmd,value);
+  export function exec(cmd, value){
+      _exec(cmd, value);
   };
 
   export function getHtml(sanitize) {

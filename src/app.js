@@ -34,6 +34,10 @@ const editor2 = new Editor({
     }
 });
 
+editor2.$on('change', (event) => {
+	console.log(event.detail);
+})
+
 function showEditor() {
 	let html = inlineEdit.innerHTML;
 	inlineEdit.innerHTML = '';

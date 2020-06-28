@@ -11,6 +11,8 @@ declare class Editor {
 
     $destroy(detach?: boolean);
 
+    $on(event: 'change' | 'blur', cb: (event?: any) => void);
+
     exec(cmd: string, value?: string): void
 
     getHtml(sanitize?: boolean): string

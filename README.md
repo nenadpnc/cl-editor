@@ -1,10 +1,10 @@
 ## Lightweight text editor
 
-typescript + svelte (no external dependencies) 
+Built with svelte (no external dependencies) 
 
 #### File size (bundle includes css, html and js)
-* min: 28kb
-* gzip: 9kb
+* min: 29kb
+* gzip: 10kb
 
 ## Installation
 
@@ -90,8 +90,8 @@ editor.restoreRange() // restores cursor position or user selection
 * For list of available _**exec**_ command visit [https://codepen.io/netsi1964/pen/QbLLG](https://codepen.io/netsi1964/pen/QbLLGW)
 ```js
 // Events
-editor.on('change', (html) => console.log(html)) // on every keyup event
-editor.on('blur', (event) => console.log(event)) // on editor blur event
+editor.$on('change', (event) => console.log(event)) // on every keyup event
+editor.$on('blur', (event) => console.log(event)) // on editor blur event
 ```
 ```js
 // Props
