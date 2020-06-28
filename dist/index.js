@@ -1887,8 +1887,8 @@
     		: event.clipboardData.getData("text"));
     	}
 
-    	function _onChange(html) {
-    		dispatcher("change", html);
+    	function _onChange(event) {
+    		dispatcher("change", event);
     	}
 
     	function _documentClick(event) {

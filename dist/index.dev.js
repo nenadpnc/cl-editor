@@ -1884,8 +1884,8 @@
     		: event.clipboardData.getData("text"));
     	}
 
-    	function _onChange(html) {
-    		dispatcher("change", html);
+    	function _onChange(event) {
+    		dispatcher("change", event);
     	}
 
     	function _documentClick(event) {
@@ -2138,8 +2138,8 @@
         }
     });
 
-    editor2.$on('change', (txt) => {
-    	console.log(txt);
+    editor2.$on('change', (event) => {
+    	console.log(event.detail);
     });
 
     function showEditor() {
