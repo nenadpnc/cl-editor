@@ -173,12 +173,12 @@
         color: #69878f;
         background-color: #fbfcfc;
         border: 1px solid #DEDEDE;
-        padding: 0 7px;
+        padding: 1px 7px;
         width: 150px;
     }
 
     .input-error .input-info {
-        margin-top: -27px;
+        margin-top: -29px;
     }
 
     .input-error .msg-error {

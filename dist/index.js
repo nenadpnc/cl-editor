@@ -980,8 +980,8 @@
 
     function add_css() {
     	var style = element("style");
-    	style.id = "svelte-1d1bzev-style";
-    	style.textContent = ".cl-editor-modal.svelte-1d1bzev.svelte-1d1bzev{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:140px;backface-visibility:hidden;z-index:11}.cl-editor-overlay.svelte-1d1bzev.svelte-1d1bzev{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0;z-index:10}.modal-box.svelte-1d1bzev.svelte-1d1bzev{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:36px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}.modal-title.svelte-1d1bzev.svelte-1d1bzev{font-size:24px;font-weight:700;margin:0 0 20px;padding:2px 0 4px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}.modal-label.svelte-1d1bzev.svelte-1d1bzev{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}.modal-label.svelte-1d1bzev input.svelte-1d1bzev{position:absolute;top:0;right:0;height:27px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}.modal-label.svelte-1d1bzev input.svelte-1d1bzev:focus{outline:none}.input-error.svelte-1d1bzev input.svelte-1d1bzev{border:1px solid #e74c3c}.input-info.svelte-1d1bzev.svelte-1d1bzev{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}.input-info.svelte-1d1bzev span.svelte-1d1bzev{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:0 7px;width:150px}.input-error.svelte-1d1bzev .input-info.svelte-1d1bzev{margin-top:-27px}.input-error.svelte-1d1bzev .msg-error.svelte-1d1bzev{color:#e74c3c}.modal-button.svelte-1d1bzev.svelte-1d1bzev{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}.modal-submit.svelte-1d1bzev.svelte-1d1bzev{right:110px;background:#2bc06a}.modal-reset.svelte-1d1bzev.svelte-1d1bzev{color:#555;background:#e6e6e6}";
+    	style.id = "svelte-1nq4m5m-style";
+    	style.textContent = ".cl-editor-modal.svelte-1nq4m5m.svelte-1nq4m5m{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:140px;backface-visibility:hidden;z-index:11}.cl-editor-overlay.svelte-1nq4m5m.svelte-1nq4m5m{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0;z-index:10}.modal-box.svelte-1nq4m5m.svelte-1nq4m5m{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:36px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}.modal-title.svelte-1nq4m5m.svelte-1nq4m5m{font-size:24px;font-weight:700;margin:0 0 20px;padding:2px 0 4px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}.modal-label.svelte-1nq4m5m.svelte-1nq4m5m{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}.modal-label.svelte-1nq4m5m input.svelte-1nq4m5m{position:absolute;top:0;right:0;height:27px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}.modal-label.svelte-1nq4m5m input.svelte-1nq4m5m:focus{outline:none}.input-error.svelte-1nq4m5m input.svelte-1nq4m5m{border:1px solid #e74c3c}.input-info.svelte-1nq4m5m.svelte-1nq4m5m{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}.input-info.svelte-1nq4m5m span.svelte-1nq4m5m{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:1px 7px;width:150px}.input-error.svelte-1nq4m5m .input-info.svelte-1nq4m5m{margin-top:-29px}.input-error.svelte-1nq4m5m .msg-error.svelte-1nq4m5m{color:#e74c3c}.modal-button.svelte-1nq4m5m.svelte-1nq4m5m{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}.modal-submit.svelte-1nq4m5m.svelte-1nq4m5m{right:110px;background:#2bc06a}.modal-reset.svelte-1nq4m5m.svelte-1nq4m5m{color:#555;background:#e6e6e6}";
     	append(document.head, style);
     }
 
@@ -993,7 +993,7 @@
     		c() {
     			span = element("span");
     			span.textContent = "Required";
-    			attr(span, "class", "msg-error svelte-1d1bzev");
+    			attr(span, "class", "msg-error svelte-1nq4m5m");
     		},
     		m(target, anchor) {
     			insert(target, span, anchor);
@@ -1054,21 +1054,21 @@
     			t8 = space();
     			button1 = element("button");
     			button1.textContent = "Cancel";
-    			attr(div0, "class", "cl-editor-overlay svelte-1d1bzev");
-    			attr(span0, "class", "modal-title svelte-1d1bzev");
+    			attr(div0, "class", "cl-editor-overlay svelte-1nq4m5m");
+    			attr(span0, "class", "modal-title svelte-1nq4m5m");
     			attr(input, "type", "text");
     			attr(input, "name", "text");
-    			attr(input, "class", "svelte-1d1bzev");
-    			attr(span1, "class", "svelte-1d1bzev");
-    			attr(span2, "class", "input-info svelte-1d1bzev");
-    			attr(label_1, "class", "modal-label svelte-1d1bzev");
+    			attr(input, "class", "svelte-1nq4m5m");
+    			attr(span1, "class", "svelte-1nq4m5m");
+    			attr(span2, "class", "input-info svelte-1nq4m5m");
+    			attr(label_1, "class", "modal-label svelte-1nq4m5m");
     			toggle_class(label_1, "input-error", /*error*/ ctx[2]);
-    			attr(button0, "class", "modal-button modal-submit svelte-1d1bzev");
+    			attr(button0, "class", "modal-button modal-submit svelte-1nq4m5m");
     			attr(button0, "type", "submit");
-    			attr(button1, "class", "modal-button modal-reset svelte-1d1bzev");
+    			attr(button1, "class", "modal-button modal-reset svelte-1nq4m5m");
     			attr(button1, "type", "reset");
-    			attr(div1, "class", "modal-box svelte-1d1bzev");
-    			attr(div2, "class", "cl-editor-modal svelte-1d1bzev");
+    			attr(div1, "class", "modal-box svelte-1nq4m5m");
+    			attr(div2, "class", "cl-editor-modal svelte-1nq4m5m");
     			set_style(div3, "display", /*show*/ ctx[0] ? "block" : "none");
     		},
     		m(target, anchor) {
@@ -1234,7 +1234,7 @@
     class EditorModal extends SvelteComponent {
     	constructor(options) {
     		super();
-    		if (!document.getElementById("svelte-1d1bzev-style")) add_css();
+    		if (!document.getElementById("svelte-1nq4m5m-style")) add_css();
 
     		init(this, options, instance, create_fragment, safe_not_equal, {
     			show: 0,
@@ -1615,6 +1615,7 @@
     			button = element("button");
     			t = space();
     			html_tag = new HtmlTag(t);
+    			attr(button, "type", "button");
     			attr(button, "class", button_class_value = "cl-button " + (/*action*/ ctx[36].active ? "active" : "") + " svelte-1a534py");
     			attr(button, "title", button_title_value = /*action*/ ctx[36].title);
     			button.disabled = button_disabled_value = /*action*/ ctx[36].disabled;
