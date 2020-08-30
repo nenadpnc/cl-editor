@@ -6,7 +6,7 @@
 <div class="cl" bind:this={$references.editorWrapper}>
   <div class="cl-actionbar">
     {#each $state.actionBtns as action}
-      <button
+      <button type="button"
         class="cl-button {action.active ? 'active' : ''}"
         title="{action.title}"
         on:click="{event => _btnClicked(action)}"
