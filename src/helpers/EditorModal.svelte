@@ -14,8 +14,8 @@
                         {/if}
                     </span>
                 </label>
-                <button type="button" class="modal-button modal-submit" type="submit">Confirm</button>
-                <button type="button" class="modal-button modal-reset" type="reset" on:click="{cancel}">Cancel</button>
+                <button class="modal-button modal-submit" type="submit">Confirm</button>
+                <button class="modal-button modal-reset" type="reset" on:click="{cancel}">Cancel</button>
             </form>
         </div>
     </div>
