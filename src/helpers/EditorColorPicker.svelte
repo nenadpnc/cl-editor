@@ -2,7 +2,7 @@
     <div class="color-picker-overlay" on:click="{close}"></div>
     <div class="color-picker-wrapper">
         {#each btns as btn}
-        <button type="button" type="button" class="color-picker-btn" style="background-color:{btn.color};" on:click="{event => selectColor(btn)}">{btn.text || ''}</button>
+        <button type="button" class="color-picker-btn" style="background-color:{btn.color};" on:click="{event => selectColor(btn)}">{btn.text || ''}</button>
         {/each}
     </div>
 </div>
