@@ -141,7 +141,9 @@
     return $references.editor.innerText;
   }
   export function setHtml(html, sanitize) {
-    $references.editor.innerHTML = sanitize ? removeBadTags(html) : (html || '');
+    const htmlData = sanitize ? removeBadTags(html) : (html || '')
+    $references.editor.innerHTML = htmlData;
+    $references.raw.value = htmlData;
   }
   export function saveRange() {
     _saveRange($references.editor);

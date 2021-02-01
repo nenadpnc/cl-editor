@@ -35,16 +35,16 @@ export const saveRange = (editor) => {
   t.range = null;
 
   if (documentSelection.rangeCount) {
-      let savedRange = t.range = documentSelection.getRangeAt(0);
-      let range = document.createRange();
-      let rangeStart;
-      range.selectNodeContents(editor);
-      range.setEnd(savedRange.startContainer, savedRange.startOffset);
-      rangeStart = (range + '').length;
-      t.metaRange = {
-          start: rangeStart,
-          end: rangeStart + (savedRange + '').length
-      };
+    let savedRange = t.range = documentSelection.getRangeAt(0);
+    let range = document.createRange();
+    let rangeStart;
+    range.selectNodeContents(editor);
+    range.setEnd(savedRange.startContainer, savedRange.startOffset);
+    rangeStart = (range + '').length;
+    t.metaRange = {
+      start: rangeStart,
+      end: rangeStart + (savedRange + '').length
+    };
   }
 }
 export const restoreRange = (editor) => {
@@ -54,40 +54,40 @@ export const restoreRange = (editor) => {
   let range;
 
   if (!savedRange) {
-      return;
+    return;
   }
 
   if (metaRange && metaRange.start !== metaRange.end) { // Algorithm from http://jsfiddle.net/WeWy7/3/
-      let charIndex = 0,
-          nodeStack = [editor],
-          node,
-          foundStart = false,
-          stop = false;
+    let charIndex = 0,
+        nodeStack = [editor],
+        node,
+        foundStart = false,
+        stop = false;
 
-      range = document.createRange();
+    range = document.createRange();
 
-      while (!stop && (node = nodeStack.pop())) {
-          if (node.nodeType === 3) {
-              let nextCharIndex = charIndex + node.length;
-              if (!foundStart && metaRange.start >= charIndex && metaRange.start <= nextCharIndex) {
-                  range.setStart(node, metaRange.start - charIndex);
-                  foundStart = true;
-              }
-              if (foundStart && metaRange.end >= charIndex && metaRange.end <= nextCharIndex) {
-                  range.setEnd(node, metaRange.end - charIndex);
-                  stop = true;
-              }
-              charIndex = nextCharIndex;
-          } else {
-              let cn = node.childNodes;
-              let i = cn.length;
+    while (!stop && (node = nodeStack.pop())) {
+      if (node.nodeType === 3) {
+        let nextCharIndex = charIndex + node.length;
+        if (!foundStart && metaRange.start >= charIndex && metaRange.start <= nextCharIndex) {
+          range.setStart(node, metaRange.start - charIndex);
+          foundStart = true;
+        }
+        if (foundStart && metaRange.end >= charIndex && metaRange.end <= nextCharIndex) {
+          range.setEnd(node, metaRange.end - charIndex);
+          stop = true;
+        }
+        charIndex = nextCharIndex;
+      } else {
+        let cn = node.childNodes;
+        let i = cn.length;
 
-              while (i > 0) {
-                  i -= 1;
-                  nodeStack.push(cn[i]);
-              }
-          }
+        while (i > 0) {
+          i -= 1;
+          nodeStack.push(cn[i]);
+        }
       }
+    }
   }
 
   documentSelection.removeAllRanges();
@@ -143,37 +143,37 @@ export const getActionBtns = (actions) => {
 
 export const getNewActionObj = (actions, userActions = []) => {
     if (userActions && userActions.length) {
-        const newActions = {};
-        userActions.forEach((action) => {
-            if (typeof action === 'string') {
-                newActions[action] = Object.assign({}, actions[action]);
-            } else if (actions[action.name]) {
-                newActions[action.name] = Object.assign(actions[action.name], action);
-            } else {
-                newActions[action.name] = Object.assign({}, action);
-            }
-        });
+      const newActions = {};
+      userActions.forEach((action) => {
+        if (typeof action === 'string') {
+          newActions[action] = Object.assign({}, actions[action]);
+        } else if (actions[action.name]) {
+          newActions[action.name] = Object.assign(actions[action.name], action);
+        } else {
+          newActions[action.name] = Object.assign({}, action);
+        }
+      });
 
-        return newActions;
+      return newActions;
     } else {
-        return actions;
+      return actions;
     }
 }
 
 export const removeBadTags = (html) => {
-    ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag) => {
-        html = html.replace(new RegExp(`<${badTag}.*?${badTag}(.*?)>`, 'gi'), '')
-    });
+  ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag) => {
+    html = html.replace(new RegExp(`<${badTag}.*?${badTag}(.*?)>`, 'gi'), '')
+  });
 
-    return html;
+  return html;
 }
 
 export const isEditorClick = (target, editorWrapper) => {
-    if (target === editorWrapper) {
-        return true;
-    }
-    if (target.parentElement) {
-        return isEditorClick(target.parentElement, editorWrapper);
-    }
-    return false;
+  if (target === editorWrapper) {
+    return true;
+  }
+  if (target.parentElement) {
+    return isEditorClick(target.parentElement, editorWrapper);
+  }
+  return false;
 }

@@ -1,20 +1,19 @@
 import {writable} from "svelte/store";
 
-const state = (function(name ){
+const state = (function(name) {
+  let state = {
+    actionBtns: [],
+    actionObj: {}
+  }
 
-    let state = {
-        actionBtns: [],
-        actionObj: {}
-    }
+  const { subscribe, set, update } = writable(state);
 
-    const { subscribe, set, update } = writable(state);
-
-    return {
-        name,
-        set,
-        update,
-        subscribe
-    }
+  return {
+    name,
+    set,
+    update,
+    subscribe
+  }
 });
 
 export const createStateStore = state;

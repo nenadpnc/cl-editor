@@ -464,16 +464,16 @@
       t.range = null;
 
       if (documentSelection.rangeCount) {
-          let savedRange = t.range = documentSelection.getRangeAt(0);
-          let range = document.createRange();
-          let rangeStart;
-          range.selectNodeContents(editor);
-          range.setEnd(savedRange.startContainer, savedRange.startOffset);
-          rangeStart = (range + '').length;
-          t.metaRange = {
-              start: rangeStart,
-              end: rangeStart + (savedRange + '').length
-          };
+        let savedRange = t.range = documentSelection.getRangeAt(0);
+        let range = document.createRange();
+        let rangeStart;
+        range.selectNodeContents(editor);
+        range.setEnd(savedRange.startContainer, savedRange.startOffset);
+        rangeStart = (range + '').length;
+        t.metaRange = {
+          start: rangeStart,
+          end: rangeStart + (savedRange + '').length
+        };
       }
     };
     const restoreRange = (editor) => {
@@ -483,40 +483,40 @@
       let range;
 
       if (!savedRange) {
-          return;
+        return;
       }
 
       if (metaRange && metaRange.start !== metaRange.end) { // Algorithm from http://jsfiddle.net/WeWy7/3/
-          let charIndex = 0,
-              nodeStack = [editor],
-              node,
-              foundStart = false,
-              stop = false;
+        let charIndex = 0,
+            nodeStack = [editor],
+            node,
+            foundStart = false,
+            stop = false;
 
-          range = document.createRange();
+        range = document.createRange();
 
-          while (!stop && (node = nodeStack.pop())) {
-              if (node.nodeType === 3) {
-                  let nextCharIndex = charIndex + node.length;
-                  if (!foundStart && metaRange.start >= charIndex && metaRange.start <= nextCharIndex) {
-                      range.setStart(node, metaRange.start - charIndex);
-                      foundStart = true;
-                  }
-                  if (foundStart && metaRange.end >= charIndex && metaRange.end <= nextCharIndex) {
-                      range.setEnd(node, metaRange.end - charIndex);
-                      stop = true;
-                  }
-                  charIndex = nextCharIndex;
-              } else {
-                  let cn = node.childNodes;
-                  let i = cn.length;
+        while (!stop && (node = nodeStack.pop())) {
+          if (node.nodeType === 3) {
+            let nextCharIndex = charIndex + node.length;
+            if (!foundStart && metaRange.start >= charIndex && metaRange.start <= nextCharIndex) {
+              range.setStart(node, metaRange.start - charIndex);
+              foundStart = true;
+            }
+            if (foundStart && metaRange.end >= charIndex && metaRange.end <= nextCharIndex) {
+              range.setEnd(node, metaRange.end - charIndex);
+              stop = true;
+            }
+            charIndex = nextCharIndex;
+          } else {
+            let cn = node.childNodes;
+            let i = cn.length;
 
-                  while (i > 0) {
-                      i -= 1;
-                      nodeStack.push(cn[i]);
-                  }
-              }
+            while (i > 0) {
+              i -= 1;
+              nodeStack.push(cn[i]);
+            }
           }
+        }
       }
 
       documentSelection.removeAllRanges();
@@ -572,39 +572,39 @@
 
     const getNewActionObj = (actions, userActions = []) => {
         if (userActions && userActions.length) {
-            const newActions = {};
-            userActions.forEach((action) => {
-                if (typeof action === 'string') {
-                    newActions[action] = Object.assign({}, actions[action]);
-                } else if (actions[action.name]) {
-                    newActions[action.name] = Object.assign(actions[action.name], action);
-                } else {
-                    newActions[action.name] = Object.assign({}, action);
-                }
-            });
+          const newActions = {};
+          userActions.forEach((action) => {
+            if (typeof action === 'string') {
+              newActions[action] = Object.assign({}, actions[action]);
+            } else if (actions[action.name]) {
+              newActions[action.name] = Object.assign(actions[action.name], action);
+            } else {
+              newActions[action.name] = Object.assign({}, action);
+            }
+          });
 
-            return newActions;
+          return newActions;
         } else {
-            return actions;
+          return actions;
         }
     };
 
     const removeBadTags = (html) => {
-        ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag) => {
-            html = html.replace(new RegExp(`<${badTag}.*?${badTag}(.*?)>`, 'gi'), '');
-        });
+      ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'].forEach((badTag) => {
+        html = html.replace(new RegExp(`<${badTag}.*?${badTag}(.*?)>`, 'gi'), '');
+      });
 
-        return html;
+      return html;
     };
 
     const isEditorClick = (target, editorWrapper) => {
-        if (target === editorWrapper) {
-            return true;
-        }
-        if (target.parentElement) {
-            return isEditorClick(target.parentElement, editorWrapper);
-        }
-        return false;
+      if (target === editorWrapper) {
+        return true;
+      }
+      if (target.parentElement) {
+        return isEditorClick(target.parentElement, editorWrapper);
+      }
+      return false;
     };
 
     const subscriber_queue = [];
@@ -977,12 +977,12 @@
 
     function add_css() {
     	var style = element("style");
-    	style.id = "svelte-1nq4m5m-style";
-    	style.textContent = ".cl-editor-modal.svelte-1nq4m5m.svelte-1nq4m5m{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:140px;backface-visibility:hidden;z-index:11}.cl-editor-overlay.svelte-1nq4m5m.svelte-1nq4m5m{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0;z-index:10}.modal-box.svelte-1nq4m5m.svelte-1nq4m5m{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:36px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}.modal-title.svelte-1nq4m5m.svelte-1nq4m5m{font-size:24px;font-weight:700;margin:0 0 20px;padding:2px 0 4px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}.modal-label.svelte-1nq4m5m.svelte-1nq4m5m{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}.modal-label.svelte-1nq4m5m input.svelte-1nq4m5m{position:absolute;top:0;right:0;height:27px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}.modal-label.svelte-1nq4m5m input.svelte-1nq4m5m:focus{outline:none}.input-error.svelte-1nq4m5m input.svelte-1nq4m5m{border:1px solid #e74c3c}.input-info.svelte-1nq4m5m.svelte-1nq4m5m{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}.input-info.svelte-1nq4m5m span.svelte-1nq4m5m{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:1px 7px;width:150px}.input-error.svelte-1nq4m5m .input-info.svelte-1nq4m5m{margin-top:-29px}.input-error.svelte-1nq4m5m .msg-error.svelte-1nq4m5m{color:#e74c3c}.modal-button.svelte-1nq4m5m.svelte-1nq4m5m{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}.modal-submit.svelte-1nq4m5m.svelte-1nq4m5m{right:110px;background:#2bc06a}.modal-reset.svelte-1nq4m5m.svelte-1nq4m5m{color:#555;background:#e6e6e6}";
+    	style.id = "svelte-42yfje-style";
+    	style.textContent = ".cl-editor-modal.svelte-42yfje.svelte-42yfje{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:140px;backface-visibility:hidden;z-index:11}.cl-editor-overlay.svelte-42yfje.svelte-42yfje{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0;z-index:10}.modal-box.svelte-42yfje.svelte-42yfje{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:36px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}.modal-title.svelte-42yfje.svelte-42yfje{font-size:24px;font-weight:700;margin:0 0 20px;padding:2px 0 4px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}.modal-label.svelte-42yfje.svelte-42yfje{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}.modal-label.svelte-42yfje input.svelte-42yfje{position:absolute;top:0;right:0;height:27px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}.modal-label.svelte-42yfje input.svelte-42yfje:focus{outline:none}.input-error.svelte-42yfje input.svelte-42yfje{border:1px solid #e74c3c}.input-info.svelte-42yfje.svelte-42yfje{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}.input-info.svelte-42yfje span.svelte-42yfje{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:1px 7px;width:150px}.input-error.svelte-42yfje .input-info.svelte-42yfje{margin-top:-29px}.input-error.svelte-42yfje .msg-error.svelte-42yfje{color:#e74c3c}.modal-button.svelte-42yfje.svelte-42yfje{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}.modal-submit.svelte-42yfje.svelte-42yfje{right:110px;background:#2bc06a}.modal-reset.svelte-42yfje.svelte-42yfje{color:#555;background:#e6e6e6}";
     	append(document.head, style);
     }
 
-    // (12:24) {#if error}
+    // (12:12) {#if error}
     function create_if_block(ctx) {
     	let span;
 
@@ -990,7 +990,7 @@
     		c() {
     			span = element("span");
     			span.textContent = "Required";
-    			attr(span, "class", "msg-error svelte-1nq4m5m");
+    			attr(span, "class", "msg-error svelte-42yfje");
     		},
     		m(target, anchor) {
     			insert(target, span, anchor);
@@ -1051,21 +1051,21 @@
     			t8 = space();
     			button1 = element("button");
     			button1.textContent = "Cancel";
-    			attr(div0, "class", "cl-editor-overlay svelte-1nq4m5m");
-    			attr(span0, "class", "modal-title svelte-1nq4m5m");
+    			attr(div0, "class", "cl-editor-overlay svelte-42yfje");
+    			attr(span0, "class", "modal-title svelte-42yfje");
     			attr(input, "type", "text");
     			attr(input, "name", "text");
-    			attr(input, "class", "svelte-1nq4m5m");
-    			attr(span1, "class", "svelte-1nq4m5m");
-    			attr(span2, "class", "input-info svelte-1nq4m5m");
-    			attr(label_1, "class", "modal-label svelte-1nq4m5m");
+    			attr(input, "class", "svelte-42yfje");
+    			attr(span1, "class", "svelte-42yfje");
+    			attr(span2, "class", "input-info svelte-42yfje");
+    			attr(label_1, "class", "modal-label svelte-42yfje");
     			toggle_class(label_1, "input-error", /*error*/ ctx[2]);
-    			attr(button0, "class", "modal-button modal-submit svelte-1nq4m5m");
+    			attr(button0, "class", "modal-button modal-submit svelte-42yfje");
     			attr(button0, "type", "submit");
-    			attr(button1, "class", "modal-button modal-reset svelte-1nq4m5m");
+    			attr(button1, "class", "modal-button modal-reset svelte-42yfje");
     			attr(button1, "type", "reset");
-    			attr(div1, "class", "modal-box svelte-1nq4m5m");
-    			attr(div2, "class", "cl-editor-modal svelte-1nq4m5m");
+    			attr(div1, "class", "modal-box svelte-42yfje");
+    			attr(div2, "class", "cl-editor-modal svelte-42yfje");
     			set_style(div3, "display", /*show*/ ctx[0] ? "block" : "none");
     		},
     		m(target, anchor) {
@@ -1231,7 +1231,7 @@
     class EditorModal extends SvelteComponent {
     	constructor(options) {
     		super();
-    		if (!document.getElementById("svelte-1nq4m5m-style")) add_css();
+    		if (!document.getElementById("svelte-42yfje-style")) add_css();
 
     		init(this, options, instance, create_fragment, safe_not_equal, {
     			show: 0,
@@ -1313,7 +1313,7 @@
     	return child_ctx;
     }
 
-    // (4:8) {#each btns as btn}
+    // (4:4) {#each btns as btn}
     function create_each_block(ctx) {
     	let button;
     	let t_value = (/*btn*/ ctx[9].text || "") + "";
@@ -1442,7 +1442,7 @@
     }
 
     function instance$1($$self, $$props, $$invalidate) {
-    	let dispatcher = new createEventDispatcher();
+    	const dispatcher = new createEventDispatcher();
 
     	const colors = [
     		"ffffff",
@@ -1555,21 +1555,20 @@
     	}
     }
 
-    const state = (function(name ){
+    const state = (function(name) {
+      let state = {
+        actionBtns: [],
+        actionObj: {}
+      };
 
-        let state = {
-            actionBtns: [],
-            actionObj: {}
-        };
+      const { subscribe, set, update } = writable(state);
 
-        const { subscribe, set, update } = writable(state);
-
-        return {
-            name,
-            set,
-            update,
-            subscribe
-        }
+      return {
+        name,
+        set,
+        update,
+        subscribe
+      }
     });
 
     const createStateStore = state;
@@ -1914,7 +1913,9 @@
     	}
 
     	function setHtml(html, sanitize) {
-    		set_store_value(references, $references.editor.innerHTML = sanitize ? removeBadTags(html) : html || "", $references);
+    		const htmlData = sanitize ? removeBadTags(html) : html || "";
+    		set_store_value(references, $references.editor.innerHTML = htmlData, $references);
+    		set_store_value(references, $references.raw.value = htmlData, $references);
     	}
 
     	function saveRange$1() {
