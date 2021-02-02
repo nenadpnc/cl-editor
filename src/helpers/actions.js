@@ -204,7 +204,6 @@ export default {
 			'<svg viewBox="0 0 72 72" width="17px" height="100%"><path d="M64 17v38H8V17h56m8-8H0v54h72V9z"></path><path d="M17.5 22C15 22 13 24 13 26.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5zM16 50h27L29.5 32zM36 36.2l8.9-8.5L60.2 50H45.9S35.6 35.9 36 36.2z"></path></svg>',
 		title: "Image",
 		result: function() {
-			const actionObj = get(this.state).actionObj;
 			const refs = get(this.references);
 			saveRange(refs.editor);
 			refs.modal.$set({

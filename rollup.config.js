@@ -8,9 +8,11 @@ import commonjs from 'rollup-plugin-commonjs';
 const plugins = [
   svelte({
 		extensions: ['.svelte'],
-		dev: !1,
 		emitCss: false,
-    exclude:'src/**/*.ts'
+    exclude:'src/**/*.ts',
+    compilerOptions: {
+      dev: false
+    }
 	}),
   resolve({
     brower: true,
