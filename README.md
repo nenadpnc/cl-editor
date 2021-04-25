@@ -117,7 +117,7 @@ It is easier to import and work directly from the source if you are using Svelte
 
 To limit the tools shown in the toolbar, pass in an `actions` prop, eg. `actions={["b", "i", "u", "h2", "ul", "left", "center", "justify", "forecolor"]}`.
 
-To easily get the editor DOM element, pass an `editorId` prop, eg. `editorId='notes-editor'`.
+To easily get the editor content DOM element, pass an `contentId` prop, eg. `contentId='notes-content'`.
 
 This is useful if you want to listen to resize of the editor and respond accordingly.
 
@@ -138,10 +138,10 @@ Now observe the resize:
     // resond to contentWd ...
   })
   let editor
-  $: editor && ro.observe(document.getElementById('notes-editor'))
+  $: editor && ro.observe(document.getElementById('notes-content'))
 </script>
 
-<Editor { ...otherEditorCfgs editorId='notes-editor' bind:this={editor} />
+<Editor { ...otherEditorCfgs contentId='notes-content' bind:this={editor} />
 ```
 
 #### Run demo

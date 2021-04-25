@@ -16,7 +16,7 @@
     {/each}
   </div>
   <div bind:this={$references.editor}
-    id="{editorId}"
+    id="{contentId}"
     class="cl-content"
     style="height: {height}"
     contenteditable="true"
@@ -57,7 +57,7 @@
   export let actions = [];
   export let height = '300px';
   export let html = '';
-  export let editorId = '';
+  export let contentId = '';
   export let removeFormatTags = ['h1', 'h2', 'blockquote']
 
   let helper = writable({
