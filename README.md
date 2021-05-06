@@ -141,7 +141,7 @@ Now observe the resize:
   $: editor && ro.observe(document.getElementById('notes-content'))
 </script>
 
-<Editor { ...otherEditorCfgs contentId='notes-content' bind:this={editor} />
+<Editor {...otherEditorCfgs} contentId='notes-content' bind:this={editor} />
 ```
 
 #### Run demo
