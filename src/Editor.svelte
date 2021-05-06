@@ -16,6 +16,7 @@
     {/each}
   </div>
   <div bind:this={$references.editor}
+    id="{contentId}"
     class="cl-content"
     style="height: {height}"
     contenteditable="true"
@@ -41,7 +42,7 @@
     getNewActionObj,
     removeBadTags,
     isEditorClick
-} from './helpers/util.js';
+  } from './helpers/util.js';
 
   import defaultActions from './helpers/actions.js';
   import EditorModal from './helpers/EditorModal.svelte';
@@ -56,8 +57,8 @@
   export let actions = [];
   export let height = '300px';
   export let html = '';
+  export let contentId = '';
   export let removeFormatTags = ['h1', 'h2', 'blockquote']
-
 
   let helper = writable({
       foreColor: false,

@@ -98,6 +98,52 @@ editor.$on('blur', (event) => console.log(event)) // on editor blur event
 editor.refs.<editor | raw | modal | colorPicker> // references to editor, raw (textarea), modal and colorPicker HTMLElements
 ```
 
+#### Usage in Svelte
+
+It is easier to import and work directly from the source if you are using Svelte. You can handle `change` events via `on:change`.
+
+```jsx
+<script>
+  import Editor from "cl-editor/src/Editor.svelte"
+
+  let html = '<h3>hello</h3>'
+  let editor
+
+</script>
+
+{@html html}
+<Editor {html} on:change={(evt)=>html = evt.detail}
+```
+
+To limit the tools shown in the toolbar, pass in an `actions` prop, eg. `actions={["b", "i", "u", "h2", "ul", "left", "center", "justify", "forecolor"]}`.
+
+To easily get the editor content DOM element, pass an `contentId` prop, eg. `contentId='notes-content'`.
+
+This is useful if you want to listen to resize of the editor and respond accordingly.
+
+To do so, first enable resize on the editor:
+
+```css
+.cl-content {
+  resize: both;
+}
+```
+
+Now observe the resize:
+
+```jsx
+<script>
+  const ro = new ResizeObserver(entries => {
+    const contentWd = entries[0].contentRect.width
+    // resond to contentWd ...
+  })
+  let editor
+  $: editor && ro.observe(document.getElementById('notes-content'))
+</script>
+
+<Editor { ...otherEditorCfgs contentId='notes-content' bind:this={editor} />
+```
+
 #### Run demo
 ```bash
 git clone https://github.com/nenadpnc/cl-text-editor.git cl-editor
