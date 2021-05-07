@@ -1,0 +1,30 @@
+name: Build-Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  test-and-lint:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v2
+
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '14'
+
+      - name: Install dependencies 👨🏻‍💻
+        uses: bahmutov/npm-install@v1
+
+      - name: Build Application 🛠
+        run: npm run prod
+      
+      - name: Publish package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+    
