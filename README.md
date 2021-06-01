@@ -165,8 +165,11 @@ npm i
 npm run dev
 ```
 
-### This library is inspired by https://github.com/Alex-D/Trumbowyg and https://github.com/jaredreich/pell
+## References
+This library is inspired by these open source repos:
+- [Alex-D/Trumbowyg](https://github.com/Alex-D/Trumbowyg)
+- [jaredreich/pell](https://github.com/jaredreich/pell)
 
 ## Licence
 
- MIT License
+MIT License
