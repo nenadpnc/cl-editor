@@ -111,7 +111,7 @@ The editor looks up to see if name is already defined, and adds it to the toolba
 You can add a custom action by inserting it in the array, like how "copy" is defined in example above. Take a look at `actions.js` for more examples.
 
 
-#### Usage in Svelte
+### Usage in Svelte
 
 It is easier to import and work directly from the source if you are using Svelte. You can handle `change` events via `on:change`.
 
@@ -157,7 +157,7 @@ Now observe the resize:
 <Editor {...otherEditorCfgs} contentId='notes-content' bind:this={editor} />
 ```
 
-#### Run demo
+### Run demo
 ```bash
 git clone https://github.com/nenadpnc/cl-text-editor.git cl-editor
 cd cl-editor
@@ -165,7 +165,7 @@ npm i
 npm run dev
 ```
 
-#### This library is inspired by https://github.com/Alex-D/Trumbowyg and https://github.com/jaredreich/pell
+### This library is inspired by https://github.com/Alex-D/Trumbowyg and https://github.com/jaredreich/pell
 
 ## Licence
 
