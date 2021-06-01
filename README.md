@@ -27,7 +27,7 @@ npm install --save cl-editor
 </body>
 ```
 
-#### Usage
+## Usage
 ```js
 import Editor from 'cl-editor';
 // or
@@ -75,7 +75,7 @@ const editor = new Editor({
 })
 ```
 
-#### API
+### API
 ```js
 // Methods
 editor.exec(cmd: string, value?: string) // execute document command (document.executeCommand(cmd, false, value))
@@ -98,6 +98,19 @@ editor.$on('blur', (event) => console.log(event)) // on editor blur event
 editor.refs.<editor | raw | modal | colorPicker> // references to editor, raw (textarea), modal and colorPicker HTMLElements
 ```
 
+#### Actions
+
+The `actions` prop lists predefined actions (and/or adds new actions) to be shown in the toolbar.
+If the prop is not set, all `actions` defined and exported in [actions.js](src/helpers/actions.js) are made available, in the order in which they are defined.
+To limit or change the order of predefined actions shown, set it by passing an array of names of actions defined, eg.:
+```js
+actions={["b", "i", "u", "h2", "ul", "left", "center", "justify", "forecolor"]}
+```
+The editor looks up to see if name is already defined, and adds it to the toolbar if it is.
+
+You can add a custom action by inserting it in the array, like how "copy" is defined in example above. Take a look at `actions.js` for more examples.
+
+
 #### Usage in Svelte
 
 It is easier to import and work directly from the source if you are using Svelte. You can handle `change` events via `on:change`.
@@ -115,7 +128,7 @@ It is easier to import and work directly from the source if you are using Svelte
 <Editor {html} on:change={(evt)=>html = evt.detail}
 ```
 
-To limit the tools shown in the toolbar, pass in an `actions` prop, eg. `actions={["b", "i", "u", "h2", "ul", "left", "center", "justify", "forecolor"]}`.
+To limit or define the tools shown in the toolbar, pass in an `actions` prop.
 
 To easily get the editor content DOM element, pass an `contentId` prop, eg. `contentId='notes-content'`.
 
@@ -135,7 +148,7 @@ Now observe the resize:
 <script>
   const ro = new ResizeObserver(entries => {
     const contentWd = entries[0].contentRect.width
-    // resond to contentWd ...
+    // respond to contentWd ...
   })
   let editor
   $: editor && ro.observe(document.getElementById('notes-content'))
