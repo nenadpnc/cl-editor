@@ -50,13 +50,134 @@
       store.set(value);
       return ret;
     }
+    // at the end of hydration without touching the remaining nodes.
+
+
+    let is_hydrating = false;
+
+    function start_hydrating() {
+      is_hydrating = true;
+    }
+
+    function end_hydrating() {
+      is_hydrating = false;
+    }
+
+    function upper_bound(low, high, key, value) {
+      // Return first index of value larger than input value in the range [low, high)
+      while (low < high) {
+        const mid = low + (high - low >> 1);
+
+        if (key(mid) <= value) {
+          low = mid + 1;
+        } else {
+          high = mid;
+        }
+      }
+
+      return low;
+    }
+
+    function init_hydrate(target) {
+      if (target.hydrate_init) return;
+      target.hydrate_init = true; // We know that all children have claim_order values since the unclaimed have been detached
+
+      const children = target.childNodes;
+      /*
+      * Reorder claimed children optimally.
+      * We can reorder claimed children optimally by finding the longest subsequence of
+      * nodes that are already claimed in order and only moving the rest. The longest
+      * subsequence subsequence of nodes that are claimed in order can be found by
+      * computing the longest increasing subsequence of .claim_order values.
+      *
+      * This algorithm is optimal in generating the least amount of reorder operations
+      * possible.
+      *
+      * Proof:
+      * We know that, given a set of reordering operations, the nodes that do not move
+      * always form an increasing subsequence, since they do not move among each other
+      * meaning that they must be already ordered among each other. Thus, the maximal
+      * set of nodes that do not move form a longest increasing subsequence.
+      */
+      // Compute longest increasing subsequence
+      // m: subsequence length j => index k of smallest value that ends an increasing subsequence of length j
+
+      const m = new Int32Array(children.length + 1); // Predecessor indices + 1
+
+      const p = new Int32Array(children.length);
+      m[0] = -1;
+      let longest = 0;
+
+      for (let i = 0; i < children.length; i++) {
+        const current = children[i].claim_order; // Find the largest subsequence length such that it ends in a value less than our current value
+        // upper_bound returns first greater value, so we subtract one
+
+        const seqLen = upper_bound(1, longest + 1, idx => children[m[idx]].claim_order, current) - 1;
+        p[i] = m[seqLen] + 1;
+        const newLen = seqLen + 1; // We can guarantee that current is the smallest value. Otherwise, we would have generated a longer sequence.
+
+        m[newLen] = i;
+        longest = Math.max(newLen, longest);
+      } // The longest increasing subsequence of nodes (initially reversed)
+
+
+      const lis = []; // The rest of the nodes, nodes that will be moved
+
+      const toMove = [];
+      let last = children.length - 1;
+
+      for (let cur = m[longest] + 1; cur != 0; cur = p[cur - 1]) {
+        lis.push(children[cur - 1]);
+
+        for (; last >= cur; last--) {
+          toMove.push(children[last]);
+        }
+
+        last--;
+      }
+
+      for (; last >= 0; last--) {
+        toMove.push(children[last]);
+      }
+
+      lis.reverse(); // We sort the nodes being moved to guarantee that their insertion order matches the claim order
+
+      toMove.sort((a, b) => a.claim_order - b.claim_order); // Finally, we move the nodes
+
+      for (let i = 0, j = 0; i < toMove.length; i++) {
+        while (j < lis.length && toMove[i].claim_order >= lis[j].claim_order) {
+          j++;
+        }
+
+        const anchor = j < lis.length ? lis[j] : null;
+        target.insertBefore(toMove[i], anchor);
+      }
+    }
 
     function append(target, node) {
-      target.appendChild(node);
+      if (is_hydrating) {
+        init_hydrate(target);
+
+        if (target.actual_end_child === undefined || target.actual_end_child !== null && target.actual_end_child.parentElement !== target) {
+          target.actual_end_child = target.firstChild;
+        }
+
+        if (node !== target.actual_end_child) {
+          target.insertBefore(node, target.actual_end_child);
+        } else {
+          target.actual_end_child = node.nextSibling;
+        }
+      } else if (node.parentNode !== target) {
+        target.appendChild(node);
+      }
     }
 
     function insert(target, node, anchor) {
-      target.insertBefore(node, anchor || null);
+      if (is_hydrating && !anchor) {
+        append(target, node);
+      } else if (node.parentNode !== target || anchor && node.nextSibling !== anchor) {
+        target.insertBefore(node, anchor || null);
+      }
     }
 
     function detach(node) {
@@ -126,16 +247,21 @@
     }
 
     class HtmlTag {
-      constructor(anchor = null) {
-        this.a = anchor;
+      constructor(claimed_nodes) {
         this.e = this.n = null;
+        this.l = claimed_nodes;
       }
 
       m(html, target, anchor = null) {
         if (!this.e) {
           this.e = element(target.nodeName);
           this.t = target;
-          this.h(html);
+
+          if (this.l) {
+            this.n = this.l;
+          } else {
+            this.h(html);
+          }
         }
 
         this.i(anchor);
@@ -400,6 +526,7 @@
 
       if (options.target) {
         if (options.hydrate) {
+          start_hydrating();
           const nodes = children(options.target); // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 
           $$.fragment && $$.fragment.l(nodes);
@@ -411,6 +538,7 @@
 
         if (options.intro) transition_in(component.$$.fragment);
         mount_component(component, options.target, options.anchor, options.customElement);
+        end_hydrating();
         flush();
       }
 
@@ -991,7 +1119,7 @@
     	}
     };
 
-    /* src/helpers/EditorModal.svelte generated by Svelte v3.38.2 */
+    /* src/helpers/EditorModal.svelte generated by Svelte v3.38.3 */
 
     function add_css$2() {
     	var style = element("style");
@@ -1316,7 +1444,7 @@
     	}
     }
 
-    /* src/helpers/EditorColorPicker.svelte generated by Svelte v3.38.2 */
+    /* src/helpers/EditorColorPicker.svelte generated by Svelte v3.38.3 */
 
     function add_css$1() {
     	var style = element("style");
@@ -1591,7 +1719,7 @@
 
     const createStateStore = state;
 
-    /* src/Editor.svelte generated by Svelte v3.38.2 */
+    /* src/Editor.svelte generated by Svelte v3.38.3 */
 
     const { document: document_1 } = globals;
 
@@ -1627,8 +1755,9 @@
     	return {
     		c() {
     			button = element("button");
+    			html_tag = new HtmlTag();
     			t = space();
-    			html_tag = new HtmlTag(t);
+    			html_tag.a = t;
     			attr(button, "type", "button");
     			attr(button, "class", button_class_value = "cl-button " + (/*action*/ ctx[37].active ? "active" : "") + " svelte-1a534py");
     			attr(button, "title", button_title_value = /*action*/ ctx[37].title);

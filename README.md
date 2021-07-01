@@ -3,7 +3,7 @@
 Built with svelte (no external dependencies) 
 
 #### File size (bundle includes css, html and js)
-* min: 29kb
+* min: 30kb
 * gzip: 10kb
 
 ## Installation
