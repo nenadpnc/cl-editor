@@ -13,9 +13,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup node env 🏗
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v1
         with:
           node-version: '14'
+          always-auth: true
 
       - name: Install dependencies 👨🏻‍💻
         uses: bahmutov/npm-install@v1
