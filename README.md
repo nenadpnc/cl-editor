@@ -125,7 +125,7 @@ It is easier to import and work directly from the source if you are using Svelte
 </script>
 
 {@html html}
-<Editor {html} on:change={(evt)=>html = evt.detail}
+<Editor {html} on:change={(evt)=>html = evt.detail}/>
 ```
 
 To limit or define the tools shown in the toolbar, pass in an `actions` prop.
