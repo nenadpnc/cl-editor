@@ -278,7 +278,7 @@ const showColorPicker = function(cmd) {
 		refs.colorPicker.$on(cmd, event => {
 			let item = event.detail;
 			if (item.modal) {
-				this.modal.$set({
+				refs.modal.$set({
 					show: true,
 					event: "colorHref",
 					title: "Text color",
@@ -288,7 +288,7 @@ const showColorPicker = function(cmd) {
 				const command = cmd;
 				if (!get(this.helper)[`${command}Modal`]) {
 					get(this.helper)[`${command}Modal`] = true;
-					this.modal.$on("colorHref", event => {
+					refs.modal.$on("colorHref", event => {
 						let color = event.detail;
 						restoreRange(refs.editor);
 						exec(command, color);
