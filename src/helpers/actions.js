@@ -268,7 +268,6 @@ export default {
 const showColorPicker = function(cmd) {
 	const refs = get(this.references);
 	saveRange(refs.editor);
-	console.log(refs.colorPicker);
 	refs.colorPicker.$set({show: true, event: cmd});
 	if (!get(this.helper)[cmd]) {
 		this.helper.update(state => {
