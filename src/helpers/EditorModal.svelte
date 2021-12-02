@@ -1,28 +1,28 @@
 <svelte:options accessors={true}></svelte:options>
-<div style="display: {show ? 'block' : 'none'}">
-  <div class="cl-editor-overlay" on:click="{cancel}"></div>
-  <div class="cl-editor-modal">
-    <div class="modal-box">
-      <span class="modal-title">{title}</span>
-      <form on:submit|preventDefault="{event=>confirm()}">
-        <label class="modal-label" class:input-error={error}>
-          <input bind:this={refs.text} on:keyup="{hideError}" type="text" name="text" bind:value="{text}">
-          <span class="input-info">
-            <span>{label}</span>
-            {#if error}
+{#if show}
+	<div class="cl-editor-overlay" on:click="{cancel}"></div>
+	<div class="cl-editor-modal">
+		<div class="modal-box">
+		  <span class="modal-title">{title}</span>
+		  <form on:submit|preventDefault="{event=>confirm()}">
+			  <label class="modal-label" class:input-error={error}>
+			  <input bind:this={refs.text} on:keyup="{hideError}" use:inputType name="text" bind:value="{text}">
+			  <span class="input-info">
+          <span>{label}</span>
+          {#if error}
             <span class="msg-error">Required</span>
-            {/if}
-          </span>
-        </label>
-        <button class="modal-button modal-submit" type="submit">Confirm</button>
-        <button class="modal-button modal-reset" type="reset" on:click="{cancel}">Cancel</button>
-      </form>
-    </div>
-  </div>
-</div>
+          {/if}
+			  </span>
+			</label>
+			<button class="modal-button modal-submit" type="submit">Confirm</button>
+			<button class="modal-button modal-reset" type="reset" on:click="{cancel}">Cancel</button>
+		  </form>
+		</div>
+	</div>
+{/if}
 
 <script>
-  import {onMount, createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   let dispatcher = new createEventDispatcher();
 
@@ -34,6 +34,10 @@
   export let error = false;
 
   let refs = {}
+  
+  const inputType = (e) => {
+	  e.type = event === 'colorHref' ? 'color' : 'text';
+  };
 
   $:{
     if(show){
@@ -42,7 +46,6 @@
       });
     }
   }
-
 
   function confirm() {
     if (text) {
@@ -132,7 +135,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  height: 27px;
+  height: 29px;
   line-height: 25px;
   border: 1px solid #DEDEDE;
   background: #fff;
