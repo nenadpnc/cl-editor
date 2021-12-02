@@ -17,11 +17,9 @@
     export let event = '';
     export let colors = [];
 
-    $: {
-        btns = colors
+    $: btns = colors
             .map((color) => ({ color }))
             .concat([{ text: '#', modal: true }]);
-    }
 
     function close() {
         show = false;
