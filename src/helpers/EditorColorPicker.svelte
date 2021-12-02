@@ -18,9 +18,10 @@
     export let colors = [];
 
     $: {
-        btns = colors.map((color) => ({ color }));
-        btns.push({ text: '#', modal: true });
-    };
+        btns = colors
+            .map((color) => ({ color }))
+            .concat([{ text: '#', modal: true }]);
+    }
 
     function close() {
         show = false;
