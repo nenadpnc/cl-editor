@@ -36,7 +36,7 @@
   let refs = {}
   
   const inputType = (e) => {
-	  e.type = event === 'colorHref' ? 'color' : 'text';
+    e.type = event === 'colorHref' ? 'color' : 'text';
   };
 
   $:{
