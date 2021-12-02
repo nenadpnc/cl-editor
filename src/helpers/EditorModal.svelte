@@ -1,24 +1,24 @@
 <svelte:options accessors={true}></svelte:options>
 {#if show}
-	<div class="cl-editor-overlay" on:click="{cancel}"></div>
-	<div class="cl-editor-modal">
-		<div class="modal-box">
-		  <span class="modal-title">{title}</span>
-		  <form on:submit|preventDefault="{event=>confirm()}">
-			  <label class="modal-label" class:input-error={error}>
-			  <input bind:this={refs.text} on:keyup="{hideError}" use:inputType name="text" bind:value="{text}">
-			  <span class="input-info">
-          <span>{label}</span>
-          {#if error}
+  <div class="cl-editor-overlay" on:click="{cancel}"></div>
+  <div class="cl-editor-modal">
+    <div class="modal-box">
+      <span class="modal-title">{title}</span>
+      <form on:submit|preventDefault="{event=>confirm()}">
+        <label class="modal-label" class:input-error={error}>
+          <input bind:this={refs.text} on:keyup="{hideError}" use:inputType name="text" bind:value="{text}">
+          <span class="input-info">
+            <span>{label}</span>
+            {#if error}
             <span class="msg-error">Required</span>
-          {/if}
-			  </span>
-			</label>
-			<button class="modal-button modal-submit" type="submit">Confirm</button>
-			<button class="modal-button modal-reset" type="reset" on:click="{cancel}">Cancel</button>
-		  </form>
-		</div>
-	</div>
+            {/if}
+          </span>
+        </label>
+        <button class="modal-button modal-submit" type="submit">Confirm</button>
+        <button class="modal-button modal-reset" type="reset" on:click="{cancel}">Cancel</button>
+      </form>
+    </div>
+  </div>
 {/if}
 
 <script>
