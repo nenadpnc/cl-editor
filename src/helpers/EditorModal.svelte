@@ -36,11 +36,11 @@
   let refs = {}
   
   const inputType = (e) => {
-    e.type = event === 'colorHref' ? 'color' : 'text';
+    e.type = event.includes('Color') ? 'color' : 'text';
   };
 
   $:{
-    if(show){
+    if (show) {
       setTimeout(() => {
         refs.text.focus();
       });
@@ -49,7 +49,6 @@
 
   function confirm() {
     if (text) {
-      console.log('dispatcher',text,event)
       dispatcher(event,text);
       cancel();
     } else {
@@ -135,7 +134,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  height: 29px;
+  height: 27px;
   line-height: 25px;
   border: 1px solid #DEDEDE;
   background: #fff;

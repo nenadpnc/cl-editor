@@ -2,7 +2,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.clEditor = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
     function noop() {}
 
@@ -49,138 +49,47 @@
       component.$$.on_destroy.push(subscribe(store, callback));
     }
 
-    function set_store_value(store, ret, value = ret) {
+    function set_store_value(store, ret, value) {
       store.set(value);
       return ret;
     }
-    // at the end of hydration without touching the remaining nodes.
 
-
-    let is_hydrating = false;
-
-    function start_hydrating() {
-      is_hydrating = true;
-    }
-
-    function end_hydrating() {
-      is_hydrating = false;
-    }
-
-    function upper_bound(low, high, key, value) {
-      // Return first index of value larger than input value in the range [low, high)
-      while (low < high) {
-        const mid = low + (high - low >> 1);
-
-        if (key(mid) <= value) {
-          low = mid + 1;
-        } else {
-          high = mid;
-        }
-      }
-
-      return low;
-    }
-
-    function init_hydrate(target) {
-      if (target.hydrate_init) return;
-      target.hydrate_init = true; // We know that all children have claim_order values since the unclaimed have been detached
-
-      const children = target.childNodes;
-      /*
-      * Reorder claimed children optimally.
-      * We can reorder claimed children optimally by finding the longest subsequence of
-      * nodes that are already claimed in order and only moving the rest. The longest
-      * subsequence subsequence of nodes that are claimed in order can be found by
-      * computing the longest increasing subsequence of .claim_order values.
-      *
-      * This algorithm is optimal in generating the least amount of reorder operations
-      * possible.
-      *
-      * Proof:
-      * We know that, given a set of reordering operations, the nodes that do not move
-      * always form an increasing subsequence, since they do not move among each other
-      * meaning that they must be already ordered among each other. Thus, the maximal
-      * set of nodes that do not move form a longest increasing subsequence.
-      */
-      // Compute longest increasing subsequence
-      // m: subsequence length j => index k of smallest value that ends an increasing subsequence of length j
-
-      const m = new Int32Array(children.length + 1); // Predecessor indices + 1
-
-      const p = new Int32Array(children.length);
-      m[0] = -1;
-      let longest = 0;
-
-      for (let i = 0; i < children.length; i++) {
-        const current = children[i].claim_order; // Find the largest subsequence length such that it ends in a value less than our current value
-        // upper_bound returns first greater value, so we subtract one
-
-        const seqLen = upper_bound(1, longest + 1, idx => children[m[idx]].claim_order, current) - 1;
-        p[i] = m[seqLen] + 1;
-        const newLen = seqLen + 1; // We can guarantee that current is the smallest value. Otherwise, we would have generated a longer sequence.
-
-        m[newLen] = i;
-        longest = Math.max(newLen, longest);
-      } // The longest increasing subsequence of nodes (initially reversed)
-
-
-      const lis = []; // The rest of the nodes, nodes that will be moved
-
-      const toMove = [];
-      let last = children.length - 1;
-
-      for (let cur = m[longest] + 1; cur != 0; cur = p[cur - 1]) {
-        lis.push(children[cur - 1]);
-
-        for (; last >= cur; last--) {
-          toMove.push(children[last]);
-        }
-
-        last--;
-      }
-
-      for (; last >= 0; last--) {
-        toMove.push(children[last]);
-      }
-
-      lis.reverse(); // We sort the nodes being moved to guarantee that their insertion order matches the claim order
-
-      toMove.sort((a, b) => a.claim_order - b.claim_order); // Finally, we move the nodes
-
-      for (let i = 0, j = 0; i < toMove.length; i++) {
-        while (j < lis.length && toMove[i].claim_order >= lis[j].claim_order) {
-          j++;
-        }
-
-        const anchor = j < lis.length ? lis[j] : null;
-        target.insertBefore(toMove[i], anchor);
-      }
+    function action_destroyer(action_result) {
+      return action_result && is_function(action_result.destroy) ? action_result.destroy : noop;
     }
 
     function append(target, node) {
-      if (is_hydrating) {
-        init_hydrate(target);
+      target.appendChild(node);
+    }
 
-        if (target.actual_end_child === undefined || target.actual_end_child !== null && target.actual_end_child.parentElement !== target) {
-          target.actual_end_child = target.firstChild;
-        }
+    function append_styles(target, style_sheet_id, styles) {
+      const append_styles_to = get_root_for_style(target);
 
-        if (node !== target.actual_end_child) {
-          target.insertBefore(node, target.actual_end_child);
-        } else {
-          target.actual_end_child = node.nextSibling;
-        }
-      } else if (node.parentNode !== target) {
-        target.appendChild(node);
+      if (!append_styles_to.getElementById(style_sheet_id)) {
+        const style = element('style');
+        style.id = style_sheet_id;
+        style.textContent = styles;
+        append_stylesheet(append_styles_to, style);
       }
     }
 
-    function insert(target, node, anchor) {
-      if (is_hydrating && !anchor) {
-        append(target, node);
-      } else if (node.parentNode !== target || anchor && node.nextSibling !== anchor) {
-        target.insertBefore(node, anchor || null);
+    function get_root_for_style(node) {
+      if (!node) return document;
+      const root = node.getRootNode ? node.getRootNode() : node.ownerDocument;
+
+      if (root && root.host) {
+        return root;
       }
+
+      return node.ownerDocument;
+    }
+
+    function append_stylesheet(node, style) {
+      append(node.head || node, style);
+    }
+
+    function insert(target, node, anchor) {
+      target.insertBefore(node, anchor || null);
     }
 
     function detach(node) {
@@ -203,6 +112,10 @@
 
     function space() {
       return text(' ');
+    }
+
+    function empty() {
+      return text('');
     }
 
     function listen(node, event, handler, options) {
@@ -243,28 +156,26 @@
       element.classList[toggle ? 'add' : 'remove'](name);
     }
 
-    function custom_event(type, detail) {
+    function custom_event(type, detail, bubbles = false) {
       const e = document.createEvent('CustomEvent');
-      e.initCustomEvent(type, false, false, detail);
+      e.initCustomEvent(type, bubbles, false, detail);
       return e;
     }
 
     class HtmlTag {
-      constructor(claimed_nodes) {
+      constructor() {
         this.e = this.n = null;
-        this.l = claimed_nodes;
+      }
+
+      c(html) {
+        this.h(html);
       }
 
       m(html, target, anchor = null) {
         if (!this.e) {
           this.e = element(target.nodeName);
           this.t = target;
-
-          if (this.l) {
-            this.n = this.l;
-          } else {
-            this.h(html);
-          }
+          this.c(html);
         }
 
         this.i(anchor);
@@ -429,8 +340,6 @@
       }
     }
 
-    const globals = typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : global;
-
     function create_component(block) {
       block && block.c();
     }
@@ -487,7 +396,7 @@
       component.$$.dirty[i / 31 | 0] |= 1 << i % 31;
     }
 
-    function init(component, options, instance, create_fragment, not_equal, props, dirty = [-1]) {
+    function init(component, options, instance, create_fragment, not_equal, props, append_styles, dirty = [-1]) {
       const parent_component = current_component;
       set_current_component(component);
       const $$ = component.$$ = {
@@ -504,12 +413,14 @@
         on_disconnect: [],
         before_update: [],
         after_update: [],
-        context: new Map(parent_component ? parent_component.$$.context : options.context || []),
+        context: new Map(options.context || (parent_component ? parent_component.$$.context : [])),
         // everything else
         callbacks: blank_object(),
         dirty,
-        skip_bound: false
+        skip_bound: false,
+        root: options.target || parent_component.$$.root
       };
+      append_styles && append_styles($$.root);
       let ready = false;
       $$.ctx = instance ? instance(component, options.props || {}, (i, ret, ...rest) => {
         const value = rest.length ? rest[0] : ret;
@@ -529,7 +440,6 @@
 
       if (options.target) {
         if (options.hydrate) {
-          start_hydrating();
           const nodes = children(options.target); // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 
           $$.fragment && $$.fragment.l(nodes);
@@ -541,7 +451,6 @@
 
         if (options.intro) transition_in(component.$$.fragment);
         mount_component(component, options.target, options.anchor, options.customElement);
-        end_hydrating();
         flush();
       }
 
@@ -767,7 +676,7 @@
 
     function writable(value, start = noop) {
       let stop;
-      const subscribers = [];
+      const subscribers = new Set();
 
       function set(new_value) {
         if (safe_not_equal(value, new_value)) {
@@ -777,10 +686,9 @@
             // store is ready
             const run_queue = !subscriber_queue.length;
 
-            for (let i = 0; i < subscribers.length; i += 1) {
-              const s = subscribers[i];
-              s[1]();
-              subscriber_queue.push(s, value);
+            for (const subscriber of subscribers) {
+              subscriber[1]();
+              subscriber_queue.push(subscriber, value);
             }
 
             if (run_queue) {
@@ -800,21 +708,17 @@
 
       function subscribe(run, invalidate = noop) {
         const subscriber = [run, invalidate];
-        subscribers.push(subscriber);
+        subscribers.add(subscriber);
 
-        if (subscribers.length === 1) {
+        if (subscribers.size === 1) {
           stop = start(set) || noop;
         }
 
         run(value);
         return () => {
-          const index = subscribers.indexOf(subscriber);
+          subscribers.delete(subscriber);
 
-          if (index !== -1) {
-            subscribers.splice(index, 1);
-          }
-
-          if (subscribers.length === 0) {
+          if (subscribers.size === 0) {
             stop();
             stop = null;
           }
@@ -1088,7 +992,6 @@
     const showColorPicker = function(cmd) {
     	const refs = get_store_value(this.references);
     	saveRange(refs.editor);
-    	console.log(refs.colorPicker);
     	refs.colorPicker.$set({show: true, event: cmd});
     	if (!get_store_value(this.helper)[cmd]) {
     		this.helper.update(state => {
@@ -1100,7 +1003,7 @@
     			if (item.modal) {
     				refs.modal.$set({
     					show: true,
-    					event: "colorHref",
+    					event: `${cmd}Changed`,
     					title: "Text color",
     					label:
     						cmd === "foreColor" ? "Text color" : "Background color"
@@ -1108,7 +1011,7 @@
     				const command = cmd;
     				if (!get_store_value(this.helper)[`${command}Modal`]) {
     					get_store_value(this.helper)[`${command}Modal`] = true;
-    					refs.modal.$on("colorHref", event => {
+    					refs.modal.$on(`${command}Changed`, event => {
     						let color = event.detail;
     						restoreRange(refs.editor);
     						exec(command, color);
@@ -1122,36 +1025,14 @@
     	}
     };
 
-    /* src/helpers/EditorModal.svelte generated by Svelte v3.38.3 */
+    /* src/helpers/EditorModal.svelte generated by Svelte v3.44.2 */
 
-    function add_css$2() {
-    	var style = element("style");
-    	style.id = "svelte-42yfje-style";
-    	style.textContent = ".cl-editor-modal.svelte-42yfje.svelte-42yfje{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:140px;backface-visibility:hidden;z-index:11}.cl-editor-overlay.svelte-42yfje.svelte-42yfje{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0;z-index:10}.modal-box.svelte-42yfje.svelte-42yfje{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:36px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}.modal-title.svelte-42yfje.svelte-42yfje{font-size:24px;font-weight:700;margin:0 0 20px;padding:2px 0 4px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}.modal-label.svelte-42yfje.svelte-42yfje{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}.modal-label.svelte-42yfje input.svelte-42yfje{position:absolute;top:0;right:0;height:27px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}.modal-label.svelte-42yfje input.svelte-42yfje:focus{outline:none}.input-error.svelte-42yfje input.svelte-42yfje{border:1px solid #e74c3c}.input-info.svelte-42yfje.svelte-42yfje{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}.input-info.svelte-42yfje span.svelte-42yfje{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:1px 7px;width:150px}.input-error.svelte-42yfje .input-info.svelte-42yfje{margin-top:-29px}.input-error.svelte-42yfje .msg-error.svelte-42yfje{color:#e74c3c}.modal-button.svelte-42yfje.svelte-42yfje{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}.modal-submit.svelte-42yfje.svelte-42yfje{right:110px;background:#2bc06a}.modal-reset.svelte-42yfje.svelte-42yfje{color:#555;background:#e6e6e6}";
-    	append(document.head, style);
+    function add_css$2(target) {
+    	append_styles(target, "svelte-42yfje", ".cl-editor-modal.svelte-42yfje.svelte-42yfje{position:absolute;top:37px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:520px;width:100%;height:140px;backface-visibility:hidden;z-index:11}.cl-editor-overlay.svelte-42yfje.svelte-42yfje{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0;z-index:10}.modal-box.svelte-42yfje.svelte-42yfje{position:absolute;top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:500px;width:calc(100% - 20px);padding-bottom:36px;z-index:1;background-color:#FFF;text-align:center;font-size:14px;box-shadow:rgba(0,0,0,.2) 0 2px 3px;-webkit-backface-visibility:hidden;backface-visibility:hidden}.modal-title.svelte-42yfje.svelte-42yfje{font-size:24px;font-weight:700;margin:0 0 20px;padding:2px 0 4px;display:block;border-bottom:1px solid #EEE;color:#333;background:#fbfcfc}.modal-label.svelte-42yfje.svelte-42yfje{display:block;position:relative;margin:15px 12px;height:29px;line-height:29px;overflow:hidden}.modal-label.svelte-42yfje input.svelte-42yfje{position:absolute;top:0;right:0;height:27px;line-height:25px;border:1px solid #DEDEDE;background:#fff;font-size:14px;max-width:330px;width:70%;padding:0 7px;transition:all 150ms}.modal-label.svelte-42yfje input.svelte-42yfje:focus{outline:none}.input-error.svelte-42yfje input.svelte-42yfje{border:1px solid #e74c3c}.input-info.svelte-42yfje.svelte-42yfje{display:block;text-align:left;height:25px;line-height:25px;transition:all 150ms}.input-info.svelte-42yfje span.svelte-42yfje{display:block;color:#69878f;background-color:#fbfcfc;border:1px solid #DEDEDE;padding:1px 7px;width:150px}.input-error.svelte-42yfje .input-info.svelte-42yfje{margin-top:-29px}.input-error.svelte-42yfje .msg-error.svelte-42yfje{color:#e74c3c}.modal-button.svelte-42yfje.svelte-42yfje{position:absolute;bottom:10px;right:0;text-decoration:none;color:#FFF;display:block;width:100px;height:35px;line-height:33px;margin:0 10px;background-color:#333;border:none;cursor:pointer;font-family:\"Lato\",Helvetica,Verdana,sans-serif;font-size:16px;transition:all 150ms}.modal-submit.svelte-42yfje.svelte-42yfje{right:110px;background:#2bc06a}.modal-reset.svelte-42yfje.svelte-42yfje{color:#555;background:#e6e6e6}");
     }
 
-    // (12:12) {#if error}
+    // (2:0) {#if show}
     function create_if_block(ctx) {
-    	let span;
-
-    	return {
-    		c() {
-    			span = element("span");
-    			span.textContent = "Required";
-    			attr(span, "class", "msg-error svelte-42yfje");
-    		},
-    		m(target, anchor) {
-    			insert(target, span, anchor);
-    		},
-    		d(detaching) {
-    			if (detaching) detach(span);
-    		}
-    	};
-    }
-
-    function create_fragment$2(ctx) {
-    	let div3;
     	let div0;
     	let t0;
     	let div2;
@@ -1162,6 +1043,7 @@
     	let form;
     	let label_1;
     	let input;
+    	let inputType_action;
     	let t3;
     	let span2;
     	let span1;
@@ -1173,11 +1055,10 @@
     	let button1;
     	let mounted;
     	let dispose;
-    	let if_block = /*error*/ ctx[2] && create_if_block();
+    	let if_block = /*error*/ ctx[2] && create_if_block_1();
 
     	return {
     		c() {
-    			div3 = element("div");
     			div0 = element("div");
     			t0 = space();
     			div2 = element("div");
@@ -1202,7 +1083,6 @@
     			button1.textContent = "Cancel";
     			attr(div0, "class", "cl-editor-overlay svelte-42yfje");
     			attr(span0, "class", "modal-title svelte-42yfje");
-    			attr(input, "type", "text");
     			attr(input, "name", "text");
     			attr(input, "class", "svelte-42yfje");
     			attr(span1, "class", "svelte-42yfje");
@@ -1215,13 +1095,11 @@
     			attr(button1, "type", "reset");
     			attr(div1, "class", "modal-box svelte-42yfje");
     			attr(div2, "class", "cl-editor-modal svelte-42yfje");
-    			set_style(div3, "display", /*show*/ ctx[0] ? "block" : "none");
     		},
     		m(target, anchor) {
-    			insert(target, div3, anchor);
-    			append(div3, div0);
-    			append(div3, t0);
-    			append(div3, div2);
+    			insert(target, div0, anchor);
+    			insert(target, t0, anchor);
+    			insert(target, div2, anchor);
     			append(div2, div1);
     			append(div1, span0);
     			append(span0, t1);
@@ -1229,7 +1107,7 @@
     			append(div1, form);
     			append(form, label_1);
     			append(label_1, input);
-    			/*input_binding*/ ctx[10](input);
+    			/*input_binding*/ ctx[11](input);
     			set_input_value(input, /*text*/ ctx[1]);
     			append(label_1, t3);
     			append(label_1, span2);
@@ -1244,17 +1122,18 @@
 
     			if (!mounted) {
     				dispose = [
-    					listen(div0, "click", /*cancel*/ ctx[7]),
-    					listen(input, "keyup", /*hideError*/ ctx[8]),
-    					listen(input, "input", /*input_input_handler*/ ctx[11]),
-    					listen(button1, "click", /*cancel*/ ctx[7]),
-    					listen(form, "submit", prevent_default(/*submit_handler*/ ctx[12]))
+    					listen(div0, "click", /*cancel*/ ctx[8]),
+    					listen(input, "keyup", /*hideError*/ ctx[9]),
+    					action_destroyer(inputType_action = /*inputType*/ ctx[6].call(null, input)),
+    					listen(input, "input", /*input_input_handler*/ ctx[12]),
+    					listen(button1, "click", /*cancel*/ ctx[8]),
+    					listen(form, "submit", prevent_default(/*submit_handler*/ ctx[13]))
     				];
 
     				mounted = true;
     			}
     		},
-    		p(ctx, [dirty]) {
+    		p(ctx, dirty) {
     			if (dirty & /*title*/ 8) set_data(t1, /*title*/ ctx[3]);
 
     			if (dirty & /*text*/ 2 && input.value !== /*text*/ ctx[1]) {
@@ -1265,7 +1144,7 @@
 
     			if (/*error*/ ctx[2]) {
     				if (if_block) ; else {
-    					if_block = create_if_block();
+    					if_block = create_if_block_1();
     					if_block.c();
     					if_block.m(span2, null);
     				}
@@ -1277,16 +1156,12 @@
     			if (dirty & /*error*/ 4) {
     				toggle_class(label_1, "input-error", /*error*/ ctx[2]);
     			}
-
-    			if (dirty & /*show*/ 1) {
-    				set_style(div3, "display", /*show*/ ctx[0] ? "block" : "none");
-    			}
     		},
-    		i: noop,
-    		o: noop,
     		d(detaching) {
-    			if (detaching) detach(div3);
-    			/*input_binding*/ ctx[10](null);
+    			if (detaching) detach(div0);
+    			if (detaching) detach(t0);
+    			if (detaching) detach(div2);
+    			/*input_binding*/ ctx[11](null);
     			if (if_block) if_block.d();
     			mounted = false;
     			run_all(dispose);
@@ -1294,19 +1169,77 @@
     	};
     }
 
+    // (12:12) {#if error}
+    function create_if_block_1(ctx) {
+    	let span;
+
+    	return {
+    		c() {
+    			span = element("span");
+    			span.textContent = "Required";
+    			attr(span, "class", "msg-error svelte-42yfje");
+    		},
+    		m(target, anchor) {
+    			insert(target, span, anchor);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(span);
+    		}
+    	};
+    }
+
+    function create_fragment$2(ctx) {
+    	let if_block_anchor;
+    	let if_block = /*show*/ ctx[0] && create_if_block(ctx);
+
+    	return {
+    		c() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+    		p(ctx, [dirty]) {
+    			if (/*show*/ ctx[0]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach(if_block_anchor);
+    		}
+    	};
+    }
+
     function instance$2($$self, $$props, $$invalidate) {
     	let dispatcher = new createEventDispatcher();
     	let { show = false } = $$props;
-    	let { text = "" } = $$props;
-    	let { event = "" } = $$props;
-    	let { title = "" } = $$props;
-    	let { label = "" } = $$props;
+    	let { text = '' } = $$props;
+    	let { event = '' } = $$props;
+    	let { title = '' } = $$props;
+    	let { label = '' } = $$props;
     	let { error = false } = $$props;
     	let refs = {};
 
+    	const inputType = e => {
+    		e.type = event.includes('Color') ? 'color' : 'text';
+    	};
+
     	function confirm() {
     		if (text) {
-    			console.log("dispatcher", text, event);
     			dispatcher(event, text);
     			cancel();
     		} else {
@@ -1317,7 +1250,7 @@
 
     	function cancel() {
     		$$invalidate(0, show = false);
-    		$$invalidate(1, text = "");
+    		$$invalidate(1, text = '');
     		$$invalidate(2, error = false);
     	}
 
@@ -1326,7 +1259,7 @@
     	}
 
     	function input_binding($$value) {
-    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			refs.text = $$value;
     			$$invalidate(5, refs);
     		});
@@ -1340,12 +1273,12 @@
     	const submit_handler = event => confirm();
 
     	$$self.$$set = $$props => {
-    		if ("show" in $$props) $$invalidate(0, show = $$props.show);
-    		if ("text" in $$props) $$invalidate(1, text = $$props.text);
-    		if ("event" in $$props) $$invalidate(9, event = $$props.event);
-    		if ("title" in $$props) $$invalidate(3, title = $$props.title);
-    		if ("label" in $$props) $$invalidate(4, label = $$props.label);
-    		if ("error" in $$props) $$invalidate(2, error = $$props.error);
+    		if ('show' in $$props) $$invalidate(0, show = $$props.show);
+    		if ('text' in $$props) $$invalidate(1, text = $$props.text);
+    		if ('event' in $$props) $$invalidate(10, event = $$props.event);
+    		if ('title' in $$props) $$invalidate(3, title = $$props.title);
+    		if ('label' in $$props) $$invalidate(4, label = $$props.label);
+    		if ('error' in $$props) $$invalidate(2, error = $$props.error);
     	};
 
     	$$self.$$.update = () => {
@@ -1367,6 +1300,7 @@
     		title,
     		label,
     		refs,
+    		inputType,
     		confirm,
     		cancel,
     		hideError,
@@ -1380,16 +1314,23 @@
     class EditorModal extends SvelteComponent {
     	constructor(options) {
     		super();
-    		if (!document.getElementById("svelte-42yfje-style")) add_css$2();
 
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
-    			show: 0,
-    			text: 1,
-    			event: 9,
-    			title: 3,
-    			label: 4,
-    			error: 2
-    		});
+    		init(
+    			this,
+    			options,
+    			instance$2,
+    			create_fragment$2,
+    			safe_not_equal,
+    			{
+    				show: 0,
+    				text: 1,
+    				event: 10,
+    				title: 3,
+    				label: 4,
+    				error: 2
+    			},
+    			add_css$2
+    		);
     	}
 
     	get show() {
@@ -1397,7 +1338,7 @@
     	}
 
     	set show(show) {
-    		this.$set({ show });
+    		this.$$set({ show });
     		flush();
     	}
 
@@ -1406,16 +1347,16 @@
     	}
 
     	set text(text) {
-    		this.$set({ text });
+    		this.$$set({ text });
     		flush();
     	}
 
     	get event() {
-    		return this.$$.ctx[9];
+    		return this.$$.ctx[10];
     	}
 
     	set event(event) {
-    		this.$set({ event });
+    		this.$$set({ event });
     		flush();
     	}
 
@@ -1424,7 +1365,7 @@
     	}
 
     	set title(title) {
-    		this.$set({ title });
+    		this.$$set({ title });
     		flush();
     	}
 
@@ -1433,7 +1374,7 @@
     	}
 
     	set label(label) {
-    		this.$set({ label });
+    		this.$$set({ label });
     		flush();
     	}
 
@@ -1442,36 +1383,33 @@
     	}
 
     	set error(error) {
-    		this.$set({ error });
+    		this.$$set({ error });
     		flush();
     	}
     }
 
-    /* src/helpers/EditorColorPicker.svelte generated by Svelte v3.38.3 */
+    /* src/helpers/EditorColorPicker.svelte generated by Svelte v3.44.2 */
 
-    function add_css$1() {
-    	var style = element("style");
-    	style.id = "svelte-njq4pk-style";
-    	style.textContent = ".color-picker-wrapper.svelte-njq4pk{border:1px solid #ecf0f1;border-top:none;background:#FFF;box-shadow:rgba(0,0,0,.1) 0 2px 3px;width:290px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);padding:0;position:absolute;top:37px;z-index:11}.color-picker-overlay.svelte-njq4pk{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0;z-index:10}.color-picker-btn.svelte-njq4pk{display:block;position:relative;float:left;height:20px;width:20px;border:1px solid #333;padding:0;margin:2px;line-height:35px;text-decoration:none;background:#FFF;color:#333!important;cursor:pointer;text-align:left;font-size:15px;transition:all 150ms;line-height:20px;padding:0px 5px}.color-picker-btn.svelte-njq4pk:hover::after{content:\" \";display:block;position:absolute;top:-5px;left:-5px;height:27px;width:27px;background:inherit;border:1px solid #FFF;box-shadow:#000 0 0 2px;z-index:10}";
-    	append(document.head, style);
+    function add_css$1(target) {
+    	append_styles(target, "svelte-njq4pk", ".color-picker-wrapper.svelte-njq4pk{border:1px solid #ecf0f1;border-top:none;background:#FFF;box-shadow:rgba(0,0,0,.1) 0 2px 3px;width:290px;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);padding:0;position:absolute;top:37px;z-index:11}.color-picker-overlay.svelte-njq4pk{position:absolute;background-color:rgba(255,255,255,.5);height:100%;width:100%;left:0;top:0;z-index:10}.color-picker-btn.svelte-njq4pk{display:block;position:relative;float:left;height:20px;width:20px;border:1px solid #333;padding:0;margin:2px;line-height:35px;text-decoration:none;background:#FFF;color:#333!important;cursor:pointer;text-align:left;font-size:15px;transition:all 150ms;line-height:20px;padding:0px 5px}.color-picker-btn.svelte-njq4pk:hover::after{content:\" \";display:block;position:absolute;top:-5px;left:-5px;height:27px;width:27px;background:inherit;border:1px solid #FFF;box-shadow:#000 0 0 2px;z-index:10}");
     }
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[9] = list[i];
+    	child_ctx[8] = list[i];
     	return child_ctx;
     }
 
     // (4:4) {#each btns as btn}
     function create_each_block$1(ctx) {
     	let button;
-    	let t_value = (/*btn*/ ctx[9].text || "") + "";
+    	let t_value = (/*btn*/ ctx[8].text || '') + "";
     	let t;
     	let mounted;
     	let dispose;
 
     	function click_handler(...args) {
-    		return /*click_handler*/ ctx[5](/*btn*/ ctx[9], ...args);
+    		return /*click_handler*/ ctx[6](/*btn*/ ctx[8], ...args);
     	}
 
     	return {
@@ -1480,7 +1418,7 @@
     			t = text(t_value);
     			attr(button, "type", "button");
     			attr(button, "class", "color-picker-btn svelte-njq4pk");
-    			set_style(button, "background-color", /*btn*/ ctx[9].color);
+    			set_style(button, "background-color", /*btn*/ ctx[8].color);
     		},
     		m(target, anchor) {
     			insert(target, button, anchor);
@@ -1493,10 +1431,10 @@
     		},
     		p(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty & /*btns*/ 2 && t_value !== (t_value = (/*btn*/ ctx[9].text || "") + "")) set_data(t, t_value);
+    			if (dirty & /*btns*/ 2 && t_value !== (t_value = (/*btn*/ ctx[8].text || '') + "")) set_data(t, t_value);
 
     			if (dirty & /*btns*/ 2) {
-    				set_style(button, "background-color", /*btn*/ ctx[9].color);
+    				set_style(button, "background-color", /*btn*/ ctx[8].color);
     			}
     		},
     		d(detaching) {
@@ -1534,7 +1472,7 @@
 
     			attr(div0, "class", "color-picker-overlay svelte-njq4pk");
     			attr(div1, "class", "color-picker-wrapper svelte-njq4pk");
-    			set_style(div2, "display", /*show*/ ctx[0] ? "block" : "none");
+    			set_style(div2, "display", /*show*/ ctx[0] ? 'block' : 'none');
     		},
     		m(target, anchor) {
     			insert(target, div2, anchor);
@@ -1576,7 +1514,7 @@
     			}
 
     			if (dirty & /*show*/ 1) {
-    				set_style(div2, "display", /*show*/ ctx[0] ? "block" : "none");
+    				set_style(div2, "display", /*show*/ ctx[0] ? 'block' : 'none');
     			}
     		},
     		i: noop,
@@ -1592,89 +1530,10 @@
 
     function instance$1($$self, $$props, $$invalidate) {
     	const dispatcher = new createEventDispatcher();
-
-    	const colors = [
-    		"ffffff",
-    		"000000",
-    		"eeece1",
-    		"1f497d",
-    		"4f81bd",
-    		"c0504d",
-    		"9bbb59",
-    		"8064a2",
-    		"4bacc6",
-    		"f79646",
-    		"ffff00",
-    		"f2f2f2",
-    		"7f7f7f",
-    		"ddd9c3",
-    		"c6d9f0",
-    		"dbe5f1",
-    		"f2dcdb",
-    		"ebf1dd",
-    		"e5e0ec",
-    		"dbeef3",
-    		"fdeada",
-    		"fff2ca",
-    		"d8d8d8",
-    		"595959",
-    		"c4bd97",
-    		"8db3e2",
-    		"b8cce4",
-    		"e5b9b7",
-    		"d7e3bc",
-    		"ccc1d9",
-    		"b7dde8",
-    		"fbd5b5",
-    		"ffe694",
-    		"bfbfbf",
-    		"3f3f3f",
-    		"938953",
-    		"548dd4",
-    		"95b3d7",
-    		"d99694",
-    		"c3d69b",
-    		"b2a2c7",
-    		"b7dde8",
-    		"fac08f",
-    		"f2c314",
-    		"a5a5a5",
-    		"262626",
-    		"494429",
-    		"17365d",
-    		"366092",
-    		"953734",
-    		"76923c",
-    		"5f497a",
-    		"92cddc",
-    		"e36c09",
-    		"c09100",
-    		"7f7f7f",
-    		"0c0c0c",
-    		"1d1b10",
-    		"0f243e",
-    		"244061",
-    		"632423",
-    		"4f6128",
-    		"3f3151",
-    		"31859b",
-    		"974806",
-    		"7f6000"
-    	];
-
-    	const getBtns = () => {
-    		const btns = colors.map(color => ({ color: `#${color}` }));
-    		btns.push({ text: "#", modal: true });
-    		return btns;
-    	};
-
     	let { show = false } = $$props;
     	let { btns = [] } = $$props;
-    	let { event = "" } = $$props;
-
-    	onMount(() => {
-    		$$invalidate(1, btns = getBtns());
-    	});
+    	let { event = '' } = $$props;
+    	let { colors = [] } = $$props;
 
     	function close() {
     		$$invalidate(0, show = false);
@@ -1688,19 +1547,25 @@
     	const click_handler = (btn, event) => selectColor(btn);
 
     	$$self.$$set = $$props => {
-    		if ("show" in $$props) $$invalidate(0, show = $$props.show);
-    		if ("btns" in $$props) $$invalidate(1, btns = $$props.btns);
-    		if ("event" in $$props) $$invalidate(4, event = $$props.event);
+    		if ('show' in $$props) $$invalidate(0, show = $$props.show);
+    		if ('btns' in $$props) $$invalidate(1, btns = $$props.btns);
+    		if ('event' in $$props) $$invalidate(4, event = $$props.event);
+    		if ('colors' in $$props) $$invalidate(5, colors = $$props.colors);
     	};
 
-    	return [show, btns, close, selectColor, event, click_handler];
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*colors*/ 32) {
+    			$$invalidate(1, btns = colors.map(color => ({ color })).concat([{ text: '#', modal: true }]));
+    		}
+    	};
+
+    	return [show, btns, close, selectColor, event, colors, click_handler];
     }
 
     class EditorColorPicker extends SvelteComponent {
     	constructor(options) {
     		super();
-    		if (!document.getElementById("svelte-njq4pk-style")) add_css$1();
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { show: 0, btns: 1, event: 4 });
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { show: 0, btns: 1, event: 4, colors: 5 }, add_css$1);
     	}
     }
 
@@ -1722,20 +1587,15 @@
 
     const createStateStore = state;
 
-    /* src/Editor.svelte generated by Svelte v3.38.3 */
+    /* src/Editor.svelte generated by Svelte v3.44.2 */
 
-    const { document: document_1 } = globals;
-
-    function add_css() {
-    	var style = element("style");
-    	style.id = "svelte-1a534py-style";
-    	style.textContent = ".cl.svelte-1a534py .svelte-1a534py{box-sizing:border-box}.cl.svelte-1a534py.svelte-1a534py{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}.cl-content.svelte-1a534py.svelte-1a534py{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%;background-color:white}.cl-actionbar.svelte-1a534py.svelte-1a534py{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}.cl-button.svelte-1a534py.svelte-1a534py{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}.cl-button.svelte-1a534py.svelte-1a534py:hover,.cl-button.active.svelte-1a534py.svelte-1a534py{background-color:#fff}.cl-button.svelte-1a534py.svelte-1a534py:disabled{opacity:.5;pointer-events:none}.cl-textarea.svelte-1a534py.svelte-1a534py{display:none;max-width:100%;min-width:100%;border:none;padding:10px}.cl-textarea.svelte-1a534py.svelte-1a534py:focus{outline:none}";
-    	append(document_1.head, style);
+    function add_css(target) {
+    	append_styles(target, "svelte-1a534py", ".cl.svelte-1a534py .svelte-1a534py{box-sizing:border-box}.cl.svelte-1a534py.svelte-1a534py{box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);box-sizing:border-box;width:100%;position:relative}.cl-content.svelte-1a534py.svelte-1a534py{height:300px;outline:0;overflow-y:auto;padding:10px;width:100%;background-color:white}.cl-actionbar.svelte-1a534py.svelte-1a534py{background-color:#ecf0f1;border-bottom:1px solid rgba(10, 10, 10, 0.1);width:100%}.cl-button.svelte-1a534py.svelte-1a534py{background-color:transparent;border:none;cursor:pointer;height:35px;outline:0;width:35px;vertical-align:top;position:relative}.cl-button.svelte-1a534py.svelte-1a534py:hover,.cl-button.active.svelte-1a534py.svelte-1a534py{background-color:#fff}.cl-button.svelte-1a534py.svelte-1a534py:disabled{opacity:.5;pointer-events:none}.cl-textarea.svelte-1a534py.svelte-1a534py{display:none;max-width:100%;min-width:100%;border:none;padding:10px}.cl-textarea.svelte-1a534py.svelte-1a534py:focus{outline:none}");
     }
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[37] = list[i];
+    	child_ctx[38] = list[i];
     	return child_ctx;
     }
 
@@ -1743,7 +1603,7 @@
     function create_each_block(ctx) {
     	let button;
     	let html_tag;
-    	let raw_value = /*action*/ ctx[37].icon + "";
+    	let raw_value = /*action*/ ctx[38].icon + "";
     	let t;
     	let button_class_value;
     	let button_title_value;
@@ -1752,7 +1612,7 @@
     	let dispose;
 
     	function click_handler_1(...args) {
-    		return /*click_handler_1*/ ctx[23](/*action*/ ctx[37], ...args);
+    		return /*click_handler_1*/ ctx[24](/*action*/ ctx[38], ...args);
     	}
 
     	return {
@@ -1762,9 +1622,9 @@
     			t = space();
     			html_tag.a = t;
     			attr(button, "type", "button");
-    			attr(button, "class", button_class_value = "cl-button " + (/*action*/ ctx[37].active ? "active" : "") + " svelte-1a534py");
-    			attr(button, "title", button_title_value = /*action*/ ctx[37].title);
-    			button.disabled = button_disabled_value = /*action*/ ctx[37].disabled;
+    			attr(button, "class", button_class_value = "cl-button " + (/*action*/ ctx[38].active ? 'active' : '') + " svelte-1a534py");
+    			attr(button, "title", button_title_value = /*action*/ ctx[38].title);
+    			button.disabled = button_disabled_value = /*action*/ ctx[38].disabled;
     		},
     		m(target, anchor) {
     			insert(target, button, anchor);
@@ -1778,17 +1638,17 @@
     		},
     		p(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty[0] & /*$state*/ 4 && raw_value !== (raw_value = /*action*/ ctx[37].icon + "")) html_tag.p(raw_value);
+    			if (dirty[0] & /*$state*/ 16 && raw_value !== (raw_value = /*action*/ ctx[38].icon + "")) html_tag.p(raw_value);
 
-    			if (dirty[0] & /*$state*/ 4 && button_class_value !== (button_class_value = "cl-button " + (/*action*/ ctx[37].active ? "active" : "") + " svelte-1a534py")) {
+    			if (dirty[0] & /*$state*/ 16 && button_class_value !== (button_class_value = "cl-button " + (/*action*/ ctx[38].active ? 'active' : '') + " svelte-1a534py")) {
     				attr(button, "class", button_class_value);
     			}
 
-    			if (dirty[0] & /*$state*/ 4 && button_title_value !== (button_title_value = /*action*/ ctx[37].title)) {
+    			if (dirty[0] & /*$state*/ 16 && button_title_value !== (button_title_value = /*action*/ ctx[38].title)) {
     				attr(button, "title", button_title_value);
     			}
 
-    			if (dirty[0] & /*$state*/ 4 && button_disabled_value !== (button_disabled_value = /*action*/ ctx[37].disabled)) {
+    			if (dirty[0] & /*$state*/ 16 && button_disabled_value !== (button_disabled_value = /*action*/ ctx[38].disabled)) {
     				button.disabled = button_disabled_value;
     			}
     		},
@@ -1814,7 +1674,7 @@
     	let current;
     	let mounted;
     	let dispose;
-    	let each_value = /*$state*/ ctx[2].actionBtns;
+    	let each_value = /*$state*/ ctx[4].actionBtns;
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -1823,10 +1683,10 @@
 
     	let editormodal_props = {};
     	editormodal = new EditorModal({ props: editormodal_props });
-    	/*editormodal_binding*/ ctx[30](editormodal);
-    	let editorcolorpicker_props = {};
+    	/*editormodal_binding*/ ctx[31](editormodal);
+    	let editorcolorpicker_props = { colors: /*colors*/ ctx[2] };
     	editorcolorpicker = new EditorColorPicker({ props: editorcolorpicker_props });
-    	/*editorcolorpicker_binding*/ ctx[31](editorcolorpicker);
+    	/*editorcolorpicker_binding*/ ctx[32](editorcolorpicker);
 
     	return {
     		c() {
@@ -1865,32 +1725,32 @@
 
     			append(div2, t0);
     			append(div2, div1);
-    			/*div1_binding*/ ctx[24](div1);
+    			/*div1_binding*/ ctx[25](div1);
     			append(div2, t1);
     			append(div2, textarea);
-    			/*textarea_binding*/ ctx[29](textarea);
+    			/*textarea_binding*/ ctx[30](textarea);
     			append(div2, t2);
     			mount_component(editormodal, div2, null);
     			append(div2, t3);
     			mount_component(editorcolorpicker, div2, null);
-    			/*div2_binding*/ ctx[32](div2);
+    			/*div2_binding*/ ctx[33](div2);
     			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen(window, "click", /*click_handler*/ ctx[22]),
-    					listen(div1, "input", /*input_handler*/ ctx[25]),
-    					listen(div1, "mouseup", /*mouseup_handler*/ ctx[26]),
-    					listen(div1, "keyup", /*keyup_handler*/ ctx[27]),
-    					listen(div1, "paste", /*paste_handler*/ ctx[28])
+    					listen(window, "click", /*click_handler*/ ctx[23]),
+    					listen(div1, "input", /*input_handler*/ ctx[26]),
+    					listen(div1, "mouseup", /*mouseup_handler*/ ctx[27]),
+    					listen(div1, "keyup", /*keyup_handler*/ ctx[28]),
+    					listen(div1, "paste", /*paste_handler*/ ctx[29])
     				];
 
     				mounted = true;
     			}
     		},
     		p(ctx, dirty) {
-    			if (dirty[0] & /*$state, _btnClicked*/ 132) {
-    				each_value = /*$state*/ ctx[2].actionBtns;
+    			if (dirty[0] & /*$state, _btnClicked*/ 272) {
+    				each_value = /*$state*/ ctx[4].actionBtns;
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -1931,6 +1791,7 @@
     			const editormodal_changes = {};
     			editormodal.$set(editormodal_changes);
     			const editorcolorpicker_changes = {};
+    			if (dirty[0] & /*colors*/ 4) editorcolorpicker_changes.colors = /*colors*/ ctx[2];
     			editorcolorpicker.$set(editorcolorpicker_changes);
     		},
     		i(local) {
@@ -1947,13 +1808,13 @@
     		d(detaching) {
     			if (detaching) detach(div2);
     			destroy_each(each_blocks, detaching);
-    			/*div1_binding*/ ctx[24](null);
-    			/*textarea_binding*/ ctx[29](null);
-    			/*editormodal_binding*/ ctx[30](null);
+    			/*div1_binding*/ ctx[25](null);
+    			/*textarea_binding*/ ctx[30](null);
+    			/*editormodal_binding*/ ctx[31](null);
     			destroy_component(editormodal);
-    			/*editorcolorpicker_binding*/ ctx[31](null);
+    			/*editorcolorpicker_binding*/ ctx[32](null);
     			destroy_component(editorcolorpicker);
-    			/*div2_binding*/ ctx[32](null);
+    			/*div2_binding*/ ctx[33](null);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -1963,15 +1824,85 @@
     const editors = [];
 
     function instance($$self, $$props, $$invalidate) {
-    	let $state;
     	let $references;
     	let $helper;
+    	let $state;
     	let dispatcher = new createEventDispatcher();
     	let { actions = [] } = $$props;
-    	let { height = "300px" } = $$props;
-    	let { html = "" } = $$props;
-    	let { contentId = "" } = $$props;
-    	let { removeFormatTags = ["h1", "h2", "blockquote"] } = $$props;
+    	let { height = '300px' } = $$props;
+    	let { html = '' } = $$props;
+    	let { contentId = '' } = $$props;
+
+    	let { colors = [
+    		'#ffffff',
+    		'#000000',
+    		'#eeece1',
+    		'#1f497d',
+    		'#4f81bd',
+    		'#c0504d',
+    		'#9bbb59',
+    		'#8064a2',
+    		'#4bacc6',
+    		'#f79646',
+    		'#ffff00',
+    		'#f2f2f2',
+    		'#7f7f7f',
+    		'#ddd9c3',
+    		'#c6d9f0',
+    		'#dbe5f1',
+    		'#f2dcdb',
+    		'#ebf1dd',
+    		'#e5e0ec',
+    		'#dbeef3',
+    		'#fdeada',
+    		'#fff2ca',
+    		'#d8d8d8',
+    		'#595959',
+    		'#c4bd97',
+    		'#8db3e2',
+    		'#b8cce4',
+    		'#e5b9b7',
+    		'#d7e3bc',
+    		'#ccc1d9',
+    		'#b7dde8',
+    		'#fbd5b5',
+    		'#ffe694',
+    		'#bfbfbf',
+    		'#3f3f3f',
+    		'#938953',
+    		'#548dd4',
+    		'#95b3d7',
+    		'#d99694',
+    		'#c3d69b',
+    		'#b2a2c7',
+    		'#b7dde8',
+    		'#fac08f',
+    		'#f2c314',
+    		'#a5a5a5',
+    		'#262626',
+    		'#494429',
+    		'#17365d',
+    		'#366092',
+    		'#953734',
+    		'#76923c',
+    		'#5f497a',
+    		'#92cddc',
+    		'#e36c09',
+    		'#c09100',
+    		'#7f7f7f',
+    		'#0c0c0c',
+    		'#1d1b10',
+    		'#0f243e',
+    		'#244061',
+    		'#632423',
+    		'#4f6128',
+    		'#3f3151',
+    		'#31859b',
+    		'#974806',
+    		'#7f6000'
+    	] } = $$props;
+
+    	let { removeFormatTags = ['h1', 'h2', 'blockquote'] } = $$props;
 
     	let helper = writable({
     		foreColor: false,
@@ -1984,11 +1915,11 @@
     		blurActive: false
     	});
 
-    	component_subscribe($$self, helper, value => $$invalidate(33, $helper = value));
+    	component_subscribe($$self, helper, value => $$invalidate(34, $helper = value));
     	editors.push({});
     	let contextKey = "editor_" + editors.length;
     	let state = createStateStore(contextKey);
-    	component_subscribe($$self, state, value => $$invalidate(2, $state = value));
+    	component_subscribe($$self, state, value => $$invalidate(4, $state = value));
     	let references = writable({});
     	component_subscribe($$self, references, value => $$invalidate(3, $references = value));
     	set_store_value(state, $state.actionObj = getNewActionObj(defaultActions, actions), $state);
@@ -2035,18 +1966,18 @@
     	function _onPaste(event) {
     		event.preventDefault();
 
-    		exec$1("insertHTML", event.clipboardData.getData("text/html")
-    		? cleanHtml(event.clipboardData.getData("text/html"))
-    		: event.clipboardData.getData("text"));
+    		exec$1('insertHTML', event.clipboardData.getData('text/html')
+    		? cleanHtml(event.clipboardData.getData('text/html'))
+    		: event.clipboardData.getData('text'));
     	}
 
     	function _onChange(event) {
-    		dispatcher("change", event);
+    		dispatcher('change', event);
     	}
 
     	function _documentClick(event) {
     		if (!isEditorClick(event.target, $references.editorWrapper) && $helper.blurActive) {
-    			dispatcher("blur", event);
+    			dispatcher('blur', event);
     		}
 
     		set_store_value(helper, $helper.blurActive = true, $helper);
@@ -2055,8 +1986,6 @@
     	function exec$1(cmd, value) {
     		exec(cmd, value);
     	}
-
-    	
 
     	function getHtml(sanitize) {
     		return sanitize
@@ -2069,7 +1998,7 @@
     	}
 
     	function setHtml(html, sanitize) {
-    		const htmlData = sanitize ? removeBadTags(html) : html || "";
+    		const htmlData = sanitize ? removeBadTags(html) : html || '';
     		set_store_value(references, $references.editor.innerHTML = htmlData, $references);
     		set_store_value(references, $references.raw.value = htmlData, $references);
     	}
@@ -2087,7 +2016,7 @@
     	const click_handler_1 = (action, event) => _btnClicked(action);
 
     	function div1_binding($$value) {
-    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			$references.editor = $$value;
     			references.set($references);
     		});
@@ -2099,46 +2028,48 @@
     	const paste_handler = event => _onPaste(event);
 
     	function textarea_binding($$value) {
-    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			$references.raw = $$value;
     			references.set($references);
     		});
     	}
 
     	function editormodal_binding($$value) {
-    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			$references.modal = $$value;
     			references.set($references);
     		});
     	}
 
     	function editorcolorpicker_binding($$value) {
-    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			$references.colorPicker = $$value;
     			references.set($references);
     		});
     	}
 
     	function div2_binding($$value) {
-    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			$references.editorWrapper = $$value;
     			references.set($references);
     		});
     	}
 
     	$$self.$$set = $$props => {
-    		if ("actions" in $$props) $$invalidate(12, actions = $$props.actions);
-    		if ("height" in $$props) $$invalidate(0, height = $$props.height);
-    		if ("html" in $$props) $$invalidate(13, html = $$props.html);
-    		if ("contentId" in $$props) $$invalidate(1, contentId = $$props.contentId);
-    		if ("removeFormatTags" in $$props) $$invalidate(14, removeFormatTags = $$props.removeFormatTags);
+    		if ('actions' in $$props) $$invalidate(13, actions = $$props.actions);
+    		if ('height' in $$props) $$invalidate(0, height = $$props.height);
+    		if ('html' in $$props) $$invalidate(14, html = $$props.html);
+    		if ('contentId' in $$props) $$invalidate(1, contentId = $$props.contentId);
+    		if ('colors' in $$props) $$invalidate(2, colors = $$props.colors);
+    		if ('removeFormatTags' in $$props) $$invalidate(15, removeFormatTags = $$props.removeFormatTags);
     	};
 
     	return [
     		height,
     		contentId,
-    		$state,
+    		colors,
     		$references,
+    		$state,
     		helper,
     		state,
     		references,
@@ -2174,7 +2105,6 @@
     class Editor extends SvelteComponent {
     	constructor(options) {
     		super();
-    		if (!document_1.getElementById("svelte-1a534py-style")) add_css();
 
     		init(
     			this,
@@ -2183,29 +2113,31 @@
     			create_fragment,
     			safe_not_equal,
     			{
-    				actions: 12,
+    				actions: 13,
     				height: 0,
-    				html: 13,
+    				html: 14,
     				contentId: 1,
-    				removeFormatTags: 14,
-    				exec: 15,
-    				getHtml: 16,
-    				getText: 17,
-    				setHtml: 18,
-    				saveRange: 19,
-    				restoreRange: 20,
-    				refs: 21
+    				colors: 2,
+    				removeFormatTags: 15,
+    				exec: 16,
+    				getHtml: 17,
+    				getText: 18,
+    				setHtml: 19,
+    				saveRange: 20,
+    				restoreRange: 21,
+    				refs: 22
     			},
+    			add_css,
     			[-1, -1]
     		);
     	}
 
     	get actions() {
-    		return this.$$.ctx[12];
+    		return this.$$.ctx[13];
     	}
 
     	set actions(actions) {
-    		this.$set({ actions });
+    		this.$$set({ actions });
     		flush();
     	}
 
@@ -2214,16 +2146,16 @@
     	}
 
     	set height(height) {
-    		this.$set({ height });
+    		this.$$set({ height });
     		flush();
     	}
 
     	get html() {
-    		return this.$$.ctx[13];
+    		return this.$$.ctx[14];
     	}
 
     	set html(html) {
-    		this.$set({ html });
+    		this.$$set({ html });
     		flush();
     	}
 
@@ -2232,48 +2164,57 @@
     	}
 
     	set contentId(contentId) {
-    		this.$set({ contentId });
+    		this.$$set({ contentId });
+    		flush();
+    	}
+
+    	get colors() {
+    		return this.$$.ctx[2];
+    	}
+
+    	set colors(colors) {
+    		this.$$set({ colors });
     		flush();
     	}
 
     	get removeFormatTags() {
-    		return this.$$.ctx[14];
+    		return this.$$.ctx[15];
     	}
 
     	set removeFormatTags(removeFormatTags) {
-    		this.$set({ removeFormatTags });
+    		this.$$set({ removeFormatTags });
     		flush();
     	}
 
     	get exec() {
-    		return this.$$.ctx[15];
-    	}
-
-    	get getHtml() {
     		return this.$$.ctx[16];
     	}
 
-    	get getText() {
+    	get getHtml() {
     		return this.$$.ctx[17];
     	}
 
-    	get setHtml() {
+    	get getText() {
     		return this.$$.ctx[18];
     	}
 
-    	get saveRange() {
+    	get setHtml() {
     		return this.$$.ctx[19];
     	}
 
-    	get restoreRange() {
+    	get saveRange() {
     		return this.$$.ctx[20];
     	}
 
-    	get refs() {
+    	get restoreRange() {
     		return this.$$.ctx[21];
+    	}
+
+    	get refs() {
+    		return this.$$.ctx[22];
     	}
     }
 
     return Editor;
 
-})));
+}));
