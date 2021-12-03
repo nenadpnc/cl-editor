@@ -8,7 +8,7 @@
 </div>
 
 <script>
-    import {onMount, createEventDispatcher } from "svelte";
+    import { createEventDispatcher } from "svelte";
 
     const dispatcher = new createEventDispatcher();
 
@@ -17,15 +17,9 @@
     export let event = '';
     export let colors = [];
 
-    const getBtns = () => {
-      const btns = colors.map((color) => ({ color }));
-      btns.push({ text: '#', modal: true });
-      return btns;
-    }
-
-    onMount(() => {
-        btns = getBtns();
-    });
+    $: btns = colors
+            .map((color) => ({ color }))
+            .concat([{ text: '#', modal: true }]);
 
     function close() {
         show = false;
