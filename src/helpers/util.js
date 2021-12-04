@@ -142,22 +142,22 @@ export const getActionBtns = (actions) => {
 }
 
 export const getNewActionObj = (actions, userActions = []) => {
-    if (userActions && userActions.length) {
-      const newActions = {};
-      userActions.forEach((action) => {
-        if (typeof action === 'string') {
-          newActions[action] = Object.assign({}, actions[action]);
-        } else if (actions[action.name]) {
-          newActions[action.name] = Object.assign(actions[action.name], action);
-        } else {
-          newActions[action.name] = Object.assign({}, action);
-        }
-      });
+  if (userActions && userActions.length) {
+    const newActions = {};
+    userActions.forEach((action) => {
+      if (typeof action === 'string') {
+        newActions[action] = Object.assign({}, actions[action]);
+      } else if (actions[action.name]) {
+        newActions[action.name] = Object.assign(actions[action.name], action);
+      } else {
+        newActions[action.name] = Object.assign({}, action);
+      }
+    });
 
-      return newActions;
-    } else {
-      return actions;
-    }
+    return newActions;
+  } else {
+    return actions;
+  }
 }
 
 export const removeBadTags = (html) => {
