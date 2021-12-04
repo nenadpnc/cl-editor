@@ -8,7 +8,7 @@ Includes all available actions and default height.
 
 ```js
 const editor = new Editor({
-    target: document.getElementById('editor1')
+  target: document.getElementById('editor1')
 })
 ```
 <div id="editor1"></div>
@@ -21,29 +21,26 @@ Example of custom _**copy**_ action.
 
 ```js
 const editor2 = new Editor({
-    target: document.getElementById('editor2'),
-    data: {
-      actions: [
-        'b', 'i', 'u', 'strike', 'h1', 'h2', 'p',
-        {
-            name: 'copy', 
-            icon: '&#128203;',
-            title: 'Copy',
-            result: () => {
-              const selection = window.getSelection();
-              if (!selection.toString().length) {
-                const range = document.createRange();
-                range.selectNodeContents(editor2.refs.editor);
-                selection.removeAllRanges();
-                selection.addRange(range);
-              }
-              editor2.exec('copy');
-            }
+  target: document.getElementById('editor2'),
+  data: {
+    actions: ['b', 'i', 'u', 'strike', 'h1', 'h2', 'p', {
+      name: 'copy', 
+      icon: '&#128203;',
+      title: 'Copy',
+      result: () => {
+        const selection = window.getSelection();
+        if (!selection.toString().length) {
+          const range = document.createRange();
+          range.selectNodeContents(editor2.refs.editor);
+          selection.removeAllRanges();
+          selection.addRange(range);
         }
-      ],
-      html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a odio neque. Duis ac laoreet lacus.',
-      height: '150px'
-    }
+        editor2.exec('copy');
+      }
+    }],
+    html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a odio neque. Duis ac laoreet lacus.',
+    height: '150px',
+  }
 })
 ```
 
